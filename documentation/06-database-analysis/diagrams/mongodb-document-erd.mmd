@@ -1,0 +1,138 @@
+%% Nomadix: Complete MongoDB Document Collections ERD
+erDiagram
+    %% ========================================================
+    %% 1. ITINERARIES (Embedded 1:Few Hierarchy)
+    %% ========================================================
+    ITINERARIES ||--|{ ITINERARY_DAYS : "embeds_daily_schedule"
+    ITINERARY_DAYS ||--|{ ITINERARY_ITEMS : "embeds_ordered_stops"
+    ITINERARY_ITEMS ||--|| GEOJSON_POINT : "spatial_coordinates"
+    ITINERARY_ITEMS ||--o| TRANSIT_LEG : "routing_to_next"
+    ITINERARIES ||--o{ ITINERARY_COLLABORATORS : "shared_planners"
+
+    ITINERARIES {
+        ObjectId _id PK "Primary Document ID"
+        string userId "PostgreSQL users(id) UUID Anchor"
+        string title "Trip Title (e.g. Da Nang 3N2D)"
+        string city "Destination City"
+        string country "Country (Viet Nam)"
+        date startDate "Start Date"
+        date endDate "End Date"
+        number budgetEstimate "Budget Cap in VND"
+        number actualExpenseTotal "Calculated Expense Sum"
+        boolean isPublic "Published to community feed"
+        number cloneCount "Cloned counter"
+        ObjectId clonedFrom "Parent Itinerary Reference"
+        array tags "Keyword tags"
+        string coverImageUrl "Cloudinary cover photo"
+        date createdAt "Creation timestamp"
+        date updatedAt "Modification timestamp"
+    }
+
+    ITINERARY_COLLABORATORS {
+        string userId "Collaborator UUID"
+        string role "'EDITOR' or 'VIEWER'"
+        date invitedAt "Invitation timestamp"
+    }
+
+    ITINERARY_DAYS {
+        number dayNumber "Sequential day index (1, 2, 3...)"
+        date date "Calendar date of the day"
+        string themeNote "Day focus note"
+    }
+
+    ITINERARY_ITEMS {
+        ObjectId _id PK "Unique subdocument ID"
+        string itemType "'landmark', 'hotel', 'flight', 'restaurant', 'custom'"
+        string destinationName "Stop Name"
+        number orderIndex "Contiguous sequence (1, 2, 3...)"
+        string arrivalTime "Scheduled time HH:MM"
+        number estimatedDurationMinutes "Duration at stop"
+        number estimatedCost "Planned expense in VND"
+        string note "Activity memo"
+        boolean isCompleted "Timeline check-off status"
+        object flightDetails "Airline, Flight Num, PNR"
+        object hotelDetails "Hotel Name, Check-in/out"
+        object landmarkDetails "Landmark UUID, Geofence, Quiz"
+    }
+
+    GEOJSON_POINT {
+        string type "'Point'"
+        array coordinates "[Longitude, Latitude] WGS84"
+    }
+
+    TRANSIT_LEG {
+        string travelMode "'DRIVING', 'WALKING', 'TRANSIT'"
+        number distanceMeters "Distance in meters"
+        number durationSeconds "Travel time in seconds"
+        string distanceFormatted "Formatted km"
+        string durationFormatted "Formatted minutes"
+        string encodedPolyline "Google Maps Polyline algorithm"
+        boolean isHaversineFallback "Offline Haversine flag"
+    }
+
+    %% ========================================================
+    %% 2. COMMUNITY Q&A FORUM COLLECTIONS
+    %% ========================================================
+    FORUM_QUESTIONS ||--o{ FORUM_ANSWERS : "threaded_replies"
+    FORUM_ANSWERS ||--o{ FORUM_COMMENTS : "clarifications"
+    FORUM_QUESTIONS ||--o{ COMMUNITY_REPORTS : "reported_for_moderation"
+
+    FORUM_QUESTIONS {
+        ObjectId _id PK "Question ID"
+        string userId "Author PostgreSQL UUID"
+        string authorName "Author display name"
+        string authorAvatar "Avatar URL"
+        string city "City domain (Da Nang)"
+        string country "Country tag"
+        string category "Topic: Food, Transport, Hidden Gems"
+        string title "Question Title"
+        string content "Inquiry text"
+        array tags "Tag array"
+        number upvotes "Upvote counter"
+        array upvotedBy "User UUID array"
+        number replyCount "Answer counter"
+        boolean isResolved "Resolution status"
+        boolean isPinned "Pinned status"
+        boolean isReported "Flagged status"
+        boolean isHidden "Shadow-hidden status"
+        date createdAt "Creation timestamp"
+    }
+
+    FORUM_ANSWERS {
+        ObjectId _id PK "Answer ID"
+        ObjectId questionId FK "References FORUM_QUESTIONS(_id)"
+        string userId "Author PostgreSQL UUID"
+        string authorName "Author display name"
+        string authorAvatar "Avatar URL"
+        string content "Answer body"
+        boolean isCityVerified "Cross-DB City Verified Flag (USP)"
+        boolean hasCityBadge "Holds City Badge"
+        string verifiedBadgeTitle "Badge Name"
+        string verifiedBadgeIcon "Cloudinary Icon URL"
+        number upvotes "Upvote counter"
+        array upvotedBy "User UUID array"
+        boolean isAcceptedAnswer "Best answer mark"
+        boolean isReported "Flagged status"
+        boolean isHidden "Shadow-hidden status"
+        date createdAt "Creation timestamp"
+    }
+
+    FORUM_COMMENTS {
+        ObjectId _id PK "Comment ID"
+        ObjectId answerId FK "References FORUM_ANSWERS(_id)"
+        string userId "Author PostgreSQL UUID"
+        string authorName "Author display name"
+        string content "Clarification comment"
+        date createdAt "Creation timestamp"
+    }
+
+    COMMUNITY_REPORTS {
+        ObjectId _id PK "Report ID"
+        string targetType "'question', 'answer', 'comment'"
+        ObjectId targetId "Target document ObjectId"
+        string reporterId "Reporter PostgreSQL UUID"
+        string reason "'SPAM', 'OFFENSIVE', 'FALSE_INFO'"
+        string status "'PENDING', 'REVIEWED', 'DISMISSED'"
+        string adminNotes "Internal admin notes"
+        date createdAt "Report timestamp"
+    }

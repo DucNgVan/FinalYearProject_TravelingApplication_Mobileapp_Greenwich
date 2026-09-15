@@ -1,0 +1,66 @@
+%% Nomadix: Cross-Database Data Flow & Trust Bridge
+sequenceDiagram
+    autonumber
+    actor Traveler as Experienced Traveler (Mobile)
+    participant Client as React Native App
+    participant API as Express API Gateway
+    participant Postgres as PostgreSQL 16 (Relational ACID)
+    participant Mongo as MongoDB Atlas 7.0 (Document Store)
+    participant Redis as Redis 7 (In-Memory Cache)
+
+    %% Flow 1: Booking Search & Redis Cache-Aside
+    rect rgb(240, 248, 255)
+        Note over Traveler,Redis: FLOW 1: BOOKING SEARCH & CACHE-ASIDE (MODULE 2)
+        Traveler->>Client: Search flights: HAN -> DAD (15/11/2026)
+        Client->>API: GET /api/v1/flights/search?origin=HAN&dest=DAD...
+        API->>Redis: GET nomadix:flight:HAN_DAD_2026-11-15...
+        alt Cache HIT (<50ms)
+            Redis-->>API: Return Cached Normalized Flight Array
+            API-->>Client: HTTP 200 OK (X-Cache-Status: HIT)
+        else Cache MISS (>1000ms)
+            Redis-->>API: null
+            API->>API: Parallel OTA Fetch (Amadeus, RapidAPI, Mock)
+            API->>Redis: SETEX key 1800 <json>
+            API-->>Client: HTTP 200 OK (X-Cache-Status: MISS)
+        end
+    end
+
+    %% Flow 2: Booking Confirmation & Itinerary Insertion
+    rect rgb(255, 250, 240)
+        Note over Traveler,Mongo: FLOW 2: CONFIRMED BOOKING BINDING (MODULE 2 -> MODULE 3)
+        Traveler->>Client: Book Flight VN-128 & Select Itinerary "Da Nang 3N2D"
+        Client->>API: POST /api/v1/bookings { flightOfferId, itineraryId }
+        API->>Postgres: INSERT INTO bookings, flight_bookings (booking_reference: "NMDX-88421")
+        Postgres-->>API: Booking Created (UUID: "book_abc123")
+        API->>Mongo: UPDATE itineraries SET days[0].items.push({ itemType: 'flight', bookingReference: 'NMDX-88421' })
+        Mongo-->>API: Itinerary Updated
+        API-->>Client: HTTP 201 Created (Booking Confirmed & Linked to Day 1)
+    end
+
+    %% Flow 3: GPS Check-in & Badge Unlock
+    rect rgb(245, 255, 250)
+        Note over Traveler,Postgres: FLOW 3: GPS GEOFENCING & BADGE UNLOCK (MODULE 4)
+        Traveler->>Client: Check-in at Dragon Bridge (GPS coords)
+        Client->>API: POST /api/v1/checkins/validate (lat, lng)
+        API->>API: Calculate Haversine Distance (d <= 100m)
+        API->>Postgres: INSERT INTO checkins (user_id, landmark_id, photo_url)
+        Traveler->>Client: Complete Cultural Quiz (Pass >= 66%)
+        Client->>API: POST /api/v1/quizzes/attempts
+        API->>Postgres: INSERT INTO quiz_attempts & Award +150 XP
+        API->>Postgres: Evaluate: >= 3 checkins & >= 1 quiz in Da Nang
+        API->>Postgres: INSERT INTO user_badges (user_id, badge_id: "badge_da_nang")
+        API-->>Client: HTTP 200 OK (Unlocked "Da Nang Explorer Badge"!)
+    end
+
+    %% Flow 4: Community "City Verified" Authority Bridge (USP)
+    rect rgb(255, 245, 245)
+        Note over Traveler,Mongo: FLOW 4: "CITY VERIFIED" FORUM AUTHORITY (MODULE 5 - USP)
+        Traveler->>Client: Post Answer in Da Nang Forum
+        Client->>API: POST /api/v1/community/questions/:id/answers (Content: "...")
+        API->>Mongo: Fetch Question to get City ("Đà Nẵng")
+        API->>Postgres: SELECT * FROM user_badges WHERE user_id = $1 AND city = 'Đà Nẵng'
+        Postgres-->>API: Active "Da Nang Explorer Badge" Found!
+        API->>Mongo: INSERT forum_answers { isCityVerified: true, hasCityBadge: true, verifiedBadgeTitle: 'Da Nang Explorer' }
+        Mongo-->>API: Answer Persisted
+        API-->>Client: HTTP 201 Created (Rendered with Gold Frame & Pinned to Top)
+    end

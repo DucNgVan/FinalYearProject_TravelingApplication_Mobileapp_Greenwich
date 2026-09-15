@@ -1,0 +1,351 @@
+%% Nomadix: Complete PostgreSQL Relational ERD (22 Tables, 3NF Normalized)
+erDiagram
+    %% ========================================================
+    %% 1. IDENTITY, AUTHENTICATION & RBAC (9 Tables)
+    %% ========================================================
+    ROLES {
+        serial id PK
+        varchar name UK
+        varchar display_name
+        varchar description
+        boolean is_system
+        timestamptz created_at
+    }
+
+    PERMISSIONS {
+        serial id PK
+        varchar code UK
+        varchar module
+        varchar description
+        timestamptz created_at
+    }
+
+    ROLE_PERMISSIONS {
+        int role_id PK,FK
+        int permission_id PK,FK
+        timestamptz granted_at
+    }
+
+    USERS {
+        uuid id PK
+        varchar email UK
+        varchar password_hash
+        varchar full_name
+        varchar phone_number
+        text avatar_url
+        varchar bio
+        varchar status
+        boolean is_email_verified
+        int role_id FK
+        int xp
+        int level
+        timestamptz last_login_at
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    USER_PREFERENCES {
+        uuid user_id PK,FK
+        char preferred_currency
+        varchar preferred_language
+        char home_airport_iata
+        varchar travel_style
+        boolean push_notifications_enabled
+        boolean marketing_emails_enabled
+        timestamptz updated_at
+    }
+
+    USER_REFRESH_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        varchar token_hash UK
+        varchar device_id
+        varchar device_name
+        varchar device_os
+        varchar ip_address
+        text user_agent
+        boolean is_revoked
+        timestamptz expires_at
+        timestamptz created_at
+        timestamptz revoked_at
+    }
+
+    USER_OAUTH_ACCOUNTS {
+        uuid id PK
+        uuid user_id FK
+        varchar provider
+        varchar provider_user_id
+        varchar provider_email
+        timestamptz linked_at
+    }
+
+    PASSWORD_RESET_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        varchar token_hash UK
+        boolean is_consumed
+        timestamptz expires_at
+        timestamptz consumed_at
+        timestamptz created_at
+    }
+
+    AUTH_AUDIT_LOGS {
+        bigserial id PK
+        uuid user_id FK
+        varchar attempted_email
+        varchar event_type
+        varchar status
+        varchar failure_reason
+        varchar ip_address
+        text user_agent
+        timestamptz created_at
+    }
+
+    %% ========================================================
+    %% 2. CULTURAL GAMIFICATION & COORDINATES (7 Tables)
+    %% ========================================================
+    LANDMARKS {
+        uuid id PK
+        varchar name
+        varchar city
+        varchar country
+        numeric latitude
+        numeric longitude
+        int geofence_radius_meters
+        text description
+        text cover_image_url
+        int xp_reward
+        jsonb historical_facts
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    CHECKINS {
+        uuid id PK
+        uuid user_id FK
+        uuid landmark_id FK
+        numeric latitude
+        numeric longitude
+        numeric distance_meters
+        text photo_url
+        boolean is_verified
+        timestamptz verified_at
+    }
+
+    BADGES {
+        uuid id PK
+        varchar name UK
+        varchar city
+        varchar badge_tier
+        text badge_icon_url
+        int required_checkins
+        numeric required_quiz_score
+        int xp_bonus
+        timestamptz created_at
+    }
+
+    USER_BADGES {
+        uuid id PK
+        uuid user_id FK
+        uuid badge_id FK
+        timestamptz unlocked_at
+    }
+
+    QUIZZES {
+        uuid id PK
+        uuid landmark_id FK
+        varchar title
+        text description
+        numeric passing_score_percent
+        int xp_reward
+        timestamptz created_at
+    }
+
+    QUIZ_QUESTIONS {
+        uuid id PK
+        uuid quiz_id FK
+        text question_text
+        varchar option_a
+        varchar option_b
+        varchar option_c
+        varchar option_d
+        char correct_option
+        text explanation
+        int order_index
+        timestamptz created_at
+    }
+
+    QUIZ_ATTEMPTS {
+        uuid id PK
+        uuid user_id FK
+        uuid quiz_id FK
+        numeric score_percent
+        boolean is_passed
+        int xp_awarded
+        jsonb submitted_answers
+        timestamptz attempted_at
+    }
+
+    %% ========================================================
+    %% 3. BOOKING MODELS & PASSENGER MANIFESTS (6 Tables)
+    %% ========================================================
+    TRAVELER_PROFILES {
+        uuid id PK
+        uuid user_id FK
+        varchar first_name
+        varchar last_name
+        date date_of_birth
+        varchar gender
+        char nationality_code
+        varchar passport_number
+        date passport_expiry_date
+        varchar frequent_flyer_airline
+        varchar frequent_flyer_number
+        boolean is_primary_user
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    SAVED_OFFERS {
+        uuid id PK
+        uuid user_id FK
+        varchar item_type
+        varchar provider
+        varchar provider_offer_id
+        varchar title
+        numeric price_amount
+        char price_currency
+        jsonb offer_payload
+        timestamptz expires_at
+        timestamptz created_at
+    }
+
+    BOOKINGS {
+        uuid id PK
+        uuid user_id FK
+        varchar booking_reference UK
+        varchar booking_type
+        varchar status
+        numeric total_amount
+        char currency
+        varchar primary_contact_email
+        varchar primary_contact_phone
+        uuid itinerary_id
+        varchar provider
+        varchar external_pnr
+        text deep_link_url
+        timestamptz booked_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    FLIGHT_BOOKINGS {
+        uuid id PK
+        uuid booking_id FK
+        varchar airline_code
+        varchar airline_name
+        varchar flight_number
+        char departure_airport
+        char arrival_airport
+        timestamptz departure_time
+        timestamptz arrival_time
+        int duration_minutes
+        varchar cabin_class
+        int baggage_allowance_kg
+        int stops_count
+    }
+
+    HOTEL_BOOKINGS {
+        uuid id PK
+        uuid booking_id FK
+        varchar hotel_name
+        varchar city
+        text hotel_address
+        numeric latitude
+        numeric longitude
+        date check_in_date
+        date check_out_date
+        int number_of_nights
+        varchar room_type
+        int number_of_rooms
+        int number_of_guests
+    }
+
+    BOOKING_PASSENGERS {
+        uuid id PK
+        uuid booking_id FK
+        uuid traveler_profile_id FK
+        varchar passenger_type
+        varchar title
+        varchar first_name
+        varchar last_name
+        date date_of_birth
+        varchar passport_number
+        varchar ticket_number
+        varchar seat_assignment
+        varchar special_requests
+    }
+
+    PAYMENT_TRANSACTIONS {
+        uuid id PK
+        uuid booking_id FK
+        uuid user_id FK
+        varchar transaction_reference UK
+        varchar payment_method
+        numeric amount
+        char currency
+        varchar status
+        jsonb gateway_response
+        timestamptz paid_at
+        timestamptz created_at
+    }
+
+    AFFILIATE_OUTBOUND_CLICKS {
+        uuid id PK
+        uuid user_id FK
+        uuid booking_id FK
+        varchar provider
+        varchar item_type
+        text target_url
+        varchar ip_address
+        numeric estimated_commission
+        boolean is_converted
+        timestamptz clicked_at
+    }
+
+    %% ========================================================
+    %% RELATIONSHIPS & CARDINALITIES
+    %% ========================================================
+    ROLES ||--o{ USERS : "defines_role"
+    ROLES ||--|{ ROLE_PERMISSIONS : "has_grants"
+    PERMISSIONS ||--|{ ROLE_PERMISSIONS : "assigned_to"
+
+    USERS ||--|| USER_PREFERENCES : "configures"
+    USERS ||--o{ USER_REFRESH_TOKENS : "maintains_sessions"
+    USERS ||--o{ USER_OAUTH_ACCOUNTS : "linked_logins"
+    USERS ||--o{ PASSWORD_RESET_TOKENS : "recovery_requests"
+    USERS ||--o{ AUTH_AUDIT_LOGS : "audit_trails"
+
+    USERS ||--o{ CHECKINS : "creates_checkin"
+    LANDMARKS ||--o{ CHECKINS : "target_landmark"
+    LANDMARKS ||--|| QUIZZES : "associated_quiz"
+    QUIZZES ||--o{ QUIZ_QUESTIONS : "contains"
+    USERS ||--o{ QUIZ_ATTEMPTS : "takes_quiz"
+    QUIZZES ||--o{ QUIZ_ATTEMPTS : "recorded_in"
+
+    BADGES ||--o{ USER_BADGES : "unlocks_badge"
+    USERS ||--o{ USER_BADGES : "owns_badges"
+
+    USERS ||--o{ TRAVELER_PROFILES : "manages_passengers"
+    USERS ||--o{ SAVED_OFFERS : "bookmarks_offers"
+    USERS ||--o{ BOOKINGS : "places_order"
+    USERS ||--o{ PAYMENT_TRANSACTIONS : "charges"
+
+    BOOKINGS ||--o{ FLIGHT_BOOKINGS : "includes_flights"
+    BOOKINGS ||--o{ HOTEL_BOOKINGS : "includes_hotels"
+    BOOKINGS ||--o{ BOOKING_PASSENGERS : "assigns_passengers"
+    BOOKINGS ||--o{ PAYMENT_TRANSACTIONS : "billed_under"
+    TRAVELER_PROFILES ||--o{ BOOKING_PASSENGERS : "profile_autofill"
+    BOOKINGS ||--o{ AFFILIATE_OUTBOUND_CLICKS : "converts_from"

@@ -1,0 +1,38 @@
+%% Nomadix: Master Polyglot Architecture ERD
+%% PostgreSQL 16 (Relational) + MongoDB Atlas 7.0 (Document) + Redis 7 (In-Memory)
+erDiagram
+    %% PostgreSQL Core Relational Identity & Gamification
+    USERS ||--|| USER_PREFERENCES : "1:1 settings"
+    USERS ||--o{ USER_REFRESH_TOKENS : "1:N active sessions"
+    USERS ||--o{ TRAVELER_PROFILES : "1:N saved companions"
+    USERS ||--o{ BOOKINGS : "1:N order history"
+    USERS ||--o{ CHECKINS : "1:N verified visits"
+    USERS ||--o{ USER_BADGES : "1:N unlocked achievements"
+    
+    ROLES ||--o{ USERS : "assigned_role"
+    ROLES ||--|{ ROLE_PERMISSIONS : "contains"
+    PERMISSIONS ||--|{ ROLE_PERMISSIONS : "granted_via"
+
+    LANDMARKS ||--o{ CHECKINS : "geofenced_at"
+    LANDMARKS ||--|| QUIZZES : "1:1 cultural quiz"
+    QUIZZES ||--o{ QUIZ_QUESTIONS : "composed_of"
+    USERS ||--o{ QUIZ_ATTEMPTS : "takes_evaluation"
+
+    BADGES ||--o{ USER_BADGES : "awarded_to"
+
+    BOOKINGS ||--o{ FLIGHT_BOOKINGS : "flight_segments"
+    BOOKINGS ||--o{ HOTEL_BOOKINGS : "hotel_stays"
+    BOOKINGS ||--o{ BOOKING_PASSENGERS : "manifest_passengers"
+    BOOKINGS ||--o{ PAYMENT_TRANSACTIONS : "financial_ledger"
+
+    %% MongoDB Atlas Collections (Referencing PostgreSQL UUID)
+    USERS }o..o{ ITINERARIES : "cross_db_owner_userId"
+    USERS }o..o{ FORUM_QUESTIONS : "cross_db_author_userId"
+    USERS }o..o{ FORUM_ANSWERS : "cross_db_replier_userId"
+    
+    BOOKINGS }o..o{ ITINERARIES : "cross_db_booking_binding"
+    USER_BADGES }o..o{ FORUM_ANSWERS : "cross_db_city_verified_bridge"
+
+    FORUM_QUESTIONS ||--o{ FORUM_ANSWERS : "has_replies"
+    FORUM_ANSWERS ||--o{ FORUM_COMMENTS : "threaded_comments"
+    FORUM_QUESTIONS ||--o{ COMMUNITY_REPORTS : "reported_for_moderation"
