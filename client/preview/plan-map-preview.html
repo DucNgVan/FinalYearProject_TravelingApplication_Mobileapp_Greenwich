@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nomadix Mobile — Interactive Plan & Map Discovery</title>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Mapbox GL JS CDN -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            ios: {
+              blue: '#007AFF',
+              green: '#34C759',
+              red: '#FF3B30',
+              amber: '#FF9500',
+              purple: '#AF52DE',
+              cardDark: '#1E293B',
+              bgDark: '#0D1B2A',
+            }
+          },
+          boxShadow: {
+            'phone': '0 25px 80px -15px rgba(0, 0, 0, 0.5), 0 0 0 10px #1E293B, 0 0 0 13px #334155',
+            'phone-light': '0 25px 80px -15px rgba(0, 0, 0, 0.15), 0 0 0 10px #E2E8F0, 0 0 0 13px #CBD5E1',
+            'glow-blue': '0 0 25px -4px rgba(0, 122, 255, 0.45)',
+            'glow-purple': '0 0 30px -4px rgba(175, 82, 222, 0.45)',
+            'sheet': '0 -15px 35px rgba(0, 0, 0, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .mapboxgl-popup-content {
+      background: #1E293B !important;
+      color: #F8FAFC !important;
+      border-radius: 18px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5) !important;
+      border: 1px solid #334155 !important;
+    }
+    .light .mapboxgl-popup-content {
+      background: #FFFFFF !important;
+      color: #0F172A !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15) !important;
+    }
+    .mapboxgl-popup-tip {
+      border-top-color: #1E293B !important;
+      border-bottom-color: #1E293B !important;
+    }
+    .light .mapboxgl-popup-tip {
+      border-top-color: #FFFFFF !important;
+      border-bottom-color: #FFFFFF !important;
+    }
+    .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left {
+      display: none !important;
+    }
+  </style>
+</head>
+<body id="app-body" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 font-sans selection:bg-ios-blue selection:text-white transition-colors duration-300">
+
+  <!-- ========================================================================= -->
+  <!-- TOP CONTROLS BAR: NHANH BƯỚC, THEME & SHOWCASE LINK -->
+  <!-- ========================================================================= -->
+  <header class="w-full max-w-md mb-2 flex items-center justify-between px-3 py-2 rounded-2xl bg-slate-900/90 border border-slate-800 backdrop-blur-xl">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded-lg bg-ios-blue flex items-center justify-center text-white text-xs font-black">
+        <i class="ph-bold ph-compass"></i>
+      </div>
+      <span class="text-xs font-black text-white">NOMADIX MAP PROTOTYPE</span>
+      <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">UX/UI</span>
+    </div>
+
+    <!-- Quick Step Jumper & Controls -->
+    <div class="flex items-center gap-1.5">
+      <button onclick="openSetupModal()" class="px-2 py-1 rounded-xl bg-slate-800 text-[11px] font-bold text-slate-300 hover:text-white flex items-center gap-1" title="Mở cài đặt chuyến đi">
+        <i class="ph-bold ph-gear"></i> Setup
+      </button>
+
+      <a href="index.html" class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-300 hover:text-white flex items-center gap-1" title="Quay lại Design System Showcase">
+        <i class="ph-bold ph-palette text-ios-blue"></i> Design System
+      </a>
+
+      <button onclick="toggleTheme()" class="w-7 h-7 rounded-xl bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 📱 CHÍNH TÂM: KHUNG ĐIỆN THOẠI IPHONE 16 PRO NGUYÊN BẢN -->
+  <!-- ========================================================================= -->
+  <div class="w-full max-w-[400px] h-[852px] rounded-[52px] bg-slate-900 border-[10px] border-slate-800 shadow-phone overflow-hidden relative flex flex-col transition-colors duration-300 select-none">
+    
+    <!-- Apple Dynamic Island & Status Bar -->
+    <div class="w-full pt-3 pb-2 flex items-center justify-between px-7 z-30 shrink-0 bg-transparent">
+      <span class="text-xs font-bold text-white tracking-wide">09:41</span>
+      <!-- Dynamic Island Capsule -->
+      <div class="w-24 h-6 rounded-full bg-black flex items-center justify-center gap-1.5 px-2 shadow-inner">
+        <div class="w-2.5 h-2.5 rounded-full bg-slate-950 border border-slate-800"></div>
+        <div class="w-2 h-2 rounded-full bg-emerald-500/90 animate-pulse"></div>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs text-white">
+        <i class="ph-fill ph-wifi-high text-xs"></i>
+        <i class="ph-fill ph-battery-full text-xs"></i>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- APP BODY INSIDE IPHONE: 2 CHẾ ĐỘ (1. BẢN ĐỒ & KHÁM PHÁ | 2. LỊCH TRÌNH AI) -->
+    <!-- ======================================================================= -->
+    <div class="flex-1 relative flex flex-col overflow-hidden bg-slate-950">
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 1: BẢN ĐỒ TOÀN MÀN HÌNH VỚI THANH SEARCH NỔI & DANH SÁCH CHỌN ĐIỂM -->
+      <!-- ===================================================================== -->
+      <div id="app-view-map" class="absolute inset-0 flex flex-col z-10">
+        
+        <!-- =================================================================== -->
+        <!-- 🌟 FLOATING SEARCH & CITIES BAR TRỰC TIẾP TRÊN BẢN ĐỒ (TOP) -->
+        <!-- =================================================================== -->
+        <div class="absolute top-2 left-3 right-3 z-20 flex flex-col gap-1.5 pointer-events-none">
+          
+          <!-- Thanh Tìm Kiếm Địa Điểm Nổi -->
+          <div class="pointer-events-auto flex items-center gap-2 p-2 pl-3 rounded-2xl bg-slate-900/95 border border-slate-800/90 backdrop-blur-xl shadow-xl">
+            <i class="ph-bold ph-magnifying-glass text-ios-blue text-base"></i>
+            <input 
+              type="text" 
+              id="mobile-map-search-input" 
+              oninput="handleMapSearch(this.value)" 
+              placeholder="Tìm Bà Nà, Cầu Rồng, Phố cổ Hội An..." 
+              class="flex-1 bg-transparent text-xs font-bold text-white placeholder:text-slate-400 focus:outline-none"
+            >
+            <button onclick="clearMapSearch()" id="btn-clear-map-search" class="hidden text-slate-400 hover:text-white px-1">
+              <i class="ph-bold ph-x-circle text-sm"></i>
+            </button>
+            <button onclick="openSetupModal()" class="w-7 h-7 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center text-xs hover:bg-slate-700" title="Đổi ngày & thành phố">
+              <i class="ph-bold ph-sliders"></i>
+            </button>
+          </div>
+
+          <!-- Chips Thành Phố Đã Chọn & Bộ Lọc Nhanh (Cuộn ngang) -->
+          <div class="pointer-events-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            <!-- City Jump Chips -->
+            <div id="mobile-city-jump-chips" class="flex items-center gap-1">
+              <!-- Rendered via JS -->
+            </div>
+            <span class="w-[1px] h-4 bg-slate-700 mx-0.5"></span>
+            <!-- Category Pills -->
+            <button onclick="filterMapCategory('all')" id="mcat-all" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-ios-blue text-white shadow-sm shrink-0">Tất cả</button>
+            <button onclick="filterMapCategory('landmark')" id="mcat-landmark" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-900/90 text-slate-300 border border-slate-800 shrink-0">🏛️ Di tích</button>
+            <button onclick="filterMapCategory('beach')" id="mcat-beach" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-900/90 text-slate-300 border border-slate-800 shrink-0">🏖️ Biển</button>
+            <button onclick="filterMapCategory('food')" id="mcat-food" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-900/90 text-slate-300 border border-slate-800 shrink-0">🍜 Ẩm thực</button>
+          </div>
+
+        </div>
+
+        <!-- The Leaflet Map Element (Full Height on Mobile) -->
+        <div id="mobile-interactive-map" class="w-full h-full flex-1"></div>
+
+        <!-- =================================================================== -->
+        <!-- 🌟 BOTTOM DRAWER: DANH SÁCH ĐIỂM ĐÃ CHỌN TRÊN BẢN ĐỒ & NÚT AI PLAN -->
+        <!-- =================================================================== -->
+        <div class="absolute bottom-14 left-0 right-0 z-20 p-3 bg-slate-900/95 border-t border-slate-800 backdrop-blur-xl shadow-sheet flex flex-col gap-2 rounded-t-3xl">
+          <div class="w-10 h-1 rounded-full bg-slate-700 mx-auto -mt-1 mb-0.5"></div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-black text-white flex items-center gap-1">
+                <i class="ph-fill ph-check-circle text-emerald-500"></i> Đã chọn trên bản đồ:
+              </span>
+              <span id="selected-places-counter-badge" class="px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-black">
+                6 điểm
+              </span>
+            </div>
+
+            <!-- Nút AI Lên Plan Lớn Nổi Bật -->
+            <button onclick="triggerAiGeneratePlan()" id="btn-mobile-ai-plan" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-ios-blue hover:from-purple-500 hover:to-blue-500 text-white text-[11px] font-black shadow-glow-purple flex items-center gap-1.5 transition-all">
+              <i class="ph-bold ph-sparkle text-amber-300 text-xs"></i>
+              <span>✨ AI Lên Lịch Trình</span>
+            </button>
+          </div>
+
+          <!-- Cuộn Ngang Danh Sách Điểm Đã Chọn Trước -->
+          <div id="mobile-selected-chips-container" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 2: MÀN HÌNH LỊCH TRÌNH DO AI TẠO RA THEO NGÀY (ITINERARY TIMELINE) -->
+      <!-- ===================================================================== -->
+      <div id="app-view-timeline" class="absolute inset-0 flex flex-col z-10 bg-slate-950 hidden">
+        
+        <!-- Timeline Header -->
+        <div class="px-4 py-3 bg-slate-900 border-b border-slate-800 flex flex-col gap-2 shrink-0">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-400 font-extrabold uppercase flex items-center gap-1">
+                  <i class="ph-bold ph-sparkle"></i> AI Itinerary
+                </span>
+                <span id="mobile-timeline-days-summary" class="text-[11px] text-slate-400 font-semibold">4N3Đ • Đà Nẵng - Hội An</span>
+              </div>
+              <h3 class="text-sm font-black text-white mt-0.5">Lịch Trình Chi Tiết Nhóm</h3>
+              <button onclick="switchMobileTab('map')" class="text-[10px] font-extrabold text-ios-blue hover:underline flex items-center gap-1 mt-0.5">
+                <i class="ph-bold ph-arrow-left"></i> Quay lại bản đồ chọn thêm địa điểm
+              </button>
+            </div>
+            
+            <div class="flex items-center gap-1.5">
+              <button onclick="openSquadModal()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center text-xs">
+                <i class="ph-bold ph-users text-ios-blue"></i>
+              </button>
+              <button onclick="saveTripPlan()" class="px-2.5 py-1.5 rounded-xl bg-ios-blue text-white text-[11px] font-bold shadow-sm">
+                Lưu
+              </button>
+            </div>
+          </div>
+
+          <!-- Day Tabs Cuộn Ngang -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1" id="mobile-timeline-day-tabs">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Stats & AI Tip Bar -->
+          <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400">
+            <span id="mobile-ai-day-tip" class="truncate font-semibold text-purple-300">
+              💡 Ngày 1: Gom các điểm tại Bán đảo Sơn Trà & Mỹ Khê.
+            </span>
+            <span id="mobile-day-km-stat" class="font-bold text-ios-blue shrink-0 ml-2">18.5 km</span>
+          </div>
+        </div>
+
+        <!-- Timeline Items List (Scrollable) -->
+        <div id="mobile-timeline-items-list" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 no-scrollbar pb-20">
+          <!-- Rendered via JS -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- BOTTOM NAVIGATION BAR: 4 TABS CHUẨN REACT NATIVE MOBILE APP -->
+    <!-- ======================================================================= -->
+    <nav class="w-full h-14 bg-slate-900 border-t border-slate-800 flex items-center justify-around px-2 z-30 shrink-0">
+      <button onclick="switchMobileTab('map')" id="nav-btn-map" class="flex flex-col items-center gap-0.5 text-ios-blue">
+        <i class="ph-bold ph-map-trifold text-lg"></i>
+        <span class="text-[10px] font-extrabold">Bản Đồ</span>
+      </button>
+
+      <button onclick="switchMobileTab('timeline')" id="nav-btn-timeline" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white">
+        <i class="ph-bold ph-calendar-check text-lg"></i>
+        <span class="text-[10px] font-extrabold">Lịch Trình</span>
+      </button>
+
+      <button onclick="openSquadModal()" id="nav-btn-squad" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white">
+        <i class="ph-bold ph-users-three text-lg"></i>
+        <span class="text-[10px] font-extrabold">Đồng Đội</span>
+      </button>
+
+      <button onclick="saveTripPlan()" id="nav-btn-save" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white">
+        <i class="ph-bold ph-floppy-disk text-lg"></i>
+        <span class="text-[10px] font-extrabold">Lưu Plan</span>
+      </button>
+    </nav>
+
+    <!-- Bottom Home Indicator Bar (Apple) -->
+    <div class="w-full py-1.5 bg-slate-900 flex justify-center z-30 shrink-0">
+      <div class="w-32 h-1 rounded-full bg-slate-700"></div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL BƯỚC 1: KHỞI TẠO CHUYẾN ĐI (DATES, MULTI-CITIES & VIBE) CHO MOBILE -->
+  <!-- ========================================================================= -->
+  <div id="trip-setup-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-sm rounded-t-[32px] sm:rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl p-5 flex flex-col gap-4 animate-in slide-in-from-bottom duration-200">
+      
+      <!-- Wizard Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-ios-blue flex items-center justify-center text-lg font-black">
+            <i class="ph-bold ph-compass"></i>
+          </div>
+          <div>
+            <span class="text-[9px] font-black uppercase tracking-wider text-blue-400">Bước 1: Khởi Tạo Chuyến Đi</span>
+            <h3 class="text-sm font-black text-white">Bạn Sắp Đi Du Lịch Ở Đâu?</h3>
+          </div>
+        </div>
+        <button onclick="closeSetupModal()" id="btn-close-setup-modal" class="hidden w-7 h-7 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center">
+          <i class="ph-bold ph-x text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Form Inputs -->
+      <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto no-scrollbar pr-1">
+        
+        <!-- 1. Tên Chuyến Đi -->
+        <div>
+          <label class="text-[11px] font-extrabold text-slate-300 mb-1 block">Tên chuyến đi:</label>
+          <input 
+            type="text" 
+            id="wizard-trip-title" 
+            value="Khám Phá Đà Nẵng & Hội An" 
+            placeholder="Tên kế hoạch..." 
+            class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold text-white focus:outline-none focus:border-ios-blue"
+          >
+        </div>
+
+        <!-- 2. Chọn Nhiều Thành Phố Đến (Multi-City Selector) -->
+        <div>
+          <label class="text-[11px] font-extrabold text-slate-300 mb-1 flex items-center justify-between">
+            <span>Chọn các thành phố sẽ đến:</span>
+            <span id="selected-cities-count" class="text-[10px] text-ios-blue font-bold">2 thành phố</span>
+          </label>
+          <div class="flex flex-wrap gap-1.5 p-2 rounded-xl bg-slate-950 border border-slate-800" id="wizard-city-chips">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- 3. Ngày Đi & Ngày Về -->
+        <div>
+          <label class="text-[11px] font-extrabold text-slate-300 mb-1 flex items-center justify-between">
+            <span>Thời gian chuyến đi:</span>
+            <span id="calculated-days-label" class="text-[10px] font-bold text-emerald-400">4 Ngày 3 Đêm</span>
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <span class="text-[9px] text-slate-400 block mb-0.5">Ngày đi:</span>
+              <input 
+                type="date" 
+                id="wizard-start-date" 
+                value="2026-10-15" 
+                onchange="recalculateTripDuration()"
+                class="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] font-bold text-white focus:outline-none focus:border-ios-blue"
+              >
+            </div>
+            <div>
+              <span class="text-[9px] text-slate-400 block mb-0.5">Ngày về:</span>
+              <input 
+                type="date" 
+                id="wizard-end-date" 
+                value="2026-10-18" 
+                onchange="recalculateTripDuration()"
+                class="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] font-bold text-white focus:outline-none focus:border-ios-blue"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Phong Cách Du Lịch (Vibe) -->
+        <div>
+          <label class="text-[11px] font-extrabold text-slate-300 mb-1 block">Phong cách du lịch:</label>
+          <div class="grid grid-cols-4 gap-1.5" id="wizard-vibe-group">
+            <button onclick="selectVibe('checkin')" id="vibe-checkin" class="p-1.5 rounded-lg border border-ios-blue bg-blue-500/10 text-ios-blue text-[10px] font-bold flex flex-col items-center gap-0.5">
+              <span>📸</span> Check-in
+            </button>
+            <button onclick="selectVibe('culture')" id="vibe-culture" class="p-1.5 rounded-lg border border-slate-800 text-slate-400 text-[10px] font-semibold flex flex-col items-center gap-0.5">
+              <span>🏛️</span> Di tích
+            </button>
+            <button onclick="selectVibe('food')" id="vibe-food" class="p-1.5 rounded-lg border border-slate-800 text-slate-400 text-[10px] font-semibold flex flex-col items-center gap-0.5">
+              <span>🍜</span> Ẩm thực
+            </button>
+            <button onclick="selectVibe('relax')" id="vibe-relax" class="p-1.5 rounded-lg border border-slate-800 text-slate-400 text-[10px] font-semibold flex flex-col items-center gap-0.5">
+              <span>🏖️</span> Nghỉ dưỡng
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Submit CTA Button -->
+      <button onclick="submitTripSetup()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-ios-blue text-white font-extrabold text-xs shadow-glow-blue flex items-center justify-center gap-1.5 transition-all">
+        <span>Bắt Đầu Khám Phá Bản Đồ ➔</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: SQUAD COLLABORATION (MỜI BẠN BÈ VÀO KẾ HOẠCH) -->
+  <!-- ========================================================================= -->
+  <div id="modal-squad" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="w-full max-w-sm rounded-t-[32px] sm:rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl p-4 flex flex-col gap-3 animate-in slide-in-from-bottom duration-200">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/20 text-ios-blue flex items-center justify-center text-sm font-bold">
+            <i class="ph-bold ph-users-three"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-white">Đồng Đội Cùng Chuyến Đi</h3>
+            <p class="text-[10px] text-slate-400 font-medium">Cùng xem & sửa lịch trình</p>
+          </div>
+        </div>
+        <button onclick="closeSquadModal()" class="w-7 h-7 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center">
+          <i class="ph-bold ph-x text-xs"></i>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+        <label class="text-[10px] font-bold text-slate-300">Mời qua Email / Username:</label>
+        <div class="flex gap-1.5">
+          <input 
+            type="text" 
+            id="invite-member-input" 
+            placeholder="linh.hoang@gmail.com..." 
+            class="flex-1 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-semibold text-white focus:outline-none focus:border-ios-blue"
+          >
+          <select id="invite-role-select" class="px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-bold text-white focus:outline-none">
+            <option value="EDITOR">Sửa</option>
+            <option value="VIEWER">Xem</option>
+          </select>
+        </div>
+        <button onclick="sendInvite()" class="w-full py-1.5 rounded-lg bg-ios-blue text-white text-xs font-bold shadow-sm">
+          + Gửi Lời Mời
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-1.5 max-h-40 overflow-y-auto no-scrollbar" id="modal-members-list">
+        <!-- Rendered via JS -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: DATA CATALOG, MOBILE MAP, SEARCH & AI ENGINE -->
+  <!-- ========================================================================= -->
+  <script>
+    // --- 1. GLOBAL MULTI-CITY CATALOG & PLACES ---
+    const AVAILABLE_CITIES = [
+      { key: 'danang', name: 'Đà Nẵng', country: 'Vietnam', selected: true, center: [108.2022, 16.0544], zoom: 12 },
+      { key: 'hoian', name: 'Hội An', country: 'Vietnam', selected: true, center: [108.3380, 15.8801], zoom: 14 },
+      { key: 'hanoi', name: 'Hà Nội', country: 'Vietnam', selected: false, center: [105.8542, 21.0285], zoom: 13 },
+      { key: 'tokyo', name: 'Tokyo 🇯🇵', country: 'Japan', selected: false, center: [139.6917, 35.6895], zoom: 12 },
+      { key: 'paris', name: 'Paris 🇫🇷', country: 'France', selected: false, center: [2.3522, 48.8566], zoom: 12 },
+      { key: 'newyork', name: 'New York 🇺🇸', country: 'USA', selected: false, center: [-74.0060, 40.7128], zoom: 12 },
+      { key: 'bangkok', name: 'Bangkok 🇹🇭', country: 'Thailand', selected: false, center: [100.5018, 13.7563], zoom: 12 }
+    ];
+
+    const ALL_PLACES = [
+      // Đà Nẵng
+      {
+        id: 'dn-01',
+        city: 'danang',
+        cityName: 'Đà Nẵng',
+        name: "Cầu Rồng Đà Nẵng",
+        category: 'landmark',
+        categoryName: "Di tích & Biểu tượng",
+        badgeIcon: "🐉",
+        lat: 16.0610,
+        lng: 108.2272,
+        rating: 4.8,
+        address: "Nguyễn Văn Linh, Hải Châu",
+        bestTime: "19:30 - 21:30",
+        image: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'dn-02',
+        city: 'danang',
+        cityName: 'Đà Nẵng',
+        name: "Bà Nà Hills & Cầu Vàng",
+        category: 'landmark',
+        categoryName: "Danh lam thắng cảnh",
+        badgeIcon: "✨",
+        lat: 15.9980,
+        lng: 107.9940,
+        rating: 4.9,
+        address: "Hòa Ninh, Hòa Vang",
+        bestTime: "08:00 - 14:00",
+        image: "https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'dn-03',
+        city: 'danang',
+        cityName: 'Đà Nẵng',
+        name: "Chùa Linh Ứng - Sơn Trà",
+        category: 'landmark',
+        categoryName: "Di tích văn hóa",
+        badgeIcon: "🏛️",
+        lat: 16.1001,
+        lng: 108.2755,
+        rating: 4.8,
+        address: "Hoàng Sa, Thọ Quang, Sơn Trà",
+        bestTime: "08:30 - 10:30",
+        image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'dn-04',
+        city: 'danang',
+        cityName: 'Đà Nẵng',
+        name: "Bãi Biển Mỹ Khê",
+        category: 'beach',
+        categoryName: "Biển & Nghỉ dưỡng",
+        badgeIcon: "🏖️",
+        lat: 16.0595,
+        lng: 108.2464,
+        rating: 4.7,
+        address: "Võ Nguyên Giáp, Phước Mỹ",
+        bestTime: "15:00 - 17:30",
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'dn-05',
+        city: 'danang',
+        cityName: 'Đà Nẵng',
+        name: "Chợ Đêm Helio",
+        category: 'food',
+        categoryName: "Ẩm thực đêm",
+        badgeIcon: "🍢",
+        lat: 16.0357,
+        lng: 108.2235,
+        rating: 4.5,
+        address: "Đường 2 Tháng 9, Hải Châu",
+        bestTime: "18:30 - 21:00",
+        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'dn-06',
+        city: 'danang',
+        cityName: 'Đà Nẵng',
+        name: "Bánh Xèo Bà Dưỡng",
+        category: 'food',
+        categoryName: "Ẩm thực địa phương",
+        badgeIcon: "🥢",
+        lat: 16.0592,
+        lng: 108.2140,
+        rating: 4.6,
+        address: "K280/23 Hoàng Diệu, Hải Châu",
+        bestTime: "12:00 - 13:30",
+        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=80"
+      },
+
+      // Hội An
+      {
+        id: 'ha-01',
+        city: 'hoian',
+        cityName: 'Hội An',
+        name: "Phố Cổ Hội An & Chùa Cầu",
+        category: 'landmark',
+        categoryName: "Di sản thế giới UNESCO",
+        badgeIcon: "🏮",
+        lat: 15.8770,
+        lng: 108.3262,
+        rating: 4.9,
+        address: "Minh An, Hội An",
+        bestTime: "15:30 - 21:00",
+        image: "https://images.unsplash.com/photo-1557750255-c76072a7bedf?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'ha-02',
+        city: 'hoian',
+        cityName: 'Hội An',
+        name: "Bánh Mì Phượng Hội An",
+        category: 'food',
+        categoryName: "Ẩm thực đường phố",
+        badgeIcon: "🥖",
+        lat: 15.8795,
+        lng: 108.3312,
+        rating: 4.6,
+        address: "2B Phan Chu Trinh, Hội An",
+        bestTime: "08:00 - 09:00",
+        image: "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=500&auto=format&fit=crop&q=80"
+      },
+
+      // Tokyo 🇯🇵
+      {
+        id: 'tky-01',
+        city: 'tokyo',
+        cityName: 'Tokyo',
+        name: "Shibuya Crossing & Hachiko",
+        category: 'landmark',
+        categoryName: "Biểu tượng Tokyo",
+        badgeIcon: "🐕",
+        lat: 35.6595,
+        lng: 139.7004,
+        rating: 4.8,
+        address: "Shibuya, Tokyo, Japan",
+        bestTime: "17:00 - 20:00",
+        image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'tky-02',
+        city: 'tokyo',
+        cityName: 'Tokyo',
+        name: "Senso-ji Buddhist Temple",
+        category: 'landmark',
+        categoryName: "Đền cổ Asakusa",
+        badgeIcon: "⛩️",
+        lat: 35.7148,
+        lng: 139.7967,
+        rating: 4.9,
+        address: "Asakusa, Taito, Tokyo",
+        bestTime: "09:00 - 11:30",
+        image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'tky-03',
+        city: 'tokyo',
+        cityName: 'Tokyo',
+        name: "Sushi Dai - Chợ Toyosu",
+        category: 'food',
+        categoryName: "Omakase tươi sống",
+        badgeIcon: "🍣",
+        lat: 35.6445,
+        lng: 139.7852,
+        rating: 4.9,
+        address: "Toyosu, Koto City, Tokyo",
+        bestTime: "06:00 - 08:30",
+        image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=80"
+      },
+
+      // Paris 🇫🇷
+      {
+        id: 'par-01',
+        city: 'paris',
+        cityName: 'Paris',
+        name: "Tháp Eiffel (Tour Eiffel)",
+        category: 'landmark',
+        categoryName: "Kỳ quan thế giới",
+        badgeIcon: "🗼",
+        lat: 48.8584,
+        lng: 2.2945,
+        rating: 4.9,
+        address: "Champ de Mars, Paris",
+        bestTime: "18:00 - 21:00",
+        image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'par-02',
+        city: 'paris',
+        cityName: 'Paris',
+        name: "Bảo tàng Louvre",
+        category: 'landmark',
+        categoryName: "Bảo tàng nghệ thuật",
+        badgeIcon: "🏛️",
+        lat: 48.8606,
+        lng: 2.3376,
+        rating: 4.9,
+        address: "Rue de Rivoli, Paris",
+        bestTime: "09:30 - 14:00",
+        image: "https://images.unsplash.com/photo-1565099824688-e93eb20fe622?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'par-03',
+        city: 'paris',
+        cityName: 'Paris',
+        name: "Café de Flore",
+        category: 'food',
+        categoryName: "Cà phê & Bánh ngọt Pháp",
+        badgeIcon: "🥐",
+        lat: 48.8540,
+        lng: 2.3325,
+        rating: 4.7,
+        address: "172 Bd Saint-Germain, Paris",
+        bestTime: "15:00 - 17:00",
+        image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&auto=format&fit=crop&q=80"
+      },
+
+      // New York 🇺🇸
+      {
+        id: 'nyc-01',
+        city: 'newyork',
+        cityName: 'New York',
+        name: "Times Square & Broadway",
+        category: 'landmark',
+        categoryName: "Giao lộ ánh sáng",
+        badgeIcon: "✨",
+        lat: 40.7580,
+        lng: -73.9855,
+        rating: 4.8,
+        address: "Manhattan, NY 10036",
+        bestTime: "19:00 - 22:00",
+        image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 'nyc-02',
+        city: 'newyork',
+        cityName: 'New York',
+        name: "Central Park Conservancy",
+        category: 'beach',
+        categoryName: "Thiên nhiên & Công viên",
+        badgeIcon: "🌳",
+        lat: 40.7829,
+        lng: -73.9654,
+        rating: 4.9,
+        address: "New York, NY",
+        bestTime: "10:00 - 13:00",
+        image: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=500&auto=format&fit=crop&q=80"
+      }
+    ];
+
+    // --- 2. STATE ---
+    let tripConfig = {
+      title: "Khám Phá Đà Nẵng & Hội An",
+      selectedCities: ['danang', 'hoian'],
+      startDate: '2026-10-15',
+      endDate: '2026-10-18',
+      durationDays: 4,
+      vibe: 'checkin'
+    };
+
+    let selectedPlaceIds = new Set(['dn-03', 'dn-04', 'dn-01', 'dn-02', 'dn-05', 'ha-01']);
+    let generatedPlanDays = {};
+    let activeTimelineDay = 1;
+    let isDarkMode = true;
+
+    // --- 3. WIZARD STEP 1 (MODAL) ---
+    function renderWizardCityChips() {
+      const container = document.getElementById('wizard-city-chips');
+      container.innerHTML = AVAILABLE_CITIES.map(city => {
+        const isSelected = tripConfig.selectedCities.includes(city.key);
+        return `
+          <button 
+            type="button" 
+            onclick="toggleCitySelection('${city.key}')" 
+            class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 ${
+              isSelected 
+                ? 'bg-ios-blue text-white shadow-sm ring-2 ring-blue-500/20' 
+                : 'bg-slate-900 text-slate-300 border border-slate-800'
+            }"
+          >
+            <span>${isSelected ? '✓' : '+'}</span>
+            <span>${city.name}</span>
+          </button>
+        `;
+      }).join('');
+      document.getElementById('selected-cities-count').innerText = `${tripConfig.selectedCities.length} thành phố`;
+    }
+
+    function toggleCitySelection(cityKey) {
+      if (tripConfig.selectedCities.includes(cityKey)) {
+        if (tripConfig.selectedCities.length <= 1) {
+          showToast("Chọn ít nhất 1 thành phố!");
+          return;
+        }
+        tripConfig.selectedCities = tripConfig.selectedCities.filter(k => k !== cityKey);
+      } else {
+        tripConfig.selectedCities.push(cityKey);
+      }
+      renderWizardCityChips();
+    }
+
+    function recalculateTripDuration() {
+      const s = new Date(document.getElementById('wizard-start-date').value);
+      const e = new Date(document.getElementById('wizard-end-date').value);
+      const diffDays = Math.ceil(Math.abs(e - s) / (1000 * 60 * 60 * 24)) + 1;
+      const nights = diffDays > 1 ? diffDays - 1 : 0;
+      tripConfig.durationDays = diffDays > 0 ? diffDays : 1;
+      document.getElementById('calculated-days-label').innerText = `${tripConfig.durationDays}N${nights}Đ`;
+    }
+
+    function selectVibe(vibe) {
+      tripConfig.vibe = vibe;
+      ['checkin', 'culture', 'food', 'relax'].forEach(v => {
+        const btn = document.getElementById(`vibe-${v}`);
+        if (btn) {
+          btn.className = v === vibe 
+            ? "p-1.5 rounded-lg border border-ios-blue bg-blue-500/10 text-ios-blue text-[10px] font-bold flex flex-col items-center gap-0.5"
+            : "p-1.5 rounded-lg border border-slate-800 text-slate-400 text-[10px] font-semibold flex flex-col items-center gap-0.5";
+        }
+      });
+    }
+
+    function submitTripSetup() {
+      tripConfig.title = document.getElementById('wizard-trip-title').value.trim() || "Chuyến Đi Nomadix";
+      tripConfig.startDate = document.getElementById('wizard-start-date').value;
+      tripConfig.endDate = document.getElementById('wizard-end-date').value;
+
+      document.getElementById('trip-setup-modal').classList.add('hidden');
+      document.getElementById('btn-close-setup-modal').classList.remove('hidden');
+
+      renderMobileCityJumpChips();
+      switchMobileTab('map');
+      initMobileMap();
+      renderSelectedPlacesChips();
+      // KHÔNG tự động nhảy sang Timeline: Người dùng dừng lại trên bản đồ để tìm kiếm và chọn các điểm!
+      showToast("📍 Đã vào bản đồ! Hãy tìm kiếm và chạm vào ghim để chọn các điểm bạn muốn đi.");
+    }
+
+    function openSetupModal() {
+      document.getElementById('trip-setup-modal').classList.remove('hidden');
+    }
+
+    function closeSetupModal() {
+      document.getElementById('trip-setup-modal').classList.add('hidden');
+    }
+
+    function renderMobileCityJumpChips() {
+      const container = document.getElementById('mobile-city-jump-chips');
+      container.innerHTML = tripConfig.selectedCities.map(cKey => {
+        const c = AVAILABLE_CITIES.find(x => x.key === cKey);
+        return `
+          <button onclick="panMapToCity('${cKey}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-900/90 text-white border border-slate-800 shrink-0">
+            📍 ${c ? c.name : cKey}
+          </button>
+        `;
+      }).join('');
+    }
+
+    // --- 4. MOBILE MAP CONTROLLER (MAPBOX GL JS) ---
+    const urlMapToken = new URLSearchParams(window.location.search).get('token') || new URLSearchParams(window.location.search).get('mapbox_token');
+    if (urlMapToken) {
+      localStorage.setItem('nomadix_mapbox_token', urlMapToken);
+    }
+    mapboxgl.accessToken = urlMapToken || localStorage.getItem('nomadix_mapbox_token') || 'pk.demo-placeholder-token';
+    let map = null;
+    let mapMarkers = [];
+    let currentMapCategory = 'all';
+    let currentSearchQuery = '';
+
+    function initMobileMap() {
+      if (map) {
+        map.remove();
+        map = null;
+      }
+
+      const firstCity = AVAILABLE_CITIES.find(c => c.key === tripConfig.selectedCities[0]) || AVAILABLE_CITIES[0];
+
+      map = new mapboxgl.Map({
+        container: 'mobile-interactive-map',
+        style: isDarkMode ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/streets-v12',
+        center: firstCity.center, // [lng, lat]
+        zoom: firstCity.zoom,
+        attributionControl: false
+      });
+
+      map.on('load', () => {
+        renderMapMarkers();
+      });
+
+      mapMarkers = [];
+      setTimeout(() => {
+        if (map) map.resize();
+      }, 200);
+    }
+
+    function panMapToCity(cityKey) {
+      const city = AVAILABLE_CITIES.find(c => c.key === cityKey);
+      if (city && map) {
+        map.flyTo({ center: city.center, zoom: city.zoom, duration: 1500, essential: true });
+      }
+    }
+
+    function getActivePlaces() {
+      return ALL_PLACES.filter(p => tripConfig.selectedCities.includes(p.city));
+    }
+
+    function renderMapMarkers() {
+      if (!map) return;
+      mapMarkers.forEach(m => m.remove());
+      mapMarkers = [];
+
+      const places = getActivePlaces().filter(p => {
+        const matchCat = currentMapCategory === 'all' || p.category === currentMapCategory;
+        const matchSearch = !currentSearchQuery || 
+                            p.name.toLowerCase().includes(currentSearchQuery.toLowerCase());
+        return matchCat && matchSearch;
+      });
+
+      places.forEach(place => {
+        const isSelected = selectedPlaceIds.has(place.id);
+
+        const el = document.createElement('div');
+        el.className = 'custom-marker-node cursor-pointer';
+        el.innerHTML = `
+          <div class="relative flex items-center justify-center transform hover:scale-110 transition-transform">
+            ${isSelected ? `
+              <div class="w-9 h-9 rounded-full bg-ios-blue text-white font-black text-xs flex items-center justify-center shadow-glow-blue border-2 border-white ring-4 ring-blue-500/30">
+                ✓
+              </div>
+            ` : `
+              <div class="w-8 h-8 rounded-2xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center shadow-lg border border-slate-700">
+                ${place.badgeIcon}
+              </div>
+            `}
+          </div>
+        `;
+
+        const popupHtml = `
+          <div class="w-56 overflow-hidden">
+            <img src="${place.image}" class="w-full h-20 object-cover" alt="${place.name}">
+            <div class="p-2.5">
+              <div class="flex items-center justify-between text-[10px] text-slate-400 mb-0.5">
+                <span class="font-bold text-ios-blue">${place.categoryName}</span>
+                <span class="font-bold text-amber-400">★ ${place.rating}</span>
+              </div>
+              <h4 class="text-xs font-black text-white truncate mb-1">${place.name}</h4>
+              <button onclick="togglePlaceSelection('${place.id}')" class="w-full py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                isSelected 
+                  ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
+                  : 'bg-ios-blue text-white shadow-glow-blue'
+              }">
+                ${isSelected ? '✕ Bỏ chọn điểm này' : '+ Chọn vào kế hoạch'}
+              </button>
+            </div>
+          </div>
+        `;
+
+        const popup = new mapboxgl.Popup({ offset: 20, closeButton: false }).setHTML(popupHtml);
+
+        const marker = new mapboxgl.Marker({ element: el })
+          .setLngLat([place.lng, place.lat])
+          .setPopup(popup)
+          .addTo(map);
+
+        mapMarkers.push(marker);
+      });
+    }
+
+    function togglePlaceSelection(placeId) {
+      if (selectedPlaceIds.has(placeId)) {
+        selectedPlaceIds.delete(placeId);
+        showToast("Đã bỏ chọn địa điểm");
+      } else {
+        selectedPlaceIds.add(placeId);
+        showToast("Đã thêm địa điểm vào khay chờ AI lên plan!");
+      }
+      renderMapMarkers();
+      renderSelectedPlacesChips();
+    }
+
+    function handleMapSearch(query) {
+      currentSearchQuery = query.trim();
+      const clearBtn = document.getElementById('btn-clear-map-search');
+      if (currentSearchQuery) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderMapMarkers();
+    }
+
+    function clearMapSearch() {
+      document.getElementById('mobile-map-search-input').value = '';
+      handleMapSearch('');
+    }
+
+    function filterMapCategory(cat) {
+      currentMapCategory = cat;
+      ['all', 'landmark', 'beach', 'food'].forEach(c => {
+        const btn = document.getElementById(`mcat-${c}`);
+        if (btn) {
+          btn.className = c === cat 
+            ? "px-2.5 py-1 rounded-full text-[11px] font-bold bg-ios-blue text-white shadow-sm shrink-0"
+            : "px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-900/90 text-slate-300 border border-slate-800 shrink-0";
+        }
+      });
+      renderMapMarkers();
+    }
+
+    function renderSelectedPlacesChips() {
+      const container = document.getElementById('mobile-selected-chips-container');
+      const counter = document.getElementById('selected-places-counter-badge');
+      counter.innerText = `${selectedPlaceIds.size} điểm`;
+
+      if (selectedPlaceIds.size === 0) {
+        container.innerHTML = `<span class="text-[11px] text-slate-400 italic py-0.5">Chạm vào các ghim trên bản đồ để chọn...</span>`;
+        return;
+      }
+
+      const selectedPlaces = ALL_PLACES.filter(p => selectedPlaceIds.has(p.id));
+      container.innerHTML = selectedPlaces.map(p => `
+        <div class="flex items-center gap-1.5 p-1 pr-2 rounded-xl bg-slate-800 border border-slate-700 shrink-0">
+          <img src="${p.image}" class="w-5 h-5 rounded-md object-cover" alt="${p.name}">
+          <span class="text-[11px] font-bold text-white max-w-[100px] truncate">${p.name}</span>
+          <button onclick="togglePlaceSelection('${p.id}')" class="text-slate-400 hover:text-red-400">
+            <i class="ph-bold ph-x text-[10px]"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // --- 5. AI CLUSTERING ENGINE ---
+    function triggerAiGeneratePlan() {
+      if (selectedPlaceIds.size === 0) {
+        showToast("Vui lòng chọn ít nhất 1 điểm trên bản đồ!");
+        return;
+      }
+
+      const btn = document.getElementById('btn-mobile-ai-plan');
+      btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-xs"></i> <span>AI Đang Xếp...</span>`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        executeAiClustering();
+        btn.innerHTML = `<i class="ph-bold ph-sparkle text-amber-300 text-xs"></i> <span>✨ AI Lên Lịch Trình</span>`;
+        btn.disabled = false;
+        switchMobileTab('timeline');
+        showToast("✨ AI đã phân bổ lịch trình thông minh theo cụm địa lý!");
+      }, 900);
+    }
+
+    function executeAiClustering() {
+      const selectedPlaces = ALL_PLACES.filter(p => selectedPlaceIds.has(p.id));
+      const totalDays = tripConfig.durationDays;
+
+      generatedPlanDays = {};
+      for (let d = 1; d <= totalDays; d++) generatedPlanDays[d] = [];
+
+      selectedPlaces.forEach(p => {
+        if (p.city === 'hoian') {
+          generatedPlanDays[Math.min(3, totalDays)].push(p);
+        } else if (p.id === 'dn-02') { // Bà Nà Hills
+          generatedPlanDays[Math.min(2, totalDays)].push(p);
+        } else if (p.category === 'beach' || p.id === 'dn-03') { // Sơn Trà
+          generatedPlanDays[1].push(p);
+        } else {
+          let minDay = 1;
+          for (let d = 1; d <= totalDays; d++) {
+            if (generatedPlanDays[d].length < generatedPlanDays[minDay].length) minDay = d;
+          }
+          generatedPlanDays[minDay].push(p);
+        }
+      });
+
+      renderTimelineTabs();
+      switchTimelineDay(1);
+    }
+
+    function renderTimelineTabs() {
+      const container = document.getElementById('mobile-timeline-day-tabs');
+      const totalDays = tripConfig.durationDays;
+
+      container.innerHTML = Array.from({ length: totalDays }, (_, i) => i + 1).map(dayNum => {
+        const stopsCount = (generatedPlanDays[dayNum] || []).length;
+        return `
+          <button 
+            onclick="switchTimelineDay(${dayNum})" 
+            id="m-day-btn-${dayNum}"
+            class="px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shrink-0 ${
+              dayNum === activeTimelineDay 
+                ? 'bg-ios-blue text-white shadow-sm' 
+                : 'bg-slate-800 text-slate-400'
+            }"
+          >
+            <span>Ngày ${dayNum}</span>
+            <span class="text-[9px] opacity-80">(${stopsCount})</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function switchTimelineDay(dayNum) {
+      activeTimelineDay = dayNum;
+      renderTimelineTabs();
+      renderTimelineStops();
+    }
+
+    function renderTimelineStops() {
+      const container = document.getElementById('mobile-timeline-items-list');
+      const stops = generatedPlanDays[activeTimelineDay] || [];
+
+      // AI Tip
+      const tip = document.getElementById('mobile-ai-day-tip');
+      if (activeTimelineDay === 1) tip.innerText = "💡 Ngày 1: Sơn Trà & Mỹ Khê tiện đường.";
+      else if (activeTimelineDay === 2) tip.innerText = "💡 Ngày 2: Trọn vẹn Bà Nà Hills.";
+      else if (activeTimelineDay === 3) tip.innerText = "💡 Ngày 3: Phố Cổ Hội An lên đèn.";
+      else tip.innerText = "💡 Ngày 4: Mua sắm & nghỉ ngơi.";
+
+      if (stops.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center rounded-2xl border border-dashed border-slate-800 text-slate-400 my-auto">
+            <p class="text-xs font-bold">Chưa có điểm dừng Ngày ${activeTimelineDay}</p>
+          </div>
+        `;
+        document.getElementById('mobile-day-km-stat').innerText = "0 km";
+        return;
+      }
+
+      let totalKm = stops.length * 4.6;
+      document.getElementById('mobile-day-km-stat').innerText = `🚗 ${totalKm.toFixed(1)} km`;
+
+      container.innerHTML = stops.map((stop, index) => `
+        <div class="flex flex-col gap-1">
+          ${index > 0 ? `
+            <div class="flex items-center gap-2 pl-3 py-0.5 text-[9px] font-semibold text-slate-400">
+              <div class="w-0.5 h-4 bg-slate-700 ml-1.5"></div>
+              <span>🚗 ~4.5 km • 12 phút</span>
+            </div>
+          ` : ''}
+
+          <div class="p-2.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between gap-2.5 shadow-sm">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-7 h-7 rounded-xl bg-ios-blue text-white font-black text-xs flex items-center justify-center shrink-0">
+                ${index + 1}
+              </div>
+              <div class="min-w-0">
+                <h4 class="text-xs font-black text-white truncate">${stop.name}</h4>
+                <p class="text-[10px] font-semibold text-ios-blue">${stop.bestTime || '09:00 - 11:30'} • ${stop.cityName}</p>
+              </div>
+            </div>
+
+            <button onclick="removeStopFromTimeline(${activeTimelineDay}, '${stop.id}')" class="text-slate-500 hover:text-red-400 p-1">
+              <i class="ph-bold ph-trash text-xs"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function removeStopFromTimeline(dayNum, stopId) {
+      generatedPlanDays[dayNum] = generatedPlanDays[dayNum].filter(s => s.id !== stopId);
+      renderTimelineTabs();
+      renderTimelineStops();
+      showToast("Đã xóa điểm khỏi lịch trình");
+    }
+
+    // --- 6. MOBILE TAB SWITCHER ---
+    function switchMobileTab(tab) {
+      const viewMap = document.getElementById('app-view-map');
+      const viewTimeline = document.getElementById('app-view-timeline');
+      const btnMap = document.getElementById('nav-btn-map');
+      const btnTimeline = document.getElementById('nav-btn-timeline');
+
+      if (tab === 'map') {
+        viewMap.classList.remove('hidden');
+        viewTimeline.classList.add('hidden');
+        btnMap.className = "flex flex-col items-center gap-0.5 text-ios-blue";
+        btnTimeline.className = "flex flex-col items-center gap-0.5 text-slate-400 hover:text-white";
+        if (map) setTimeout(() => map.invalidateSize(), 50);
+      } else if (tab === 'timeline') {
+        viewMap.classList.add('hidden');
+        viewTimeline.classList.remove('hidden');
+        btnTimeline.className = "flex flex-col items-center gap-0.5 text-ios-blue";
+        btnMap.className = "flex flex-col items-center gap-0.5 text-slate-400 hover:text-white";
+      }
+    }
+
+    // --- 7. SQUAD MODAL ---
+    const squadMembers = [
+      { id: 'u-1', name: "Đức Nguyễn", email: "duc.nguyen@nomadix.vn", role: "Trưởng nhóm" },
+      { id: 'u-2', name: "Linh Hoàng", email: "linh.hoang@gmail.com", role: "Chỉnh sửa" },
+      { id: 'u-3', name: "Minh Quân", email: "quan.tran@gmail.com", role: "Chỉ xem" }
+    ];
+
+    function openSquadModal() {
+      const container = document.getElementById('modal-members-list');
+      container.innerHTML = squadMembers.map(m => `
+        <div class="p-2 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
+          <span class="font-bold text-white">${m.name}</span>
+          <span class="text-[10px] font-extrabold text-ios-blue">${m.role}</span>
+        </div>
+      `).join('');
+      document.getElementById('modal-squad').classList.remove('hidden');
+    }
+
+    function closeSquadModal() {
+      document.getElementById('modal-squad').classList.add('hidden');
+    }
+
+    function sendInvite() {
+      const val = document.getElementById('invite-member-input').value.trim();
+      if (!val) return;
+      squadMembers.push({ id: `u-${Date.now()}`, name: val.split('@')[0], email: val, role: "Chỉnh sửa" });
+      document.getElementById('invite-member-input').value = '';
+      openSquadModal();
+      showToast("Đã gửi lời mời!");
+    }
+
+    function saveTripPlan() {
+      showToast("✅ Đã lưu toàn bộ kế hoạch vào tài khoản!");
+    }
+
+    // --- 8. THEME & TOAST ---
+    function toggleTheme() {
+      isDarkMode = !isDarkMode;
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (isDarkMode) {
+        html.classList.add('dark');
+        html.classList.remove('light');
+        icon.innerText = '🌙';
+        if (map) map.setStyle('mapbox://styles/mapbox/dark-v11');
+      } else {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        icon.innerText = '☀️';
+        if (map) map.setStyle('mapbox://styles/mapbox/streets-v12');
+      }
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = "px-3.5 py-2 rounded-xl bg-white text-slate-900 text-xs font-black shadow-2xl flex items-center gap-1.5 pointer-events-auto transform translate-y-3 opacity-0 transition-all duration-200";
+      toast.innerHTML = `<i class="ph-bold ph-check-circle text-emerald-600 text-sm"></i> ${msg}`;
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.remove('translate-y-3', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 200);
+      }, 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderWizardCityChips();
+      recalculateTripDuration();
+    });
+  </script>
+</body>
+</html>

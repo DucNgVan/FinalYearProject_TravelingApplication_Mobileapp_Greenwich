@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nomadix — Live Showcase Dashboard | University of Greenwich FYP</title>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            ios: {
+              blue: '#007AFF',
+              green: '#34C759',
+              red: '#FF3B30',
+              amber: '#FF9500',
+              purple: '#AF52DE',
+              gray: '#8E8E93',
+              card: '#FFFFFF',
+              cardDark: '#1E293B',
+              bg: '#F2F2F7',
+              bgDark: '#0F172A',
+            }
+          },
+          boxShadow: {
+            'ios': '0 2px 10px rgba(0, 0, 0, 0.04)',
+            'phone': '0 25px 80px -15px rgba(0, 0, 0, 0.35), 0 0 0 10px #0F172A',
+            'phone-light': '0 25px 80px -15px rgba(0, 0, 0, 0.15), 0 0 0 10px #E2E8F0',
+            'sheet': '0 -10px 40px rgba(0, 0, 0, 0.3)',
+            'glow-blue': '0 0 20px -3px rgba(0, 122, 255, 0.35)',
+            'glow-emerald': '0 0 20px -3px rgba(16, 185, 129, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .tab-active { color: #007AFF !important; }
+    .tab-active svg { color: #007AFF !important; }
+    .filter-chip-active { background-color: #007AFF !important; color: white !important; font-weight: 700 !important; }
+  </style>
+</head>
+<body id="app-body" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-start p-3 sm:p-5 lg:p-6 font-sans selection:bg-ios-blue selection:text-white transition-colors duration-300">
+
+  <!-- ========================================================================= -->
+  <!-- TOP PANORAMIC HEADER: BRAND & CONTROLS -->
+  <!-- ========================================================================= -->
+  <header class="w-full max-w-[1580px] mb-5 flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl transition-colors duration-300">
+    <!-- Brand & Academic Context -->
+    <div class="flex items-center gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-[2px] flex items-center justify-center shadow-glow-blue">
+        <div class="w-full h-full bg-slate-100 dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
+          <i class="ph-bold ph-compass text-2xl text-ios-blue dark:text-cyan-400"></i>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-lg font-black tracking-tight text-slate-900 dark:text-white">NOMADIX</h1>
+          <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">UX/UI Prototype</span>
+          <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 animate-pulse"></span> Design System Tokens
+          </span>
+        </div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">University of Greenwich (BSc Computing FYP) • UI Design Tokens, Typography & Mobile Ergonomics</p>
+      </div>
+    </div>
+
+    <!-- Center: Interactive Route Selector Pills -->
+    <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-950/70 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800/80">
+      <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 px-2 flex items-center gap-1"><i class="ph-bold ph-airplane-in-flight"></i> Tuyến:</span>
+      <button onclick="switchRoute('SGN-HAN')" id="route-pill-SGN-HAN" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-ios-blue text-white shadow-sm transition-all">SGN ⇄ HAN (76)</button>
+      <button onclick="switchRoute('HAN-DAD')" id="route-pill-HAN-DAD" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">HAN ⇄ DAD (6)</button>
+      <button onclick="switchRoute('SGN-DAD')" id="route-pill-SGN-DAD" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">SGN ⇄ DAD (5)</button>
+    </div>
+
+    <!-- Right Controls: Status & Theme Toggle -->
+    <div class="flex items-center gap-2.5">
+      <!-- TDD 100% Quality Pill -->
+      <div class="hidden sm:flex flex-col text-right">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TDD Code Quality</span>
+        <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1 justify-end">
+          <i class="ph-bold ph-seal-check text-emerald-600 dark:text-emerald-400"></i> 255/255 Pass (100%)
+        </span>
+      </div>
+
+      <!-- Link to Plan & Map Discovery Blueprint -->
+      <a href="plan-map-preview.html" class="flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-bold transition-all" title="Xem giao diện Bản Đồ & Kế Hoạch Mới">
+        <i class="ph-bold ph-map-pin"></i>
+        <span>Bản Đồ Plan</span>
+      </a>
+
+      <!-- Theme Switcher Button -->
+      <button onclick="toggleTheme()" id="theme-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-800 dark:text-white transition-all border border-slate-200 dark:border-slate-700" title="Đổi giao diện Tối / Sáng">
+        <i class="ph-bold ph-sun text-amber-500 dark:text-amber-400 text-sm" id="theme-icon"></i>
+        <span id="theme-text">Giao diện Sáng</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 3-COLUMN PANORAMIC DASHBOARD CONTAINER -->
+  <!-- ========================================================================= -->
+  <div class="w-full max-w-[1580px] grid grid-cols-1 xl:grid-cols-[380px_410px_1fr] 2xl:grid-cols-[400px_420px_420px] gap-6 items-start justify-center">
+
+    <!-- ======================================================================= -->
+    <!-- COLUMN 1: LEFT SIDEBAR (UX/UI DESIGN SYSTEM & TYPOGRAPHY) -->
+    <!-- ======================================================================= -->
+    <aside class="space-y-4 text-xs">
+      
+      <!-- Card 1.1: System Color Palette & WCAG AA Matrix -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-500 dark:text-blue-400 flex items-center justify-center text-xs font-black">1</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Bảng Màu Hệ Thống (Tokens)</h2>
+          </div>
+          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">WCAG 2.1 AA</span>
+        </div>
+
+        <!-- Color Swatch Groups -->
+        <div class="space-y-2.5">
+          <!-- Brand & Theme Tokens -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">1. Brand & Surface Tokens</span>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                <span class="w-4 h-4 rounded-md bg-[#007AFF] shadow-sm shrink-0"></span>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white text-[10px]">#007AFF</div>
+                  <div class="text-[9px] text-slate-400 font-sans">Brand Primary</div>
+                </div>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                <span class="w-4 h-4 rounded-md bg-[#06B6D4] shadow-sm shrink-0"></span>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white text-[10px]">#06B6D4</div>
+                  <div class="text-[9px] text-slate-400 font-sans">AI Itinerary Accent</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Theme Canvas Tokens -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">2. Dual-Theme Parity Tokens</span>
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+              <div class="p-2 rounded-xl bg-[#F0F6FF] border border-[#DCE8F6] text-slate-900 space-y-1">
+                <div class="font-bold text-[10px] flex items-center justify-between">
+                  <span>☀️ Light Mode</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-white border border-slate-300"></span>
+                </div>
+                <div class="text-[9px] text-slate-600">BG: <code class="font-bold">#F0F6FF</code></div>
+                <div class="text-[9px] text-slate-600">Card: <code class="font-bold">#FFFFFF</code></div>
+                <div class="text-[9px] text-slate-600">Border: <code class="font-bold">#DCE8F6</code></div>
+                <div class="text-[8px] text-emerald-700 font-bold bg-emerald-500/10 px-1 py-0.5 rounded">Contrast 15.4:1 AAA</div>
+              </div>
+              <div class="p-2 rounded-xl bg-[#0D1B2A] border border-[#334155] text-white space-y-1">
+                <div class="font-bold text-[10px] flex items-center justify-between text-cyan-400">
+                  <span>🌙 Dark Mode</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#1E293B] border border-slate-600"></span>
+                </div>
+                <div class="text-[9px] text-slate-300">BG: <code class="font-bold text-white">#0D1B2A</code></div>
+                <div class="text-[9px] text-slate-300">Card: <code class="font-bold text-white">#1E293B</code></div>
+                <div class="text-[9px] text-slate-300">Border: <code class="font-bold text-white">#334155</code></div>
+                <div class="text-[8px] text-emerald-400 font-bold bg-emerald-500/20 px-1 py-0.5 rounded">Contrast 13.8:1 AAA</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Semantic Indicators -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">3. Semantic Financial Status</span>
+            <div class="grid grid-cols-3 gap-1.5 text-center font-mono text-[9px]">
+              <div class="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                <div class="font-bold">#10B981</div>
+                <div class="text-[8px] font-sans">Credit / Paid</div>
+              </div>
+              <div class="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400">
+                <div class="font-bold">#EF4444</div>
+                <div class="text-[8px] font-sans">Debt / Overdue</div>
+              </div>
+              <div class="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">
+                <div class="font-bold">#F59E0B</div>
+                <div class="text-[8px] font-sans">Transit / Warn</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 1.2: Typography Scale & Specimen Hierarchy -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-black">2</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Hệ Thống Typography</h2>
+          </div>
+          <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded-full border border-indigo-400/20">Plus Jakarta Sans</span>
+        </div>
+
+        <!-- Typography Specimens -->
+        <div class="space-y-2 text-slate-800 dark:text-slate-200">
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70">
+            <div class="text-[10px] text-slate-400 font-mono mb-0.5">DISPLAY (24px - Bold 800)</div>
+            <div class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Khám Phá Chuyến Đi</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70">
+            <div class="text-[10px] text-slate-400 font-mono mb-0.5">TITLE & HEADINGS (16px - Semi-bold 700)</div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">Đà Nẵng — Hội An 4N3Đ</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70">
+            <div class="text-[10px] text-slate-400 font-mono mb-0.5">BODY TEXT (13px - Regular 500)</div>
+            <div class="text-xs text-slate-600 dark:text-slate-300">Tính năng chia tiền và lập kế hoạch nhóm thông minh.</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/70 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-slate-400 font-mono">MONOSPACE ENGINE (13px)</div>
+              <div class="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">1.326.780₫ • HAN ⇄ SGN</div>
+            </div>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">JetBrains Mono</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 1.3: Spatial Scale, Corner Radius & Touch Targets -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-2.5">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+          <span class="font-extrabold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+            <i class="ph-bold ph-frame-corners text-purple-600 dark:text-purple-400"></i> Bo Góc & Lưới Không Gian (Spacing)
+          </span>
+          <span class="text-[10px] text-slate-400 font-mono">8pt Grid</span>
+        </div>
+        <div class="grid grid-cols-4 gap-1.5 text-center font-mono text-[9px]">
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">12px</div>
+            <div class="text-slate-400">Input/Btn</div>
+          </div>
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">16px</div>
+            <div class="text-slate-400">Card Base</div>
+          </div>
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">24px</div>
+            <div class="text-slate-400">Modal Sheet</div>
+          </div>
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+            <div class="font-bold text-slate-900 dark:text-white">9999px</div>
+            <div class="text-slate-400">Pill/Chip</div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ======================================================================= -->
+    <!-- COLUMN 2: CENTER PHONE MOCKUP (IPHONE 16 PRO) -->
+    <!-- ======================================================================= -->
+    <div class="flex flex-col items-center">
+      
+      <!-- Real Data Status Tag above Phone -->
+      <div class="w-full max-w-[390px] mb-2 px-2 flex justify-between items-center text-xs">
+        <span class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="phone-route-status">SGN ⇄ HAN (76 chuyến thật)</span>
+        </span>
+        <span id="phone-data-source" class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">DUFFEL_LIVE_NDC</span>
+      </div>
+
+      <!-- PHONE CONTAINER -->
+      <main id="phone-container" class="relative w-full max-w-[390px] h-[820px] bg-[#F2F2F7] dark:bg-slate-900 rounded-[48px] shadow-phone dark:shadow-phone overflow-hidden flex flex-col border border-slate-300 dark:border-slate-700/80 transition-colors duration-300">
+
+        <!-- STATUS BAR (APPLE STYLE WITH DYNAMIC ISLAND) -->
+        <div id="phone-status-bar" class="h-11 w-full pt-2 px-7 flex justify-between items-center text-xs font-semibold text-slate-900 dark:text-white z-40 select-none bg-[#F2F2F7] dark:bg-slate-900 transition-colors duration-300">
+          <span>09:41</span>
+          <!-- Dynamic Island -->
+          <div class="w-20 h-4 bg-black rounded-full flex items-center justify-end px-1.5 ring-1 ring-white/10">
+            <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></div>
+          </div>
+          <div class="flex items-center gap-1.5 text-slate-900 dark:text-white">
+            <i class="ph-bold ph-wifi-high text-xs"></i>
+            <i class="ph-bold ph-battery-charging text-sm"></i>
+          </div>
+        </div>
+
+        <!-- PHONE BODY VIEWPORT -->
+        <div id="viewport" class="flex-1 overflow-y-auto no-scrollbar relative p-4 space-y-3.5 bg-[#F2F2F7] dark:bg-slate-900 transition-colors duration-300">
+
+          <!-- ========================================================================= -->
+          <!-- TAB 1: FLIGHTS (REAL DUFFEL DATA WITH PHASE 10 UPGRADES) -->
+          <!-- ========================================================================= -->
+          <section id="tab-flights" class="tab-content space-y-3">
+            
+            <!-- Header & Route Title -->
+            <div class="pt-1 flex items-center justify-between">
+              <div>
+                <h2 id="route-header-title" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Chuyến bay</h2>
+                <p id="route-header-sub" class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">Tuyến bay SGN ⇄ HAN</p>
+              </div>
+              <div class="text-right">
+                <span id="flight-count-label" class="text-xs text-ios-blue font-bold block">76 chuyến thật</span>
+                <span id="api-source-badge" class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">DUFFEL_LIVE</span>
+              </div>
+            </div>
+
+            <!-- SEARCH PILL WITH DIRECT FILTER BUTTON -->
+            <div id="search-pill-card" class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 shadow-ios flex items-center justify-between border border-slate-200 dark:border-slate-700/80 transition-colors duration-300">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-ios-blue flex items-center justify-center">
+                  <i class="ph-bold ph-airplane-tilt text-lg"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span id="search-orig-code" class="font-black text-sm text-slate-900 dark:text-white">SGN</span>
+                    <i class="ph-bold ph-arrow-right text-xs text-slate-400"></i>
+                    <span id="search-dest-code" class="font-black text-sm text-slate-900 dark:text-white">HAN</span>
+                  </div>
+                  <p id="search-date-meta" class="text-[11px] text-slate-400 font-medium">15 Th10, 2026 • 1 khách • Phổ thông</p>
+                </div>
+              </div>
+              <button onclick="openFilterSheet()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 flex items-center justify-center text-slate-600 dark:text-slate-200 transition-all shadow-sm" title="Mở bộ lọc">
+                <i class="ph-bold ph-sliders-horizontal text-base text-ios-blue"></i>
+              </button>
+            </div>
+
+            <!-- PRE-SEARCH PREFERENCE CHECKBOX CHIPS (PHASE 10 USER REQUEST) -->
+            <div class="space-y-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tuỳ chọn nhanh</span>
+              <div class="grid grid-cols-3 gap-1.5 text-xs">
+                <button onclick="togglePref('direct')" id="pref-chip-direct" class="py-1.5 px-2 rounded-xl border border-ios-blue bg-blue-500/20 text-ios-blue font-bold flex items-center justify-center gap-1 transition-all">
+                  <span id="pref-chk-direct">✓</span> Bay thẳng
+                </button>
+                <button onclick="togglePref('transit')" id="pref-chip-transit" class="py-1.5 px-2 rounded-xl border border-ios-blue bg-blue-500/20 text-ios-blue font-bold flex items-center justify-center gap-1 transition-all">
+                  <span id="pref-chk-transit">✓</span> Nối chuyến
+                </button>
+                <button onclick="togglePref('baggage')" id="pref-chip-baggage" class="py-1.5 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold flex items-center justify-center gap-1 transition-all">
+                  <span id="pref-chk-baggage">○</span> Có hành lý
+                </button>
+              </div>
+            </div>
+
+            <!-- UNIVERSAL QUICK FILTER BAR (INTERNATIONALIZED - NO LOCAL AIRLINE HARDCODES) -->
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+              <button onclick="quickFilter('all')" id="qf-all" class="px-3 py-1 rounded-full text-xs font-bold filter-chip-active whitespace-nowrap">Tất cả</button>
+              <button onclick="quickFilter('direct')" id="qf-direct" class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap">Bay thẳng</button>
+              <button onclick="quickFilter('transit')" id="qf-transit" class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap">Nối chuyến</button>
+              <button onclick="quickFilter('baggage')" id="qf-baggage" class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap">Hành lý nhiều</button>
+              <button onclick="quickFilter('cheap')" id="qf-cheap" class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap">Giá rẻ nhất</button>
+              <button onclick="quickFilter('early')" id="qf-early" class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap">Bay sớm (&lt; 12h)</button>
+              <button onclick="quickFilter('late')" id="qf-late" class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap">Bay muộn (≥ 18h)</button>
+            </div>
+
+            <!-- REAL FLIGHT LIST CONTAINER -->
+            <div id="flight-list" class="space-y-2.5">
+              <!-- Dynamically populated via JS -->
+            </div>
+
+            <div id="no-flight-msg" class="hidden py-10 text-center text-slate-400 text-xs">
+              <i class="ph ph-airplane-slash text-2xl block mb-1 text-slate-400"></i>
+              Không tìm thấy chuyến bay phù hợp với bộ lọc đã chọn.
+            </div>
+          </section>
+
+          <!-- ========================================================================= -->
+          <!-- TAB 2: HOTELS -->
+          <!-- ========================================================================= -->
+          <section id="tab-hotels" class="tab-content hidden space-y-3">
+            <div class="pt-1"><h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Khách sạn</h2></div>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-ios border border-slate-200 dark:border-slate-700">
+              <div class="h-40 bg-gradient-to-tr from-slate-700 to-slate-900 relative p-3 flex justify-between items-start">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-900 shadow-sm">★ 4.9 (Google Places)</span>
+              </div>
+              <div class="p-3.5 flex justify-between items-end">
+                <div>
+                  <h3 class="font-extrabold text-sm text-slate-900 dark:text-white">Vinpearl Resort & Spa</h3>
+                  <p class="text-xs text-slate-400">Bãi Trũ, Hòn Tre, Nha Trang</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-sm font-black text-slate-900 dark:text-white">1.850.000₫</span>
+                  <span class="text-[10px] text-slate-400 block">/ đêm</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========================================================================= -->
+          <!-- TAB 3: PLAN & ITINERARY & SQUAD EXPENSES -->
+          <!-- ========================================================================= -->
+          <section id="tab-plan" class="tab-content hidden space-y-3">
+            <div class="pt-1"><h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Kế hoạch & Nhóm</h2></div>
+            
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-ios space-y-2 border border-slate-200 dark:border-slate-700">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-ios-blue uppercase tracking-wider">Chuyến đi sắp tới</span>
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">4 Thành viên</span>
+              </div>
+              <h3 class="text-base font-black text-slate-900 dark:text-white">Hà Nội Mùa Thu 2026</h3>
+              <p class="text-xs text-slate-400">15 Th10 – 18 Th10 • 4 ngày 3 đêm</p>
+            </div>
+
+            <!-- Live Cash Flow Minimization Settlement in Tab -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-ios space-y-3 border border-slate-200 dark:border-slate-700">
+              <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2">
+                <span class="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                  <i class="ph-bold ph-coins"></i> Quyết Toán Chia Tiền Nhóm
+                </span>
+                <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">Tối Ưu Cash-Flow</span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Thuật toán Greedy Minimum Cash-Flow đã giảm từ 6 giao dịch nợ chéo xuống còn <b>2 chuyển khoản trực tiếp</b>:</p>
+              
+              <div class="space-y-2 text-xs font-mono">
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                  <div>
+                    <span class="text-slate-900 dark:text-white font-bold">Lan → Đức</span>
+                    <span class="text-[10px] text-slate-400 block">Tiền khách sạn & ăn tối</span>
+                  </div>
+                  <span class="text-emerald-600 dark:text-emerald-400 font-extrabold text-sm">450.000₫</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                  <div>
+                    <span class="text-slate-900 dark:text-white font-bold">Nam → Đức</span>
+                    <span class="text-[10px] text-slate-400 block">Vé tham quan & Grab</span>
+                  </div>
+                  <span class="text-emerald-600 dark:text-emerald-400 font-extrabold text-sm">320.000₫</span>
+                </div>
+              </div>
+
+              <button onclick="alert('Đã gửi thông báo xác nhận thanh toán qua ví điện tử đến toàn bộ thành viên nhóm!')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all">
+                Xác nhận Quyết Toán Nhóm
+              </button>
+            </div>
+          </section>
+
+          <!-- ========================================================================= -->
+          <!-- TAB 4: PROFILE & SAVED TICKETS IN ACCOUNT -->
+          <!-- ========================================================================= -->
+          <section id="tab-profile" class="tab-content hidden space-y-3">
+            <div class="pt-1 flex justify-between items-center">
+              <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Tài khoản</h2>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30">Cấp 5 • Nomad Pro</span>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-ios flex items-center gap-3.5 border border-slate-200 dark:border-slate-700">
+              <div class="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-700 text-white font-extrabold flex items-center justify-center text-base shadow-sm ring-2 ring-slate-100 dark:ring-slate-600">
+                ĐN
+              </div>
+              <div>
+                <h3 class="text-base font-black text-slate-900 dark:text-white">Nguyễn Văn Đức</h3>
+                <p class="text-xs text-slate-400">ducnva.wk@gmail.com • Đã KYC Căn cước</p>
+              </div>
+            </div>
+
+            <!-- SAVED TICKETS SECTION -->
+            <div class="space-y-2 pt-2">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-1.5">
+                  <i class="ph-bold ph-ticket text-ios-blue text-base"></i>
+                  <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Vé máy bay của tôi</h3>
+                </div>
+                <span id="ticket-badge-count" class="text-xs font-bold text-ios-blue bg-blue-500/10 px-2 py-0.5 rounded-md">1 vé đã lưu</span>
+              </div>
+
+              <div id="saved-tickets-container" class="space-y-2.5">
+                <!-- Booked tickets rendered here -->
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- MODAL 1: BỘ LỌC CHUYẾN BAY (INTERNATIONALIZED FILTER SHEET) -->
+        <!-- ========================================================================= -->
+        <div id="filter-sheet" class="hidden absolute inset-0 z-50 flex flex-col justify-end">
+          <div onclick="closeFilterSheet()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+          <div class="relative bg-white dark:bg-slate-900 rounded-t-[32px] p-5 shadow-sheet space-y-4 max-h-[85%] overflow-y-auto no-scrollbar border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            <div class="w-10 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto -mt-1"></div>
+
+            <div class="flex justify-between items-center pt-1 border-b border-slate-200 dark:border-slate-800 pb-3">
+              <button onclick="resetFilters()" class="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Đặt lại</button>
+              <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Bộ Lọc Chuyến Bay Quốc Tế</h3>
+              <button onclick="closeFilterSheet()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                <i class="ph-bold ph-x text-xs"></i>
+              </button>
+            </div>
+
+            <div class="space-y-1.5">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Sắp xếp theo</span>
+              <div class="grid grid-cols-3 gap-1.5 text-xs">
+                <button onclick="setFilterSort('price')" id="sort-price" class="py-2 rounded-xl border border-ios-blue bg-blue-50 dark:bg-blue-500/20 text-ios-blue font-bold">Giá rẻ nhất</button>
+                <button onclick="setFilterSort('time')" id="sort-time" class="py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold">Bay sớm</button>
+                <button onclick="setFilterSort('duration')" id="sort-duration" class="py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold">Bay nhanh</button>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Loại chuyến bay</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-2 cursor-pointer hover:border-ios-blue">
+                  <input type="checkbox" id="chk-direct" checked class="accent-ios-blue rounded">
+                  <span class="font-bold text-slate-800 dark:text-white">Bay thẳng</span>
+                </label>
+                <label class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-2 cursor-pointer hover:border-ios-blue">
+                  <input type="checkbox" id="chk-transit" checked class="accent-ios-blue rounded">
+                  <span class="font-bold text-slate-800 dark:text-white">Nối chuyến</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tiện ích bổ sung</span>
+              <div class="space-y-1 text-xs">
+                <label class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center justify-between cursor-pointer hover:border-ios-blue">
+                  <span class="font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                    <i class="ph-bold ph-suitcase text-ios-blue"></i> Bao gồm hành lý ký gửi
+                  </span>
+                  <input type="checkbox" id="chk-checked-bag" class="accent-ios-blue rounded">
+                </label>
+                <label class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center justify-between cursor-pointer hover:border-ios-blue">
+                  <span class="font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                    <i class="ph-bold ph-arrows-clockwise text-emerald-500 dark:text-emerald-400"></i> Chuyển hành lý tự động
+                  </span>
+                  <input type="checkbox" id="chk-auto-baggage" class="accent-ios-blue rounded">
+                </label>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Giá tối đa</span>
+                <span id="price-slider-label" class="font-black text-ios-blue">7.000.000₫</span>
+              </div>
+              <input type="range" id="price-range" min="800000" max="7000000" step="200000" value="7000000" oninput="updatePriceSlider(this.value)" class="w-full accent-ios-blue cursor-pointer">
+            </div>
+
+            <button onclick="applyFilters()" class="w-full py-3.5 rounded-2xl bg-ios-blue text-white font-bold text-xs shadow-md hover:bg-blue-600 transition-all">
+              Áp dụng bộ lọc
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- MODAL 2: CHI TIẾT CHUYẾN BAY (FLIGHT DETAIL SHEET) -->
+        <!-- ========================================================================= -->
+        <div id="flight-modal" class="hidden absolute inset-0 z-50 flex flex-col justify-end">
+          <div onclick="closeFlightDetail()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+          <div class="relative bg-white dark:bg-slate-900 rounded-t-[32px] p-5 shadow-sheet space-y-4 max-h-[85%] overflow-y-auto no-scrollbar border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            <div class="w-10 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto -mt-1"></div>
+
+            <div class="flex justify-between items-start pt-1">
+              <div>
+                <span id="m-type-badge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                  Bay thẳng
+                </span>
+                <h3 id="m-carrier" class="text-lg font-black text-slate-900 dark:text-white mt-1">VietJet Air • VJ-0120</h3>
+                <p id="m-aircraft" class="text-xs text-slate-400">Airbus A321 • Phổ thông</p>
+              </div>
+              <button onclick="closeFlightDetail()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                <i class="ph-bold ph-x text-xs"></i>
+              </button>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div class="flex items-start gap-3">
+                <div class="flex flex-col items-center">
+                  <div class="w-2.5 h-2.5 rounded-full bg-ios-blue ring-4 ring-blue-500/20"></div>
+                  <div class="w-[2px] h-10 bg-slate-200 dark:bg-slate-700 my-0.5"></div>
+                </div>
+                <div>
+                  <div class="flex items-baseline gap-2">
+                    <span id="m-dep-time" class="text-sm font-black text-slate-900 dark:text-white">05:00</span>
+                    <span class="text-xs font-bold text-slate-400">15 Th10, 2026</span>
+                  </div>
+                  <p id="m-dep-airport" class="text-xs text-slate-700 dark:text-slate-300 font-semibold">Tân Sơn Nhất (SGN) — Ga T1</p>
+                </div>
+              </div>
+
+              <!-- Transit Details & Baggage Transfer Status -->
+              <div id="m-transit-box" class="hidden pl-6 py-2 border-l-2 border-dashed border-amber-400/80 ml-1 text-xs text-amber-600 dark:text-amber-300 space-y-1">
+                <p id="m-transit-desc" class="font-bold flex items-center gap-1.5">
+                  <i class="ph-bold ph-clock"></i> Quá cảnh 1 điểm dừng
+                </p>
+                <p id="m-transit-baggage" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  🔄 Chuyển hành lý tự động
+                </p>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-slate-700 dark:bg-slate-300 ring-4 ring-slate-200 dark:ring-slate-600"></div>
+                <div>
+                  <div class="flex items-baseline gap-2">
+                    <span id="m-arr-time" class="text-sm font-black text-slate-900 dark:text-white">07:10</span>
+                    <span class="text-xs font-bold text-slate-400">15 Th10, 2026</span>
+                  </div>
+                  <p id="m-arr-airport" class="text-xs text-slate-700 dark:text-slate-300 font-semibold">Nội Bài (HAN) — Ga T1</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                <i class="ph-bold ph-bag text-ios-blue text-base"></i>
+                <div><span class="text-[10px] text-slate-400 block">Xách tay</span><span id="m-cabin-bag" class="font-bold text-slate-900 dark:text-white">7 kg</span></div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                <i class="ph-bold ph-suitcase text-ios-blue text-base"></i>
+                <div><span class="text-[10px] text-slate-400 block">Ký gửi</span><span id="m-checked-bag" class="font-bold text-slate-900 dark:text-white">Chưa gồm</span></div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-slate-400 block">Giá vé thật (Duffel API)</span>
+                <span id="m-price" class="text-xl font-black text-ios-blue">1.326.780₫</span>
+              </div>
+              <button onclick="openSandboxCheckout()" class="px-5 py-3 rounded-xl bg-ios-blue hover:bg-blue-600 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5">
+                <i class="ph-bold ph-credit-card"></i> Đặt Vé Sandbox
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- MODAL 3: THANH TOÁN DUFFEL SANDBOX -->
+        <!-- ========================================================================= -->
+        <div id="sandbox-modal" class="hidden absolute inset-0 z-50 flex flex-col justify-end">
+          <div onclick="closeSandboxCheckout()" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+          <div class="relative bg-white dark:bg-slate-900 rounded-t-[32px] p-5 shadow-sheet space-y-4 max-h-[90%] overflow-y-auto no-scrollbar border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            <div class="w-10 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto -mt-1"></div>
+
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-black flex items-center justify-center">🧪</span>
+                <div>
+                  <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Duffel API Sandbox Payment</h3>
+                  <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Tự động lưu vé thật vào tài khoản</p>
+                </div>
+              </div>
+              <button onclick="closeSandboxCheckout()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                <i class="ph-bold ph-x text-xs"></i>
+              </button>
+            </div>
+
+            <div id="sandbox-form" class="space-y-3">
+              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-1.5 text-xs">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Hành khách xác nhận</span>
+                <div class="flex justify-between font-bold text-slate-900 dark:text-white">
+                  <span>Nguyễn Văn Đức (Mr)</span>
+                  <span>15/10/2002</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Hộ chiếu/CCCD: C01928491 • Email: ducnva.wk@gmail.com</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl border-2 border-emerald-500/50 bg-emerald-50 dark:bg-emerald-500/10 space-y-1">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <i class="ph-bold ph-wallet text-emerald-600 dark:text-emerald-400"></i> Số dư Duffel Sandbox Test
+                  </span>
+                  <span class="text-[10px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-full">Sẵn sàng</span>
+                </div>
+                <p class="text-[11px] text-slate-600 dark:text-slate-300">Hạn mức khả dụng: 50.000.000₫ (Miễn phí 100%)</p>
+              </div>
+
+              <div class="flex justify-between items-center text-xs py-1">
+                <span class="text-slate-500 dark:text-slate-400">Số tiền thanh toán:</span>
+                <span id="sb-amount" class="text-base font-black text-slate-900 dark:text-white">1.326.780₫</span>
+              </div>
+
+              <button onclick="processSandboxPayment()" id="btn-pay-sandbox" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                <span>Xác nhận Đặt Vé & Lưu Vào Tài Khoản</span>
+              </button>
+            </div>
+
+            <!-- Success screen with Direct Link to Account -->
+            <div id="sandbox-success" class="hidden text-center space-y-3 py-2">
+              <div class="w-14 h-14 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-3xl mx-auto ring-4 ring-emerald-500/10">
+                <i class="ph-bold ph-check"></i>
+              </div>
+              <div>
+                <h4 class="text-lg font-black text-slate-900 dark:text-white">Đặt Vé Thật Thành Công!</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Vé đã được lưu trực tiếp vào mục <b>Tài khoản</b> của bạn</p>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 text-left space-y-2 text-xs">
+                <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2">
+                  <div>
+                    <span class="text-[10px] text-slate-400 block font-bold">MÃ ĐẶT CHỖ (PNR)</span>
+                    <span id="success-pnr" class="text-base font-black text-ios-blue tracking-wider">VJ-RLL2V5</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">Đã lưu tài khoản</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                  <div><span class="text-slate-400 block">Số vé điện tử:</span><b id="success-ticket-no">738-8527236019</b></div>
+                  <div><span class="text-slate-400 block">Tài khoản sở hữu:</span><b>Nguyễn Văn Đức</b></div>
+                </div>
+              </div>
+
+              <button onclick="goToProfileTickets()" class="w-full py-3.5 rounded-2xl bg-ios-blue hover:bg-blue-600 active:scale-95 text-white font-bold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all">
+                <i class="ph-bold ph-user-circle text-base"></i> Xem Vé Trong Tài Khoản Ngay →
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- BOTTOM TAB BAR -->
+        <nav id="phone-bottom-nav" class="h-16 bg-white/90 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between z-40 transition-colors duration-300">
+          <button onclick="switchTab('flights')" id="nav-flights" class="nav-btn tab-active flex flex-col items-center gap-0.5 text-ios-blue">
+            <i class="ph-bold ph-airplane-tilt text-xl"></i>
+            <span class="text-[10px] font-bold">Vé bay</span>
+          </button>
+
+          <button onclick="switchTab('hotels')" id="nav-hotels" class="nav-btn flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="ph-bold ph-buildings text-xl"></i>
+            <span class="text-[10px] font-medium">Khách sạn</span>
+          </button>
+
+          <button onclick="switchTab('plan')" id="nav-plan" class="nav-btn flex flex-col items-center gap-0.5 text-slate-400">
+            <i class="ph-bold ph-calendar text-xl"></i>
+            <span class="text-[10px] font-medium">Kế hoạch</span>
+          </button>
+
+          <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center gap-0.5 text-slate-400 relative">
+            <span id="nav-profile-badge" class="hidden absolute top-0 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-slate-900"></span>
+            <i class="ph-bold ph-user text-xl"></i>
+            <span class="text-[10px] font-medium">Tài khoản</span>
+          </button>
+        </nav>
+
+      </main>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- COLUMN 3: RIGHT SIDEBAR (ATOMIC COMPONENTS & UX ERGONOMICS) -->
+    <!-- ======================================================================= -->
+    <aside class="space-y-4 text-xs">
+
+      <!-- Card 3.1: Atomic UI Component Library -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xs font-black">3</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Thành Phần Nguyên Tử (Atoms)</h2>
+          </div>
+          <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">Component Spec</span>
+        </div>
+
+        <div class="space-y-2.5">
+          <!-- Button Variants -->
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+              <span>Interactive Buttons</span>
+              <span class="font-mono text-cyan-600 dark:text-cyan-400">active:scale-95</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button class="px-3 py-1.5 rounded-xl bg-ios-blue text-white text-[11px] font-bold shadow-sm active:scale-95 transition-all">Primary Filled</button>
+              <button class="px-3 py-1.5 rounded-xl border border-ios-blue text-ios-blue text-[11px] font-bold active:scale-95 transition-all">Outline</button>
+              <button class="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20 flex items-center gap-1">
+                <i class="ph-bold ph-check"></i> Settle Up
+              </button>
+            </div>
+          </div>
+
+          <!-- Form Inputs -->
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+              <span>Input Field Spec</span>
+              <span class="font-mono text-purple-600 dark:text-purple-400">44pt Target</span>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Điểm đến (IATA / City)</label>
+              <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
+                <i class="ph-bold ph-magnifying-glass text-slate-400"></i>
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">Đà Nẵng (DAD)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Badge & Status Indicators -->
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-1.5">
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Status & Tag Tokens</div>
+            <div class="flex flex-wrap items-center gap-1.5 text-[10px] font-semibold">
+              <span class="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">Bay thẳng (Direct)</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">🔄 Chuyển tự động</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">⚠️ Chuyển thủ công</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3.2: Mobile Ergonomics & Thumb-Zone Mapping -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black">4</span>
+            <h2 class="font-extrabold text-slate-900 dark:text-white text-sm">Công Thái Học Di Động</h2>
+          </div>
+          <span class="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full border border-cyan-400/20">Thumb-Zone</span>
+        </div>
+
+        <!-- Thumb Zone Diagram -->
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2 text-[11px]">
+          <div class="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 flex justify-between items-center">
+            <span class="font-bold">Khó Chạm (Top 25%)</span>
+            <span class="text-[10px] font-mono">Tiêu đề, Nút quay lại</span>
+          </div>
+          <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex justify-between items-center">
+            <span class="font-bold">Vươn Tay (Mid 35%)</span>
+            <span class="text-[10px] font-mono">Thẻ chuyến bay, Bản đồ</span>
+          </div>
+          <div class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex justify-between items-center font-bold">
+            <span>Dễ Chạm (Dưới 40%)</span>
+            <span class="text-[10px] font-mono">Bottom Tabs, Nút Đặt Vé ★</span>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+          Mọi điểm chạm (Touch Target) đều đạt chuẩn Apple HIG $\ge 44 \times 44\text{pt}$ giúp thao tác bằng một tay dễ dàng khi đang di chuyển.
+        </p>
+      </div>
+
+      <!-- Card 3.3: Interactive Prototypes & Blueprint Links -->
+      <div class="rounded-3xl p-4 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 shadow-lg text-slate-800 dark:text-slate-100 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+          <span class="font-extrabold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+            <i class="ph-bold ph-compass text-ios-blue"></i> Trải Nghiệm Mẫu Bản Đồ
+          </span>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Interactive</span>
+        </div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-300">
+          Mở bản mẫu không gian tương tác Mapbox GL JS v3 với thanh tìm kiếm nổi và luồng AI phân cụm địa lý:
+        </p>
+        <a href="plan-map-preview.html" class="w-full py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95">
+          <i class="ph-bold ph-map-trifold text-base"></i> Mở Bản Mẫu Bản Đồ & Kế Hoạch →
+        </a>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT LOGIC & REACTIVE STATE -->
+  <!-- ========================================================================= -->
+  <script>
+    // 87 REAL FLIGHT OFFERS (SGN-HAN, HAN-DAD, SGN-DAD)
+    const masterFlightsCatalog = [{"id": "off_0000BAzw3IgAjlbuUL1VN5", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0120", "depTime": "05:00", "arrTime": "07:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-55PE4S", "ticketNo": "738-4806169935", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IgWiRtUVRBmuv", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0124", "depTime": "06:05", "arrTime": "08:15", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-YVOJSY", "ticketNo": "738-6393209989", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IgWiRtUVRBmvB", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0156", "depTime": "06:50", "arrTime": "09:00", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-VPAMRH", "ticketNo": "738-9557057369", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IgWiRtUVRBmvQ", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0122", "depTime": "06:55", "arrTime": "09:05", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-QT6KYX", "ticketNo": "738-4441864437", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IgWiRtUVRBmvi", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0126", "depTime": "07:30", "arrTime": "09:40", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-MIRBEP", "ticketNo": "738-5854520757", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3Igsh8B4WXM4TI", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0130", "depTime": "08:40", "arrTime": "10:50", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-7I2W0B", "ticketNo": "738-9769583519", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3Igsh8B4WXM4TU", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0128", "depTime": "09:40", "arrTime": "11:50", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-BYGK4V", "ticketNo": "738-1880249187", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3Igsh8B4WXM4Tj", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0134", "depTime": "11:20", "arrTime": "13:30", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-JL5Q3U", "ticketNo": "738-5684416988", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3Igsh8B4WXM4Tt", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0136", "depTime": "12:00", "arrTime": "14:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-2EPXSB", "ticketNo": "738-2191887545", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhEfoSeXdWM1T", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0138", "depTime": "13:05", "arrTime": "15:15", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-DX32IJ", "ticketNo": "738-4722624124", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhEfoSeXdWM1Z", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0142", "depTime": "13:20", "arrTime": "15:30", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-OXWPUE", "ticketNo": "738-9278873302", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhEfoSeXdWM1f", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0140", "depTime": "14:10", "arrTime": "16:20", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-B9FX95", "ticketNo": "738-4812030382", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhEfoSeXdWM1p", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0144", "depTime": "15:55", "arrTime": "18:05", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-T2TJ5N", "ticketNo": "738-6939908547", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhaeUkEYjgdZk", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0148", "depTime": "16:15", "arrTime": "18:25", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-G9Q4ZM", "ticketNo": "738-9008407948", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhaeUkEYjgdZz", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0146", "depTime": "16:45", "arrTime": "18:55", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-U1OJDN", "ticketNo": "738-4185297469", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhaeUkEYjgdaA", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0152", "depTime": "17:10", "arrTime": "19:20", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-015JEC", "ticketNo": "738-5580104544", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhaeUkEYjgdaL", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0150", "depTime": "17:40", "arrTime": "19:50", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-B85I4E", "ticketNo": "738-6873565047", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhwdB1oZpqv7y", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0154", "depTime": "18:45", "arrTime": "20:55", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-7ZDZ1N", "ticketNo": "738-5264803422", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhwdB1oZpqv89", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0160", "depTime": "20:30", "arrTime": "22:40", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-NN0MJE", "ticketNo": "738-8173798803", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IhwdB1oZpqv8O", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-1128", "depTime": "22:15", "arrTime": "00:25", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-CZQJ5C", "ticketNo": "738-5908157227", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IiIbrJOaw1CgS", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0162", "depTime": "22:40", "arrTime": "00:50", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-3ORWFW", "ticketNo": "738-3320303717", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IieaXayc2BUEW", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0168", "depTime": "23:00", "arrTime": "01:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-4HCL3O", "ticketNo": "738-6862247793", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IieaXayc2BUEh", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-1156", "depTime": "20:40", "arrTime": "22:55", "duration": "2h 15m", "durationMinutes": 135, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1326780, "priceFormatted": "1.326.780₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-A4RQS8", "ticketNo": "738-3349098689", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IWxI2Eo1ki90D", "carrier": "FlexFlight", "shortCarrier": "Vietnam Airlines", "airlineCode": "W2", "badge": "W2", "badgeBg": "bg-blue-600", "flightNumber": "VJ-null", "depTime": "12:00", "arrTime": "14:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1895400, "priceFormatted": "1.895.400₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "W2-NYEU4Y", "ticketNo": "738-7393987569", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/W2.png"}, {"id": "off_0000BAzw3IXJGiWO2qsQYF", "carrier": "FlexFlight", "shortCarrier": "Vietnam Airlines", "airlineCode": "W2", "badge": "W2", "badgeBg": "bg-blue-600", "flightNumber": "VJ-null", "depTime": "18:45", "arrTime": "20:55", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1895400, "priceFormatted": "1.895.400₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "W2-8G2WIE", "ticketNo": "738-9373389202", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/W2.png"}, {"id": "off_0000BAzw3IXJGiWO2qsQYL", "carrier": "FlexFlight", "shortCarrier": "Vietnam Airlines", "airlineCode": "W2", "badge": "W2", "badgeBg": "bg-blue-600", "flightNumber": "VJ-null", "depTime": "22:15", "arrTime": "00:25", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1895400, "priceFormatted": "1.895.400₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "W2-HYVGAF", "ticketNo": "738-3944565275", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/W2.png"}, {"id": "off_0000BAzw3IXJGiWO2qsQYR", "carrier": "FlexFlight", "shortCarrier": "Vietnam Airlines", "airlineCode": "W2", "badge": "W2", "badgeBg": "bg-blue-600", "flightNumber": "VJ-null", "depTime": "23:00", "arrTime": "01:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1895400, "priceFormatted": "1.895.400₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "W2-YQP6YD", "ticketNo": "738-3913195449", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/W2.png"}, {"id": "off_0000BAzw3IXJGiWO2qsQYX", "carrier": "FlexFlight", "shortCarrier": "Vietnam Airlines", "airlineCode": "W2", "badge": "W2", "badgeBg": "bg-blue-600", "flightNumber": "VJ-null", "depTime": "20:40", "arrTime": "22:55", "duration": "2h 15m", "durationMinutes": 135, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1895400, "priceFormatted": "1.895.400₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "W2-IZVGGQ", "ticketNo": "738-4838334143", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/W2.png"}, {"id": "off_0000BAzw3EzWRsiD3C2tyO", "carrier": "Duffel Airways", "shortCarrier": "Vietnam Airlines", "airlineCode": "ZZ", "badge": "ZZ", "badgeBg": "bg-blue-600", "flightNumber": "ZZ-8747", "depTime": "10:50", "arrTime": "12:57", "duration": "2h 7m", "durationMinutes": 127, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1903770, "priceFormatted": "1.903.770₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "ZZ-ICSQL7", "ticketNo": "738-9955539774", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/ZZ.png"}, {"id": "off_0000BAzw3IVXNJ6TxM30mx", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-6002", "depTime": "05:00", "arrTime": "07:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-GOKGVJ", "ticketNo": "738-6742218079", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVXNJ6TxM30n3", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0206", "depTime": "06:00", "arrTime": "08:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-0OBJBA", "ticketNo": "738-5332977623", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVXNJ6TxM30n9", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0240", "depTime": "07:00", "arrTime": "09:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A350-900 Wide-Body", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-8XGGJ7", "ticketNo": "738-8898783302", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVXNJ6TxM30nF", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0218", "depTime": "18:00", "arrTime": "20:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Boeing 787-9 Dreamliner", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-U0KB6T", "ticketNo": "738-2142317543", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVXNJ6TxM30nL", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0258", "depTime": "19:00", "arrTime": "21:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Boeing 787-9 Dreamliner", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-JEX6BZ", "ticketNo": "738-9719489562", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVtLzO3ySDILC", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0220", "depTime": "20:00", "arrTime": "22:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Boeing 787-9 Dreamliner", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-5Z9PXO", "ticketNo": "738-7984224523", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVtLzO3ySDILI", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0256", "depTime": "20:30", "arrTime": "22:40", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-41F95O", "ticketNo": "738-3046415910", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IWFKffdzYNZtT", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0260", "depTime": "21:00", "arrTime": "23:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-8A90L0", "ticketNo": "738-5685427033", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IWbJLxE0eXrRj", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0224", "depTime": "22:00", "arrTime": "00:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-964EQX", "ticketNo": "738-1706085959", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IWbJLxE0eXrRp", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0270", "depTime": "23:00", "arrTime": "01:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2073060, "priceFormatted": "2.073.060₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-YEUIDU", "ticketNo": "738-7245669942", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVBOcotwFsjF3", "carrier": "FlexFlight", "shortCarrier": "Vietnam Airlines", "airlineCode": "W2", "badge": "W2", "badgeBg": "bg-blue-600", "flightNumber": "VJ-null", "depTime": "11:20", "arrTime": "13:30", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2104110, "priceFormatted": "2.104.110₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "W2-Y659HE", "ticketNo": "738-4940968847", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/W2.png"}, {"id": "off_0000BAzw3IY1E55Y53Czet", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0634", "depTime": "10:45", "arrTime": "12:05", "duration": "4h 40m", "durationMinutes": 280, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2180790, "priceFormatted": "2.180.790₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-HA3VY2", "ticketNo": "738-1027032418", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IYNClN869NHD2", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0630", "depTime": "09:00", "arrTime": "10:20", "duration": "5h 0m", "durationMinutes": 300, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2180790, "priceFormatted": "2.180.790₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-U6Q0FE", "ticketNo": "738-9051597929", "routeCode": "SGN-HAN", "baggageTransfer": "⚠️ Tự chuyển hành lý (Thủ công)", "baggageTransferType": "manual", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IYNClN869NHDG", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0640", "depTime": "15:10", "arrTime": "16:30", "duration": "5h 45m", "durationMinutes": 345, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2180790, "priceFormatted": "2.180.790₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-NB4SI2", "ticketNo": "738-3021809966", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IfSmP2kS8gwGO", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0304", "depTime": "08:50", "arrTime": "10:15", "duration": "3h 30m", "durationMinutes": 210, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2180790, "priceFormatted": "2.180.790₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-PYNVGA", "ticketNo": "738-6114887902", "routeCode": "SGN-HAN", "baggageTransfer": "⚠️ Tự chuyển hành lý (Thủ công)", "baggageTransferType": "manual", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IWxI2Eo1ki907", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0352", "depTime": "17:55", "arrTime": "18:55", "duration": "3h 35m", "durationMinutes": 215, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-LJ0IZY", "ticketNo": "738-8446462240", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IZR8oDs9Rs7ro", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-1382", "depTime": "05:35", "arrTime": "06:45", "duration": "4h 15m", "durationMinutes": 255, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-GZ7CNJ", "ticketNo": "738-8966256570", "routeCode": "SGN-HAN", "baggageTransfer": "⚠️ Tự chuyển hành lý (Thủ công)", "baggageTransferType": "manual", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IZR8oDs9Rs7rv", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0382", "depTime": "08:25", "arrTime": "09:35", "duration": "11h 0m", "durationMinutes": 660, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-31GV4I", "ticketNo": "738-8850509454", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3Iccwwm6JLMfqE", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0392", "depTime": "06:40", "arrTime": "07:50", "duration": "4h 10m", "durationMinutes": 250, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-19FQ61", "ticketNo": "738-9701915518", "routeCode": "SGN-HAN", "baggageTransfer": "⚠️ Tự chuyển hành lý (Thủ công)", "baggageTransferType": "manual", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IdKuJLGLXhEwp", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0335", "depTime": "11:20", "arrTime": "12:20", "duration": "6h 25m", "durationMinutes": 385, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-EBNOVF", "ticketNo": "738-7650982697", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IdgszcqMdrWUu", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0327", "depTime": "14:50", "arrTime": "15:50", "duration": "6h 35m", "durationMinutes": 395, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-LVCQ5D", "ticketNo": "738-5157444696", "routeCode": "SGN-HAN", "baggageTransfer": "⚠️ Tự chuyển hành lý (Thủ công)", "baggageTransferType": "manual", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IdgszcqMdrWV1", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0321", "depTime": "08:50", "arrTime": "09:55", "duration": "7h 55m", "durationMinutes": 475, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2363310, "priceFormatted": "2.363.310₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "pnr": "VJ-KYM7C7", "ticketNo": "738-9891939295", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": false, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "off_0000BAzw3IU7SZy9sxNsZs", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0208", "depTime": "08:00", "arrTime": "10:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-KKZCIE", "ticketNo": "738-9866424459", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IU7SZy9sxNsa3", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0244", "depTime": "09:00", "arrTime": "11:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A350-900 Wide-Body", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-N72HEH", "ticketNo": "738-2093286934", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IU7SZy9sxNsaG", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0210", "depTime": "10:00", "arrTime": "12:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A350-900 Wide-Body", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-ZG8US4", "ticketNo": "738-6131307726", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IU7SZy9sxNsaW", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0246", "depTime": "11:00", "arrTime": "13:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-1X86O0", "ticketNo": "738-7561450525", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IUTRGFju3YA8G", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0212", "depTime": "12:00", "arrTime": "14:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A350-900 Wide-Body", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-UQ5RE2", "ticketNo": "738-8322664165", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IUTRGFju3YA8Z", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0248", "depTime": "13:00", "arrTime": "15:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-0VJ6AV", "ticketNo": "738-8841162363", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IUTRGFju3YA8j", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0214", "depTime": "14:00", "arrTime": "16:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-UCKZO6", "ticketNo": "738-7064622256", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IUpPwXJv9iRgY", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0250", "depTime": "15:00", "arrTime": "17:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A350-900 Wide-Body", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-PQMAFB", "ticketNo": "738-4917998684", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IUpPwXJv9iRgl", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0216", "depTime": "16:00", "arrTime": "18:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-1H7E4X", "ticketNo": "738-5296677960", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IUpPwXJv9iRh1", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0252", "depTime": "16:40", "arrTime": "18:50", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-OB55ZS", "ticketNo": "738-9171918654", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IVBOcotwFsjEj", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0254", "depTime": "17:00", "arrTime": "19:10", "duration": "2h 10m", "durationMinutes": 130, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 2850390, "priceFormatted": "2.850.390₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "pnr": "VN-A89ZXJ", "ticketNo": "738-6080052579", "routeCode": "SGN-HAN", "baggageTransfer": null, "baggageTransferType": null, "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3Ik4VGjIgQqcRx", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-1404", "depTime": "06:55", "arrTime": "08:30", "duration": "4h 35m", "durationMinutes": 275, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3130920, "priceFormatted": "3.130.920₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-I0LWYJ", "ticketNo": "738-6051628067", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IYjBRei7FXYlW", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-1464", "depTime": "06:20", "arrTime": "07:45", "duration": "4h 15m", "durationMinutes": 255, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3260520, "priceFormatted": "3.260.520₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-J0RWV1", "ticketNo": "738-8133890369", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IkQTx0shX0u08", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-1392", "depTime": "06:00", "arrTime": "07:10", "duration": "9h 10m", "durationMinutes": 550, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3260520, "priceFormatted": "3.260.520₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-P8WK73", "ticketNo": "738-2465596293", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3Icyvd3gKRWxOO", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0126", "depTime": "11:00", "arrTime": "12:20", "duration": "3h 25m", "durationMinutes": 205, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3519720, "priceFormatted": "3.519.720₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-JPS3BN", "ticketNo": "738-4033560105", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3Icyvd3gKRWxOV", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0110", "depTime": "06:45", "arrTime": "08:05", "duration": "3h 30m", "durationMinutes": 210, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3519720, "priceFormatted": "3.519.720₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-REFVQ7", "ticketNo": "738-7013747839", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IdKuJLGLXhEwb", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0136", "depTime": "16:00", "arrTime": "17:20", "duration": "3h 30m", "durationMinutes": 210, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3519720, "priceFormatted": "3.519.720₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-2TIXAU", "ticketNo": "738-9076554440", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IZ5A7wI8LhqJY", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-1266", "depTime": "14:15", "arrTime": "16:05", "duration": "5h 30m", "durationMinutes": 330, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3778650, "priceFormatted": "3.778.650₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-3TZDOD", "ticketNo": "738-1388175683", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IZ5A7wI8LhqJf", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-1264", "depTime": "11:10", "arrTime": "13:00", "duration": "8h 35m", "durationMinutes": 515, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3778650, "priceFormatted": "3.778.650₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-R9UY6C", "ticketNo": "738-7066267800", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IZ5A7wI8LhqJm", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-6420", "depTime": "06:40", "arrTime": "08:35", "duration": "13h 5m", "durationMinutes": 785, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3778650, "priceFormatted": "3.778.650₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-O1VZG5", "ticketNo": "738-3165586834", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3IZ5A7wI8LhqJt", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-1268", "depTime": "18:55", "arrTime": "20:45", "duration": "14h 20m", "durationMinutes": 860, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 3778650, "priceFormatted": "3.778.650₫", "aircraft": "Airbus A321", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "12 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "VN-HSND8I", "ticketNo": "738-8605736906", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "off_0000BAzw3KJCg8QTXgIBqK", "carrier": "Singapore Airlines", "shortCarrier": "Singapore Airlines", "airlineCode": "SQ", "badge": "SQ", "badgeBg": "bg-amber-600", "flightNumber": "TR-0353", "depTime": "15:40", "arrTime": "18:45", "duration": "23h 25m", "durationMinutes": 1405, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 6329610, "priceFormatted": "6.329.610₫", "aircraft": "Boeing 777-300ER", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "SQ-HYTV9B", "ticketNo": "738-7900609673", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/SQ.png"}, {"id": "off_0000BAzw3KIqhS8tWa7uIZ", "carrier": "Singapore Airlines", "shortCarrier": "Singapore Airlines", "airlineCode": "SQ", "badge": "SQ", "badgeBg": "bg-amber-600", "flightNumber": "SQ-0177", "depTime": "12:20", "arrTime": "15:20", "duration": "23h 35m", "durationMinutes": 1415, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 6599610, "priceFormatted": "6.599.610₫", "aircraft": "Boeing 777-300ER", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "SQ-63E57E", "ticketNo": "738-4473582504", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/SQ.png"}, {"id": "off_0000BAzw3KIqhS8tWa7uIg", "carrier": "Singapore Airlines", "shortCarrier": "Singapore Airlines", "airlineCode": "SQ", "badge": "SQ", "badgeBg": "bg-amber-600", "flightNumber": "SQ-0183", "depTime": "15:55", "arrTime": "18:55", "duration": "20h 0m", "durationMinutes": 1200, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 6599610, "priceFormatted": "6.599.610₫", "aircraft": "Boeing 777-300ER", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "SQ-1F35BU", "ticketNo": "738-4330484141", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/SQ.png"}, {"id": "off_0000BAzw3KJCg8QTXgIBqD", "carrier": "Singapore Airlines", "shortCarrier": "Singapore Airlines", "airlineCode": "SQ", "badge": "SQ", "badgeBg": "bg-amber-600", "flightNumber": "SQ-0185", "depTime": "19:40", "arrTime": "22:40", "duration": "16h 15m", "durationMinutes": 975, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 6599610, "priceFormatted": "6.599.610₫", "aircraft": "Boeing 777-300ER", "route": "SGN → HAN", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Nội Bài (HAN) — Ga T1", "cabinBag": "7 kg xách tay", "checkedBag": "25 kg ký gửi", "pnr": "SQ-8BF25L", "ticketNo": "738-7429395369", "routeCode": "SGN-HAN", "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "hasCheckedBag": true, "airlineLogo": "https://images.kiwi.com/airlines/64x64/SQ.png"}, {"id": "han_dad_vn157", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0157", "depTime": "06:00", "arrTime": "07:20", "duration": "1h 20m", "durationMinutes": 80, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1450000, "priceFormatted": "1.450.000₫", "aircraft": "Airbus A321", "route": "HAN → DAD", "routeCode": "HAN-DAD", "date": "15 Th10, 2026", "depAirport": "Nội Bài (HAN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "hasCheckedBag": true, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VN-HD157A", "ticketNo": "738-1122334455", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "han_dad_vj501", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0501", "depTime": "07:15", "arrTime": "08:35", "duration": "1h 20m", "durationMinutes": 80, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 920000, "priceFormatted": "920.000₫", "aircraft": "Airbus A321", "route": "HAN → DAD", "routeCode": "HAN-DAD", "date": "15 Th10, 2026", "depAirport": "Nội Bài (HAN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "hasCheckedBag": false, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VJ-HD501B", "ticketNo": "738-2233445566", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "han_dad_vn163", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0163", "depTime": "09:30", "arrTime": "10:50", "duration": "1h 20m", "durationMinutes": 80, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1680000, "priceFormatted": "1.680.000₫", "aircraft": "Boeing 787-9 Dreamliner", "route": "HAN → DAD", "routeCode": "HAN-DAD", "date": "15 Th10, 2026", "depAirport": "Nội Bài (HAN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "hasCheckedBag": true, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VN-HD163C", "ticketNo": "738-3344556677", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "han_dad_vj509", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0509", "depTime": "14:00", "arrTime": "15:20", "duration": "1h 20m", "durationMinutes": 80, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1050000, "priceFormatted": "1.050.000₫", "aircraft": "Airbus A321", "route": "HAN → DAD", "routeCode": "HAN-DAD", "date": "15 Th10, 2026", "depAirport": "Nội Bài (HAN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "hasCheckedBag": false, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VJ-HD509D", "ticketNo": "738-4455667788", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "han_dad_vj515", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0515", "depTime": "11:20", "arrTime": "15:45", "duration": "4h 25m", "durationMinutes": 265, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 1820000, "priceFormatted": "1.820.000₫", "aircraft": "Airbus A321", "route": "HAN → DAD", "routeCode": "HAN-DAD", "date": "15 Th10, 2026", "depAirport": "Nội Bài (HAN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "hasCheckedBag": false, "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "pnr": "VJ-HD515E", "ticketNo": "738-5566778899", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "han_dad_vn183", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0183", "depTime": "12:10", "arrTime": "17:30", "duration": "5h 20m", "durationMinutes": 320, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 2340000, "priceFormatted": "2.340.000₫", "aircraft": "Airbus A321", "route": "HAN → DAD", "routeCode": "HAN-DAD", "date": "15 Th10, 2026", "depAirport": "Nội Bài (HAN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "hasCheckedBag": true, "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "pnr": "VN-HD183F", "ticketNo": "738-6677889900", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "sgn_dad_vj622", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0622", "depTime": "06:10", "arrTime": "07:30", "duration": "1h 20m", "durationMinutes": 80, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 890000, "priceFormatted": "890.000₫", "aircraft": "Airbus A321", "route": "SGN → DAD", "routeCode": "SGN-DAD", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "hasCheckedBag": false, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VJ-SD622A", "ticketNo": "738-7788990011", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "sgn_dad_vn122", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0122", "depTime": "07:00", "arrTime": "08:25", "duration": "1h 25m", "durationMinutes": 85, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1390000, "priceFormatted": "1.390.000₫", "aircraft": "Airbus A321", "route": "SGN → DAD", "routeCode": "SGN-DAD", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "hasCheckedBag": true, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VN-SD122B", "ticketNo": "738-8899001122", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "sgn_dad_vn128", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0128", "depTime": "09:00", "arrTime": "10:25", "duration": "1h 25m", "durationMinutes": 85, "stops": 0, "isDirect": true, "type": "Bay thẳng", "price": 1620000, "priceFormatted": "1.620.000₫", "aircraft": "Airbus A350-900 Wide-Body", "route": "SGN → DAD", "routeCode": "SGN-DAD", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "hasCheckedBag": true, "baggageTransfer": null, "baggageTransferType": null, "pnr": "VN-SD128C", "ticketNo": "738-9900112233", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}, {"id": "sgn_dad_vj634", "carrier": "VietJet Air", "shortCarrier": "VietJet Air", "airlineCode": "VJ", "badge": "VJ", "badgeBg": "bg-red-600", "flightNumber": "VJ-0634", "depTime": "08:30", "arrTime": "13:45", "duration": "5h 15m", "durationMinutes": 315, "stops": 1, "isDirect": false, "type": "1 điểm dừng (Nối chuyến)", "price": 1750000, "priceFormatted": "1.750.000₫", "aircraft": "Airbus A321", "route": "SGN → DAD", "routeCode": "SGN-DAD", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "7 kg xách tay", "checkedBag": "Chưa gồm ký gửi", "hasCheckedBag": false, "baggageTransfer": "⚠️ Tự chuyển hành lý (Thủ công)", "baggageTransferType": "manual", "pnr": "VJ-SD634D", "ticketNo": "738-0011223344", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VJ.png"}, {"id": "sgn_dad_vn142", "carrier": "Vietnam Airlines", "shortCarrier": "Vietnam Airlines", "airlineCode": "VN", "badge": "VN", "badgeBg": "bg-blue-600", "flightNumber": "VN-0142", "depTime": "10:15", "arrTime": "16:10", "duration": "5h 55m", "durationMinutes": 355, "stops": 2, "isDirect": false, "type": "2 điểm dừng (Nối chuyến)", "price": 2580000, "priceFormatted": "2.580.000₫", "aircraft": "Airbus A321", "route": "SGN → DAD", "routeCode": "SGN-DAD", "date": "15 Th10, 2026", "depAirport": "Tân Sơn Nhất (SGN) — Ga T1", "arrAirport": "Đà Nẵng (DAD) — Ga Quốc Nội", "cabinBag": "12 kg xách tay", "checkedBag": "23 kg ký gửi (1 kiện)", "hasCheckedBag": true, "baggageTransfer": "🔄 Chuyển hành lý tự động", "baggageTransferType": "auto", "pnr": "VN-SD142E", "ticketNo": "738-1122446688", "airlineLogo": "https://images.kiwi.com/airlines/64x64/VN.png"}];
+
+    let activeRoute = 'SGN-HAN';
+    let activeFlights = [];
+    let selectedFlight = null;
+    let savedTickets = [
+      {
+        id: "off_saved_demo_01",
+        carrier: "Vietnam Airlines",
+        shortCarrier: "Vietnam Airlines",
+        airlineCode: "VN",
+        badge: "VN",
+        badgeBg: "bg-blue-600",
+        flightNumber: "VN-0240",
+        depTime: "07:00",
+        arrTime: "09:10",
+        duration: "2h 10m",
+        durationMinutes: 130,
+        stops: 0,
+        isDirect: true,
+        type: "Bay thẳng",
+        price: 2073060,
+        priceFormatted: "2.073.060₫",
+        aircraft: "Airbus A350-900 Wide-Body",
+        route: "SGN → HAN",
+        date: "15 Th10, 2026",
+        depAirport: "Tân Sơn Nhất (SGN) — Ga T1",
+        arrAirport: "Nội Bài (HAN) — Ga T1",
+        cabinBag: "12 kg xách tay",
+        checkedBag: "23 kg ký gửi (1 kiện)",
+        pnr: "VN-8XGGJ7",
+        ticketNo: "738-8898783302",
+        baggageTransfer: null,
+        baggageTransferType: null
+      }
+    ];
+
+    // Preference chips state
+    let prefDirect = true;
+    let prefTransit = true;
+    let prefBaggage = false;
+    let activeQuickFilterType = 'all';
+    let currentSort = 'price';
+    let isDarkMode = true;
+
+    // Route Switching
+    function switchRoute(routeCode) {
+      activeRoute = routeCode;
+      ['SGN-HAN', 'HAN-DAD', 'SGN-DAD'].forEach(r => {
+        const btn = document.getElementById('route-pill-' + r);
+        if (r === routeCode) {
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-ios-blue text-white shadow-sm transition-all';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all';
+        }
+      });
+
+      const routeFlights = masterFlightsCatalog.filter(f => f.routeCode === routeCode);
+      const parts = routeCode.split('-');
+      document.getElementById('search-orig-code').textContent = parts[0];
+      document.getElementById('search-dest-code').textContent = parts[1];
+      document.getElementById('route-header-sub').textContent = `Tuyến bay ${parts[0]} ⇄ ${parts[1]}`;
+      document.getElementById('phone-route-status').textContent = `${parts[0]} ⇄ ${parts[1]} (${routeFlights.length} chuyến thật)`;
+
+      applyAllFilters();
+    }
+
+    // Toggle Preference Chips
+    function togglePref(type) {
+      if (type === 'direct') prefDirect = !prefDirect;
+      if (type === 'transit') prefTransit = !prefTransit;
+      if (type === 'baggage') prefBaggage = !prefBaggage;
+
+      updatePrefChipUI('direct', prefDirect);
+      updatePrefChipUI('transit', prefTransit);
+      updatePrefChipUI('baggage', prefBaggage);
+
+      applyAllFilters();
+    }
+
+    function updatePrefChipUI(type, isActive) {
+      const chip = document.getElementById('pref-chip-' + type);
+      const chk = document.getElementById('pref-chk-' + type);
+      if (isActive) {
+        chip.className = 'py-1.5 px-2 rounded-xl border border-ios-blue bg-blue-500/20 text-ios-blue font-bold flex items-center justify-center gap-1 transition-all';
+        chk.textContent = '✓';
+      } else {
+        chip.className = 'py-1.5 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold flex items-center justify-center gap-1 transition-all';
+        chk.textContent = '○';
+      }
+    }
+
+    // Master filter pipeline
+    function applyAllFilters() {
+      const baseFlights = masterFlightsCatalog.filter(f => f.routeCode === activeRoute);
+      
+      const filtered = baseFlights.filter(f => {
+        // Preferences
+        if (!prefDirect && f.stops === 0) return false;
+        if (!prefTransit && f.stops > 0) return false;
+        if (prefBaggage && !f.hasCheckedBag) return false;
+
+        // Quick filter bar
+        if (activeQuickFilterType === 'direct' && f.stops > 0) return false;
+        if (activeQuickFilterType === 'transit' && f.stops === 0) return false;
+        if (activeQuickFilterType === 'baggage' && !f.hasCheckedBag) return false;
+        if (activeQuickFilterType === 'early') {
+          const h = parseInt(f.depTime.slice(0, 2), 10);
+          if (h >= 12) return false;
+        }
+        if (activeQuickFilterType === 'late') {
+          const h = parseInt(f.depTime.slice(0, 2), 10);
+          if (h < 18) return false;
+        }
+
+        // Modal checkboxes if applicable
+        const chkDirect = document.getElementById('chk-direct');
+        const chkTransit = document.getElementById('chk-transit');
+        const chkChecked = document.getElementById('chk-checked-bag');
+        const chkAuto = document.getElementById('chk-auto-baggage');
+        const maxPrice = parseInt(document.getElementById('price-range').value);
+
+        if (chkDirect && !chkDirect.checked && f.stops === 0) return false;
+        if (chkTransit && !chkTransit.checked && f.stops > 0) return false;
+        if (chkChecked && chkChecked.checked && !f.hasCheckedBag) return false;
+        if (chkAuto && chkAuto.checked && f.baggageTransferType !== 'auto') return false;
+        if (f.price > maxPrice) return false;
+
+        return true;
+      });
+
+      // Sorting
+      if (currentSort === 'price' || activeQuickFilterType === 'cheap') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (currentSort === 'time' || activeQuickFilterType === 'early') {
+        filtered.sort((a, b) => a.depTime.localeCompare(b.depTime));
+      } else if (activeQuickFilterType === 'late') {
+        filtered.sort((a, b) => b.depTime.localeCompare(a.depTime));
+      } else if (currentSort === 'duration') {
+        filtered.sort((a, b) => a.durationMinutes - b.durationMinutes);
+      }
+
+      activeFlights = filtered;
+      renderFlightList(filtered);
+    }
+
+    // Render Flight List in Phone
+    function renderFlightList(flights) {
+      const container = document.getElementById('flight-list');
+      container.innerHTML = '';
+
+      if (!flights || flights.length === 0) {
+        document.getElementById('no-flight-msg').classList.remove('hidden');
+        document.getElementById('flight-count-label').textContent = '0 chuyến';
+        return;
+      }
+
+      document.getElementById('no-flight-msg').classList.add('hidden');
+      document.getElementById('flight-count-label').textContent = flights.length + ' chuyến thật';
+
+      flights.forEach(f => {
+        const card = document.createElement('div');
+        const cardBgClass = isDarkMode ? 'bg-slate-800 border-slate-700/80 hover:border-ios-blue' : 'bg-white border-slate-200 hover:border-ios-blue';
+        const cardTextMain = isDarkMode ? 'text-white' : 'text-slate-900';
+        const cardTextSub = isDarkMode ? 'text-slate-400' : 'text-slate-500';
+
+        card.className = `flight-card ${cardBgClass} rounded-2xl p-3.5 shadow-ios space-y-2 active:scale-[0.98] cursor-pointer transition-all border`;
+        card.onclick = () => openFlightDetail(f.id);
+
+        const badgeHtml = f.isDirect 
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Bay thẳng</span>'
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">${f.stops} điểm dừng</span>`;
+
+        // DYNAMIC STOP DOTS & NO WHITE BOX ARTIFACT
+        let routeGraphic = '';
+        if (f.isDirect) {
+          routeGraphic = `
+            <div class="w-20 h-[1.5px] bg-slate-300 dark:bg-slate-600 relative my-1 flex items-center justify-center">
+              <span class="text-ios-blue text-xs transform rotate-90 leading-none">✈</span>
+            </div>
+          `;
+        } else {
+          const dotCount = Math.max(1, f.stops || 1);
+          let dotsHtml = '';
+          for (let d = 0; d < dotCount; d++) {
+            dotsHtml += `<div class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 ring-2 ring-white dark:ring-slate-800"></div>`;
+          }
+          routeGraphic = `
+            <div class="w-20 h-[1.5px] bg-amber-500/60 relative my-1 flex items-center justify-center gap-1.5">
+              ${dotsHtml}
+            </div>
+          `;
+        }
+
+        // Baggage transfer indicator
+        let baggageTransferBadge = '';
+        if (!f.isDirect && f.baggageTransfer) {
+          const isAuto = f.baggageTransferType === 'auto';
+          const bColor = isAuto ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20';
+          baggageTransferBadge = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${bColor}">${f.baggageTransfer}</span>`;
+        }
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold ${cardTextMain} flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-md ${f.badgeBg} text-white text-[9px] font-black flex items-center justify-center shadow-sm">${f.badge}</span>
+              ${f.shortCarrier} • <span class="font-mono font-black text-slate-700 dark:text-slate-300">${f.flightNumber}</span>
+            </span>
+            ${badgeHtml}
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <div>
+              <span class="text-base font-extrabold ${cardTextMain}">${f.depTime}</span>
+              <p class="text-[10px] ${cardTextSub} font-bold">${f.route.split(' → ')[0]}</p>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-[10px] ${cardTextSub} font-semibold">${f.duration}</span>
+              ${routeGraphic}
+              <span class="text-[9px] ${f.isDirect ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} font-bold">${f.isDirect ? 'Không dừng' : 'Nối chuyến'}</span>
+            </div>
+            <div class="text-right">
+              <span class="text-base font-extrabold ${cardTextMain}">${f.arrTime}</span>
+              <p class="text-[10px] ${cardTextSub} font-bold">${f.route.split(' → ')[1]}</p>
+            </div>
+          </div>
+          
+          <!-- Baggage row with transfer tag -->
+          <div class="pt-1.5 border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] ${cardTextSub} flex items-center gap-1">
+                <i class="ph-bold ph-bag"></i> ${f.cabinBag}
+              </span>
+              ${baggageTransferBadge}
+            </div>
+            <span class="font-black text-sm text-ios-blue">${f.priceFormatted}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Open Flight Detail Modal
+    function openFlightDetail(flightId) {
+      const flight = masterFlightsCatalog.find(f => f.id === flightId) || activeFlights[0];
+      selectedFlight = flight;
+
+      const badge = document.getElementById('m-type-badge');
+      badge.textContent = flight.type;
+      if (flight.isDirect) {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
+        document.getElementById('m-transit-box').classList.add('hidden');
+      } else {
+        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30';
+        document.getElementById('m-transit-box').classList.remove('hidden');
+        document.getElementById('m-transit-desc').textContent = `Quá cảnh ${flight.stops} điểm dừng (${flight.duration})`;
+        document.getElementById('m-transit-baggage').textContent = flight.baggageTransfer || '🔄 Chuyển hành lý tự động';
+      }
+
+      document.getElementById('m-carrier').textContent = flight.carrier + ' • ' + flight.flightNumber;
+      document.getElementById('m-aircraft').textContent = flight.aircraft + ' • Phổ thông';
+      document.getElementById('m-dep-time').textContent = flight.depTime;
+      document.getElementById('m-arr-time').textContent = flight.arrTime;
+      document.getElementById('m-dep-airport').textContent = flight.depAirport;
+      document.getElementById('m-arr-airport').textContent = flight.arrAirport;
+      document.getElementById('m-cabin-bag').textContent = flight.cabinBag;
+      document.getElementById('m-checked-bag').textContent = flight.checkedBag;
+      document.getElementById('m-price').textContent = flight.priceFormatted;
+      document.getElementById('sb-amount').textContent = flight.priceFormatted;
+
+      document.getElementById('flight-modal').classList.remove('hidden');
+    }
+
+    function closeFlightDetail() {
+      document.getElementById('flight-modal').classList.add('hidden');
+    }
+
+    // Modal Filters
+    function openFilterSheet() { document.getElementById('filter-sheet').classList.remove('hidden'); }
+    function closeFilterSheet() { document.getElementById('filter-sheet').classList.add('hidden'); }
+
+    function updatePriceSlider(val) {
+      document.getElementById('price-slider-label').textContent = (parseInt(val)).toLocaleString('vi-VN') + '₫';
+    }
+
+    function setFilterSort(type) {
+      currentSort = type;
+      ['price', 'time', 'duration'].forEach(t => {
+        const btn = document.getElementById('sort-' + t);
+        if (t === type) btn.className = 'py-2 rounded-xl border border-ios-blue bg-blue-50 dark:bg-blue-500/20 text-ios-blue font-bold';
+        else btn.className = 'py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold';
+      });
+    }
+
+    function applyFilters() {
+      closeFilterSheet();
+      applyAllFilters();
+    }
+
+    function resetFilters() {
+      document.getElementById('chk-direct').checked = true;
+      document.getElementById('chk-transit').checked = true;
+      document.getElementById('chk-checked-bag').checked = false;
+      document.getElementById('chk-auto-baggage').checked = false;
+      document.getElementById('price-range').value = 7000000;
+      updatePriceSlider(7000000);
+      setFilterSort('price');
+      closeFilterSheet();
+      applyAllFilters();
+    }
+
+    function quickFilter(type) {
+      activeQuickFilterType = type;
+      document.querySelectorAll('[id^="qf-"]').forEach(btn => {
+        btn.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-ios whitespace-nowrap';
+      });
+      document.getElementById('qf-' + type).className = 'px-3 py-1 rounded-full text-xs font-bold filter-chip-active whitespace-nowrap';
+      applyAllFilters();
+    }
+
+    // Checkout & Sandbox Payment
+    function openSandboxCheckout() {
+      closeFlightDetail();
+      const flight = selectedFlight;
+      document.getElementById('sb-amount').textContent = flight.priceFormatted;
+      document.getElementById('success-pnr').textContent = flight.pnr;
+      document.getElementById('success-ticket-no').textContent = flight.ticketNo;
+      document.getElementById('sandbox-form').classList.remove('hidden');
+      document.getElementById('sandbox-success').classList.add('hidden');
+      document.getElementById('btn-pay-sandbox').innerHTML = '<span>Xác nhận Đặt Vé & Lưu Vào Tài Khoản</span>';
+      document.getElementById('btn-pay-sandbox').disabled = false;
+      document.getElementById('sandbox-modal').classList.remove('hidden');
+    }
+
+    function closeSandboxCheckout() {
+      document.getElementById('sandbox-modal').classList.add('hidden');
+    }
+
+    function processSandboxPayment() {
+      const btn = document.getElementById('btn-pay-sandbox');
+      btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-base"></i> <span>Đang xuất vé thật qua Duffel & lưu tài khoản...</span>';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const booked = selectedFlight;
+        if (!savedTickets.some(t => t.pnr === booked.pnr)) {
+          savedTickets.unshift(booked);
+        }
+        renderSavedTickets();
+
+        document.getElementById('nav-profile-badge').classList.remove('hidden');
+
+        document.getElementById('sandbox-form').classList.add('hidden');
+        document.getElementById('sandbox-success').classList.remove('hidden');
+      }, 1000);
+    }
+
+    function renderSavedTickets() {
+      const container = document.getElementById('saved-tickets-container');
+      container.innerHTML = '';
+
+      savedTickets.forEach(ticket => {
+        const div = document.createElement('div');
+        div.className = 'bg-white dark:bg-slate-800/90 rounded-2xl p-3.5 shadow-ios border border-slate-200 dark:border-slate-700 hover:border-ios-blue transition-all cursor-pointer space-y-2';
+        div.onclick = () => showBoardingPass(ticket);
+        div.innerHTML = `
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded ${ticket.badgeBg} text-white text-[8px] font-black flex items-center justify-center">${ticket.badge}</span>
+              ${ticket.shortCarrier} • <b class="text-slate-700 dark:text-slate-300 font-mono">${ticket.flightNumber}</b>
+            </span>
+            <span class="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+              Đã xác nhận
+            </span>
+          </div>
+          <div class="flex justify-between items-center text-xs pt-1">
+            <div>
+              <span class="text-sm font-black text-slate-900 dark:text-white">${ticket.route}</span>
+              <p class="text-[10px] text-slate-400 font-semibold">${ticket.date} • ${ticket.depTime} (${ticket.aircraft})</p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 font-bold block">MÃ PNR</span>
+              <span class="font-black text-xs text-ios-blue font-mono tracking-wider">${ticket.pnr}</span>
+            </div>
+          </div>
+          <div class="pt-1.5 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] text-slate-400">
+            <span class="flex items-center gap-1 text-ios-blue font-bold">
+              <i class="ph-bold ph-qr-code text-sm"></i> Xem Thẻ Lên Máy Bay (Boarding Pass)
+            </span>
+            <span class="font-bold text-slate-700 dark:text-slate-300">${ticket.priceFormatted}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('ticket-badge-count').textContent = savedTickets.length + ' vé đã lưu';
+    }
+
+    function goToProfileTickets() {
+      closeSandboxCheckout();
+      switchTab('profile');
+      document.getElementById('nav-profile-badge').classList.add('hidden');
+    }
+
+    function showBoardingPass(ticket) {
+      alert(`🎫 THẺ LÊN MÁY BAY ĐIỆN TỬ (NOMADIX BOARDING PASS):\n• Hãng: ${ticket.carrier}\n• Số hiệu chuyến bay: ${ticket.flightNumber}\n• Tàu bay: ${ticket.aircraft}\n• Mã đặt chỗ PNR: ${ticket.pnr}\n• Số vé điện tử: ${ticket.ticketNo}\n• Chặng bay: ${ticket.route} (${ticket.depTime} → ${ticket.arrTime})\n• Trạng thái hành lý: ${ticket.checkedBag}\n• Hành khách: Nguyễn Văn Đức (Mr)\n• Cổng xuất phát: Gate 12 (Tân Sơn Nhất T1)`);
+    }
+
+    // Tab Switching inside phone
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('text-slate-400');
+      });
+
+      const targetTab = document.getElementById('tab-' + tabId);
+      if (targetTab) targetTab.classList.remove('hidden');
+
+      const targetNav = document.getElementById('nav-' + tabId);
+      if (targetNav) {
+        targetNav.classList.add('tab-active');
+        targetNav.classList.remove('text-slate-400');
+      }
+    }
+
+    // Theme Toggle Function (Syncs outer dashboard and phone)
+    function toggleTheme() {
+      isDarkMode = !isDarkMode;
+      const body = document.getElementById('app-body');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeText = document.getElementById('theme-text');
+
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        body.className = 'bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-start p-3 sm:p-5 lg:p-6 font-sans selection:bg-ios-blue selection:text-white transition-colors duration-300';
+        themeIcon.className = 'ph-bold ph-sun text-amber-400 text-sm';
+        themeText.textContent = 'Giao diện Sáng';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        body.className = 'bg-slate-100 text-slate-900 min-h-screen flex flex-col items-center justify-start p-3 sm:p-5 lg:p-6 font-sans selection:bg-ios-blue selection:text-white transition-colors duration-300';
+        themeIcon.className = 'ph-bold ph-moon text-indigo-600 text-sm';
+        themeText.textContent = 'Giao diện Tối';
+      }
+
+      renderFlightList(activeFlights);
+      renderSavedTickets();
+    }
+
+    // Initial Load
+    switchRoute('SGN-HAN');
+    renderSavedTickets();
+  </script>
+</body>
+</html>
