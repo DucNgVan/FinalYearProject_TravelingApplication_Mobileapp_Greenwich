@@ -1,0 +1,1 @@
+- **2026-09-23:** docs(ux): research user journey and interaction models for collaborative squad planning
