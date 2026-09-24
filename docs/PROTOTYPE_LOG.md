@@ -1,1 +1,2 @@
 - **2026-09-23:** docs(ux): research user journey and interaction models for collaborative squad planning
+- **2026-09-24:** docs(ui): define accessibility contrast standards and color tokens (wcag 2.1 aa)
