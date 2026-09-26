@@ -1,3 +1,4 @@
 - **2026-09-23:** docs(ux): research user journey and interaction models for collaborative squad planning
 - **2026-09-24:** docs(ui): define accessibility contrast standards and color tokens (wcag 2.1 aa)
 - **2026-09-25:** docs(ui): specify typography hierarchy using plus jakarta sans and jetbrains mono
+- **2026-09-26:** docs(ui): establish 8pt spatial grid system and thumb-zone ergonomics for mobile
