@@ -4,3 +4,4 @@
 - **2026-09-26:** docs(ui): establish 8pt spatial grid system and thumb-zone ergonomics for mobile
 - **2026-09-27:** docs(wireframe): create low-fidelity wireframes for flight search and airline offer cards
 - **2026-09-28:** docs(wireframe): create low-fidelity wireframes for hotel search and curated stays spotlight
+- **2026-09-29:** docs(wireframe): create low-fidelity wireframes for map-centric places discovery workspace
