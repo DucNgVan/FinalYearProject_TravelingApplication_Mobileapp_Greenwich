@@ -5,3 +5,4 @@
 - **2026-09-27:** docs(wireframe): create low-fidelity wireframes for flight search and airline offer cards
 - **2026-09-28:** docs(wireframe): create low-fidelity wireframes for hotel search and curated stays spotlight
 - **2026-09-29:** docs(wireframe): create low-fidelity wireframes for map-centric places discovery workspace
+- **2026-09-30:** docs(wireframe): design multi-city step-by-step guided wizard wireframes and budget estimator
