@@ -7,3 +7,4 @@
 - **2026-09-29:** docs(wireframe): create low-fidelity wireframes for map-centric places discovery workspace
 - **2026-09-30:** docs(wireframe): design multi-city step-by-step guided wizard wireframes and budget estimator
 - **2026-10-01:** docs(wireframe): design squad collaboration timeline and expense settlement matrix wireframes
+- **2026-10-02:** feat(prototype): scaffold 3-column panoramic showcase dashboard in html preview
