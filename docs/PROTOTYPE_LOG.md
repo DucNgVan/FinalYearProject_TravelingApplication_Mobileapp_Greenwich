@@ -8,3 +8,4 @@
 - **2026-09-30:** docs(wireframe): design multi-city step-by-step guided wizard wireframes and budget estimator
 - **2026-10-01:** docs(wireframe): design squad collaboration timeline and expense settlement matrix wireframes
 - **2026-10-02:** feat(prototype): scaffold 3-column panoramic showcase dashboard in html preview
+- **2026-10-03:** feat(prototype): implement iphone 16 pro frame with dynamic island and status bar in preview
