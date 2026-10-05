@@ -10,3 +10,4 @@
 - **2026-10-02:** feat(prototype): scaffold 3-column panoramic showcase dashboard in html preview
 - **2026-10-03:** feat(prototype): implement iphone 16 pro frame with dynamic island and status bar in preview
 - **2026-10-04:** feat(prototype): integrate mapbox gl js v3 interactive map canvas in html preview
+- **2026-10-05:** feat(prototype): implement floating search bar and category filter chips in map preview
