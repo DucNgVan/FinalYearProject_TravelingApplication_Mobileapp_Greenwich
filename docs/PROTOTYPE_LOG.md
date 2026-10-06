@@ -11,3 +11,4 @@
 - **2026-10-03:** feat(prototype): implement iphone 16 pro frame with dynamic island and status bar in preview
 - **2026-10-04:** feat(prototype): integrate mapbox gl js v3 interactive map canvas in html preview
 - **2026-10-05:** feat(prototype): implement floating search bar and category filter chips in map preview
+- **2026-10-06:** feat(prototype): add multi-city destination switcher (da nang, hoi an, tokyo, paris) in preview
