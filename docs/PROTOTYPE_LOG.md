@@ -12,3 +12,4 @@
 - **2026-10-04:** feat(prototype): integrate mapbox gl js v3 interactive map canvas in html preview
 - **2026-10-05:** feat(prototype): implement floating search bar and category filter chips in map preview
 - **2026-10-06:** feat(prototype): add multi-city destination switcher (da nang, hoi an, tokyo, paris) in preview
+- **2026-10-07:** feat(prototype): implement place selection wishlist drawer and animated pin markers in preview
