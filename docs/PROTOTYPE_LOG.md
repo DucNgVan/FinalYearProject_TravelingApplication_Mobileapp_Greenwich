@@ -13,3 +13,4 @@
 - **2026-10-05:** feat(prototype): implement floating search bar and category filter chips in map preview
 - **2026-10-06:** feat(prototype): add multi-city destination switcher (da nang, hoi an, tokyo, paris) in preview
 - **2026-10-07:** feat(prototype): implement place selection wishlist drawer and animated pin markers in preview
+- **2026-10-08:** feat(prototype): simulate ai hierarchical agglomerative clustering transition in preview
