@@ -14,3 +14,4 @@
 - **2026-10-06:** feat(prototype): add multi-city destination switcher (da nang, hoi an, tokyo, paris) in preview
 - **2026-10-07:** feat(prototype): implement place selection wishlist drawer and animated pin markers in preview
 - **2026-10-08:** feat(prototype): simulate ai hierarchical agglomerative clustering transition in preview
+- **2026-10-09:** feat(prototype): implement dual-theme switching (pale blue light and deep navy dark) in preview
