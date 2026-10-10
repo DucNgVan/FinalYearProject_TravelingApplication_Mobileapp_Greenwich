@@ -15,3 +15,4 @@
 - **2026-10-07:** feat(prototype): implement place selection wishlist drawer and animated pin markers in preview
 - **2026-10-08:** feat(prototype): simulate ai hierarchical agglomerative clustering transition in preview
 - **2026-10-09:** feat(prototype): implement dual-theme switching (pale blue light and deep navy dark) in preview
+- **2026-10-10:** feat(prototype): simulate live duffel flight offers, co2 emissions and baggage transfer indicators
