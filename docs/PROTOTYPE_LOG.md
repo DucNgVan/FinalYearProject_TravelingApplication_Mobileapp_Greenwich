@@ -17,3 +17,4 @@
 - **2026-10-09:** feat(prototype): implement dual-theme switching (pale blue light and deep navy dark) in preview
 - **2026-10-10:** feat(prototype): simulate live duffel flight offers, co2 emissions and baggage transfer indicators
 - **2026-10-11:** feat(prototype): enrich preview with trending flight deals carousel and nomadix flight guarantee
+- **2026-10-12:** feat(prototype): enrich preview with stay vibe chips and featured curated stays spotlight
