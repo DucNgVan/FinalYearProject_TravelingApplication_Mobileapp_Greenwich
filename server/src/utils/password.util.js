@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const SALT_ROUNDS = 12;
+const SALT_ROUNDS = 12; // Enforce minimum 12 rounds per OWASP ASVS v4.0
 
 /**
  * Hash a plain text password using Bcrypt with 12 rounds
