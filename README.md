@@ -3,12 +3,12 @@
 > **Final Year Project (FYP) — University of Greenwich**  
 > **Student:** Nguyễn Văn Đức (DucNgVan) — `ducnva.wk@gmail.com`  
 > **Degree Program:** BSc (Hons) Computing  
-> **Current Status:** Phase 1 Complete (Requirements Analysis, UI/UX Design System & Interactive HTML Prototype Signed Off on 13/10/2026)  
+> **Current Status:** Phase 2 Complete (Backend Polyglot Infrastructure & Module 1 Auth/RBAC - 100% TDD GREEN)  
 
 ---
 
 ## 📖 Project Overview
-Nomadix is a modern collaborative travel mobile platform designed to streamline squad trip planning and automated shared expense settlement. It eliminates "app sprawl" by combining flight/hotel booking discovery, real-time shared multi-day itineraries, and in-trip group expense splitting into one seamless mobile experience.
+Nomadix is a modern collaborative travel mobile platform designed to streamline squad trip planning and automated shared expense settlement.
 
 ### 🎯 Key Value Pillars
 1. **Smart Booking Discovery:** Aggregation of live flight NDC offers and accommodations with sub-50ms Redis cache-aside response.
@@ -17,14 +17,20 @@ Nomadix is a modern collaborative travel mobile platform designed to streamline 
 
 ---
 
-## 📱 Interactive Mobile Prototype (HTML5 / Mapbox GL JS)
-The UI/UX design tokens and interactive mobile prototype were finalized and signed off with the academic supervisor on **13/10/2026**:
-* **Live Interactive Showcase:** `client/preview/index.html` (3-column panoramic dashboard featuring iPhone 16 Pro mockup, Apple HIG touch ergonomics, and dual theme support).
+## 🚀 Backend Implementation Progress (Module 1: Auth & RBAC Complete)
+* **Polyglot Database Infrastructure:** Docker Compose running PostgreSQL 16 (Relational ACID), MongoDB 7.0 (Timelines), Redis 7.0 (RAM Cache).
+* **Security & Authentication:**
+  * Bcrypt password hashing (12 salt rounds, timing-safe equality check).
+  * Dual-Token Session: 15-minute JWT Access Token + SHA-256 hashed Refresh Token with rotation.
+  * Role-Based Access Control (RBAC): `TRAVELER`, `TOUR_GUIDE`, `PARTNER`, `ADMIN`.
+* **Testing:** 100% TDD GREEN (Unit & Integration tests passing with >= 80% branch coverage).
+* **Active Endpoints:**
+  * `GET /`: API Manifest
+  * `GET /health`: System health status
+  * `POST /api/v1/auth/register`: New user registration
+  * `POST /api/v1/auth/login`: User authentication & token issuance
 
 ---
 
-## 📑 Academic Documentation Portal
-* `docs/01-BRD.md`: Business Requirements Document (4 personas, UVP, KPIs).
-* `docs/02-PRD-SRS.md`: Product Requirements Document & SRS (42 FRs, 8 NFRs, BDD Gherkin).
-* `docs/03-TechSpec-SAD.md`: System Architecture Document (C4+1 Model & Polyglot Database Design).
-* `docs/04-UX-UI-Design-System.md`: Design Tokens, WCAG 2.1 AA accessibility, and 8pt spatial grid.
+## 🔮 Next Milestone
+* **Phase 3:** Module 2 — Smart Booking Aggregator (Duffel Live NDC Flights API, Google Places, Normalizer Service & Redis Cache-Aside).
