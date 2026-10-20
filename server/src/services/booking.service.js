@@ -5,6 +5,7 @@ const normalizerService = require('./normalizer.service');
 const cacheService = require('./cache.service');
 
 class BookingService {
+  // Orchestrates parallel queries across multiple providers with cache-aside
   /**
    * Search and aggregate flights
    */
