@@ -3,7 +3,7 @@
 > **Final Year Project (FYP) — University of Greenwich**  
 > **Student:** Nguyễn Văn Đức (DucNgVan) — `ducnva.wk@gmail.com`  
 > **Degree Program:** BSc (Hons) Computing  
-> **Current Status:** Phase 2 Complete (Backend Polyglot Infrastructure & Module 1 Auth/RBAC - 100% TDD GREEN)  
+> **Current Status:** Phase 3 Active (Module 2 Smart Booking Aggregator Complete - 100% TDD GREEN)  
 
 ---
 
@@ -17,20 +17,24 @@ Nomadix is a modern collaborative travel mobile platform designed to streamline 
 
 ---
 
-## 🚀 Backend Implementation Progress (Module 1: Auth & RBAC Complete)
-* **Polyglot Database Infrastructure:** Docker Compose running PostgreSQL 16 (Relational ACID), MongoDB 7.0 (Timelines), Redis 7.0 (RAM Cache).
-* **Security & Authentication:**
-  * Bcrypt password hashing (12 salt rounds, timing-safe equality check).
-  * Dual-Token Session: 15-minute JWT Access Token + SHA-256 hashed Refresh Token with rotation.
-  * Role-Based Access Control (RBAC): `TRAVELER`, `TOUR_GUIDE`, `PARTNER`, `ADMIN`.
-* **Testing:** 100% TDD GREEN (Unit & Integration tests passing with >= 80% branch coverage).
+## 🚀 Backend Implementation Progress (Module 1 & 2 Complete)
+* **Module 1 (Auth & RBAC):** Bcrypt 12 rounds, JWT + SHA-256 Refresh Token rotation, Dual-mode UserRepository, Joi DTO validation.
+* **Module 2 (Smart Booking Aggregator):**
+  * Live Duffel NDC Flights API integration with aircraft details, baggage policies, and CO2 carbon emissions.
+  * Google Places API (New) adapter for accommodations and domestic high-fidelity mock fallback.
+  * `NormalizerService`: Heterogeneous data standardization to `UnifiedFlight` and `UnifiedHotel` with price-optimized deduplication.
+  * `CacheService`: Redis Cache-Aside engine with sub-50ms RAM latency (TTL 1800s flights / 3600s hotels).
+* **Testing & Quality:**
+  * Backend Unit & Integration Tests: 100% Passing (128/128 tests GREEN).
 * **Active Endpoints:**
   * `GET /`: API Manifest
   * `GET /health`: System health status
-  * `POST /api/v1/auth/register`: New user registration
-  * `POST /api/v1/auth/login`: User authentication & token issuance
+  * `POST /api/v1/auth/register`: User registration
+  * `POST /api/v1/auth/login`: User login
+  * `GET /api/v1/flights/search`: Flight offers aggregation, multi-facet filtering & sorting
+  * `GET /api/v1/hotels/search`: Hotel discovery & accommodation search
 
 ---
 
 ## 🔮 Next Milestone
-* **Phase 3:** Module 2 — Smart Booking Aggregator (Duffel Live NDC Flights API, Google Places, Normalizer Service & Redis Cache-Aside).
+* **Phase 4:** Module 3 (Collaborative Itinerary Planner in MongoDB) & Module 4 (Group Expense Hub & Greedy Minimum Cash-Flow Reduction Algorithm in PostgreSQL).
