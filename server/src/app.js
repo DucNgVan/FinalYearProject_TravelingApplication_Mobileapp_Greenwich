@@ -9,6 +9,8 @@ const authRoutes = require('./routes/auth.routes');
 const flightRoutes = require('./routes/flight.routes');
 const hotelRoutes = require('./routes/hotel.routes');
 const itineraryRoutes = require('./routes/itinerary.routes');
+const expenseRoutes = require('./routes/expense.routes');
+const placesRoutes = require('./routes/places.routes');
 
 const app = express();
 
@@ -30,6 +32,9 @@ app.get('/', (req, res) => {
       flights: '/api/v1/flights/search',
       hotels: '/api/v1/hotels/search',
       itineraries: '/api/v1/itineraries',
+      expenses: '/api/v1/trips/:tripId/expenses',
+      debts: '/api/v1/trips/:tripId/debts',
+      places: '/api/v1/places/search',
     },
   });
 });
@@ -47,6 +52,8 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/flights', flightRoutes);
 app.use('/api/v1/hotels', hotelRoutes);
 app.use('/api/v1/itineraries', itineraryRoutes);
+app.use('/api/v1/trips', expenseRoutes);
+app.use('/api/v1/places', placesRoutes);
 
 // Test-only crash route for 500 error handler verification
 if (process.env.NODE_ENV === 'test') {

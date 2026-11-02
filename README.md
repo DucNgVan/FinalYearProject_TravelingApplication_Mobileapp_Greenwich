@@ -3,7 +3,7 @@
 > **Final Year Project (FYP) — University of Greenwich**  
 > **Student:** Nguyễn Văn Đức (DucNgVan) — `ducnva.wk@gmail.com`  
 > **Degree Program:** BSc (Hons) Computing  
-> **Current Status:** Phase 4 Active (Module 3 Collaborative Itinerary Planner & Maps Complete - 100% TDD GREEN)  
+> **Current Status:** Phase 5 Active (Module 4 Group Expense Ledger, Greedy Debt Simplification & Cross-DB Guard Complete - 100% TDD GREEN)  
 
 ---
 
@@ -17,7 +17,7 @@ Nomadix is a modern collaborative travel mobile platform designed to streamline 
 
 ---
 
-## 🚀 Backend Implementation Progress (Module 1, 2 & 3 Complete)
+## 🚀 Backend Implementation Progress (Module 1, 2, 3 & 4 Complete)
 * **Module 1 (Auth & RBAC):** Bcrypt 12 rounds, JWT + SHA-256 Refresh Token rotation, Dual-mode UserRepository, Joi DTO validation.
 * **Module 2 (Smart Booking Aggregator):**
   * Live Duffel NDC Flights API integration with aircraft details, baggage policies, and CO2 carbon emissions.
@@ -28,8 +28,16 @@ Nomadix is a modern collaborative travel mobile platform designed to streamline 
   * Mongoose Schema for MongoDB Atlas 7.0 supporting multi-day timelines (`days[]`), activities (`items[]`), and squad members (`collaborators[]`).
   * `GeoUtil`: Haversine great-circle distance algorithm on WGS84 ellipsoid & multi-modal transit duration calculator.
   * `ItineraryService`: Creation, stop additions with automated distance calculation, atomic drag-and-drop timeline reordering, and squad role authorization (`OWNER`, `EDITOR`, `VIEWER`).
+* **Module 4 (Group Expense Tracking & Bill Splitting Hub):**
+  * PostgreSQL 16 ACID financial ledger (`trip_expenses`, `trip_expense_splits`, `trip_settlements`) with atomic transaction lifecycle (`BEGIN...COMMIT/ROLLBACK`).
+  * `DebtUtil`: Greedy Minimum Cash-Flow Reduction Algorithm ($O(N \log N)$) condensing tangled multi-member debts to at most $N-1$ direct payments while preserving zero-sum balance invariant ($\sum \text{NetBalance}_i = 0$).
+  * 4 split modes supported: Equal (`equal`), Exact (`exact`), Percentage (`percentage`), and Shares (`shares`) with remainder cent/dong redistribution eliminating rounding losses.
+  * Cloudinary receipt integration with automated WebP conversion and client-side compression.
+  * `CrossDbIntegrityService`: Cross-database consistency guard detecting orphan PostgreSQL expense records and executing compensating rollbacks.
+* **Global Places & AI Clustering:**
+  * Curated global places search and hierarchical clustering algorithm minimizing inter-stop travel time across itinerary days.
 * **Testing & Quality:**
-  * 100% TDD GREEN (Unit & Integration tests passing with >= 80% branch coverage).
+  * 100% TDD GREEN (All 36 backend test suites passed, 136 tests passing with >= 80% branch coverage).
 * **Active Endpoints:**
   * `GET /`: API Manifest
   * `GET /health`: System health status
@@ -45,8 +53,16 @@ Nomadix is a modern collaborative travel mobile platform designed to streamline 
   * `PATCH /api/v1/itineraries/:id/collaborators/:userId/status`: Accept/decline squad invitation
   * `POST /api/v1/itineraries/:id/days/:dayNumber/items`: Add stop to day timeline (with auto-calculated Haversine transit)
   * `PUT /api/v1/itineraries/:id/days/:dayNumber/reorder`: Atomic drag-and-drop reordering of stops
+  * `POST /api/v1/trips/:tripId/expenses`: Record group expense with split allocations
+  * `GET /api/v1/trips/:tripId/expenses`: List all trip expenses and splits
+  * `POST /api/v1/trips/:tripId/expenses/receipt`: Upload bill receipt image to Cloudinary
+  * `GET /api/v1/trips/:tripId/expenses/summary`: Member net balance sheet
+  * `GET /api/v1/trips/:tripId/debts/settlement-plan`: Optimized minimal debt settlement plan
+  * `POST /api/v1/trips/:tripId/debts/settle`: Settle debt between members
+  * `GET /api/v1/places/search`: Global places search with category filtering
+  * `POST /api/v1/places/ai-plan`: Geographic clustering of places into multi-day itinerary
 
 ---
 
 ## 🔮 Next Milestone
-* **Phase 5:** Module 4 — Group Expense Ledger & Greedy Minimum Cash-Flow Debt Reduction Algorithm ($O(N \log N)$) in PostgreSQL.
+* **Phase 6:** Client Mobile Application (React Native / Expo SDK 57) — Interactive Map Discovery, Multi-City Route Planner, Booking Hub, and Squad Expense Sharing UI.
