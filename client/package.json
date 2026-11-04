@@ -1,0 +1,41 @@
+{
+  "name": "nomadix-client",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nomadix Smart Travel Platform - Cross-Platform Mobile Client",
+  "main": "expo/AppEntry.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "sync-ip": "node scripts/sync-ip.js",
+    "prestart": "node scripts/sync-ip.js",
+    "start": "node scripts/sync-ip.js && npx expo start",
+    "android": "node scripts/sync-ip.js && npx expo start --android",
+    "ios": "node scripts/sync-ip.js && npx expo start --ios",
+    "tunnel": "npx localtunnel --port 5001"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "expo": "~57.0.27",
+    "lucide-react-native": "^1.65.0",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "^5.10.1",
+    "react-native-svg": "^15.16.0",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/preset-react": "^7.24.0",
+    "@react-native/jest-preset": "^0.87.1",
+    "@testing-library/react-native": "12.5.0",
+    "@types/react": "^19.3.0",
+    "babel-jest": "^29.7.0",
+    "babel-preset-expo": "~57.0.14",
+    "jest": "^29.7.0",
+    "react-test-renderer": "19.2.3",
+    "typescript": "^7.0.2"
+  }
+}
