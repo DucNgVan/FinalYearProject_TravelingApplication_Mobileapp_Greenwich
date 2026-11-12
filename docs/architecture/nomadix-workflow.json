@@ -1,0 +1,70 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Nomadix End-to-End Request & Data Flow",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "output": "nomadix-workflow.html"
+  },
+  "lanes": [
+    { "id": "ui", "label": "Client Presentation (React Native / Next.js)" },
+    { "id": "gateway", "label": "Express API Gateway & Middleware" },
+    { "id": "domain", "label": "Core Domain Engines (Business Logic)" },
+    { "id": "persistence", "label": "Polyglot Databases & External NDC APIs" }
+  ],
+  "phases": [
+    { "id": "auth_phase", "label": "Phase 1: Identity & Security", "fromCol": 0, "toCol": 1 },
+    { "id": "search_phase", "label": "Phase 2: Booking & Route Discovery", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "finance_phase", "label": "Phase 3: Itinerary & Debt Settlement", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["user_input", "auth_guard", "token_service", "booking_req", "cache_check", "duffel_fetch", "itinerary_map", "expense_add", "debt_simplifier", "settlement_done"],
+  "nodes": [
+    { "id": "user_input", "lane": "ui", "col": 0, "type": "frontend", "label": "User Action", "sublabel": "Login / Register DTO", "width": 140 },
+    { "id": "auth_guard", "lane": "gateway", "col": 0, "type": "security", "label": "Security Gateway", "sublabel": "Helmet / Rate Limit / Joi", "tag": "Input Validate", "width": 140 },
+    { "id": "token_service", "lane": "domain", "col": 1, "type": "backend", "label": "Auth Service", "sublabel": "Bcrypt 12 / JWT 15m", "tag": "SHA-256 Refresh", "width": 140 },
+    { "id": "pg_user", "lane": "persistence", "col": 1, "type": "database", "label": "PostgreSQL Users", "sublabel": "3NF User Store", "width": 140 },
+    { "id": "booking_req", "lane": "ui", "col": 2, "type": "frontend", "label": "Flight & Hotel Search", "sublabel": "Zustand Booking Store", "width": 140 },
+    { "id": "cache_check", "lane": "domain", "col": 2, "type": "backend", "label": "Cache-Aside Service", "sublabel": "Check Redis RAM", "tag": "<20ms Latency", "width": 140 },
+    { "id": "redis_cache", "lane": "persistence", "col": 2, "type": "database", "label": "Redis 7.0 Cache", "sublabel": "TTL 1800s - 3600s", "width": 140 },
+    { "id": "duffel_fetch", "lane": "persistence", "col": 3, "type": "cloud", "label": "Duffel NDC & Stays", "sublabel": "Carrier Offers Aggregator", "tag": "Fallback Catalog", "width": 140 },
+    { "id": "itinerary_map", "lane": "ui", "col": 4, "type": "frontend", "label": "Itinerary & Mapbox", "sublabel": "Multi-Point Routing HUD", "width": 140 },
+    { "id": "mapbox_directions", "lane": "persistence", "col": 4, "type": "cloud", "label": "Mapbox Directions v5", "sublabel": "Driving Polyline & Time", "width": 140 },
+    { "id": "expense_add", "lane": "gateway", "col": 5, "type": "security", "label": "Expense Endpoint", "sublabel": "POST /trips/:id/expenses", "tag": "ACID Guard", "width": 140 },
+    { "id": "debt_simplifier", "lane": "domain", "col": 5, "type": "backend", "label": "Greedy Debt Engine", "sublabel": "O(N log N) Priority Queue", "tag": "<= N-1 Transfers", "width": 140 },
+    { "id": "settlement_done", "lane": "persistence", "col": 5, "type": "database", "label": "PostgreSQL Ledger", "sublabel": "trip_expenses & splits", "tag": "Zero Float Error", "width": 140 }
+  ],
+  "edges": [
+    { "id": "e1", "from": "user_input", "to": "auth_guard", "variant": "emphasis" },
+    { "id": "e2", "from": "auth_guard", "to": "token_service", "variant": "default" },
+    { "id": "e3", "from": "token_service", "to": "pg_user", "variant": "emphasis" },
+    { "id": "e3b", "from": "token_service", "to": "booking_req", "label": "auth success", "variant": "default" },
+    { "id": "e4", "from": "booking_req", "to": "cache_check", "variant": "emphasis" },
+    { "id": "e5", "from": "cache_check", "to": "redis_cache", "label": "cache check", "variant": "default" },
+    { "id": "e6", "from": "cache_check", "to": "duffel_fetch", "label": "on cache miss", "variant": "dashed" },
+    { "id": "e6b", "from": "duffel_fetch", "to": "itinerary_map", "label": "add to plan", "variant": "emphasis" },
+    { "id": "e7", "from": "itinerary_map", "to": "mapbox_directions", "label": "driving route", "variant": "emphasis" },
+    { "id": "e8", "from": "itinerary_map", "to": "expense_add", "variant": "default" },
+    { "id": "e9", "from": "expense_add", "to": "debt_simplifier", "variant": "emphasis" },
+    { "id": "e10", "from": "debt_simplifier", "to": "settlement_done", "label": "ACID commit", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Sub-50ms Response Guarantee",
+      "items": [
+        "Redis Cache-Aside intercepts repeated flight and hotel queries",
+        "Duffel NDC offers normalized into unified client contracts"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Algorithmic Precision",
+      "items": [
+        "Haversine Great-Circle transit time estimation between stops",
+        "Greedy Minimum Cash-Flow algorithm guarantees zero penny drift"
+      ]
+    }
+  ]
+}

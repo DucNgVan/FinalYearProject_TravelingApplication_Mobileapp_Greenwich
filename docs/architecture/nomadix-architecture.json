@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Nomadix Smart Travel Platform - Polyglot 5-Tier Architecture",
+    "subtitle": "Microservice-ready Modular Monolith with Polyglot Persistence & External Travel NDC APIs",
+    "output": "nomadix-architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "mobile-client",
+      "type": "frontend",
+      "label": "Mobile App Client",
+      "sublabel": "React Native 0.86 / Expo 57",
+      "pos": [40, 160],
+      "size": [160, 68],
+      "tag": "iOS & Android"
+    },
+    {
+      "id": "web-client",
+      "type": "frontend",
+      "label": "Web Map Explorer",
+      "sublabel": "Next.js / Mapbox GL JS",
+      "pos": [40, 320],
+      "size": [160, 68],
+      "tag": "Panoramic UI"
+    },
+    {
+      "id": "api-gateway",
+      "type": "security",
+      "label": "API Gateway & Security",
+      "sublabel": "Express 5 / Helmet / CORS",
+      "pos": [260, 240],
+      "size": [160, 68],
+      "tag": "Joi DTOs :5001"
+    },
+    {
+      "id": "auth-service",
+      "type": "security",
+      "label": "Auth & RBAC Service",
+      "sublabel": "Bcrypt 12 / JWT 15m / SHA-256",
+      "pos": [480, 80],
+      "size": [170, 68],
+      "tag": "Token Rotation"
+    },
+    {
+      "id": "booking-service",
+      "type": "backend",
+      "label": "Booking Aggregator",
+      "sublabel": "Parallel NDC Flights & Hotels",
+      "pos": [480, 200],
+      "size": [170, 68],
+      "tag": "Deduplication"
+    },
+    {
+      "id": "itinerary-service",
+      "type": "backend",
+      "label": "Itinerary & Squad Service",
+      "sublabel": "Collaborator Roles & Haversine",
+      "pos": [480, 320],
+      "size": [170, 68],
+      "tag": "Drag-Drop Reorder"
+    },
+    {
+      "id": "expense-service",
+      "type": "backend",
+      "label": "Group Expense Hub",
+      "sublabel": "Greedy Debt Minimizer O(N log N)",
+      "pos": [480, 440],
+      "size": [170, 68],
+      "tag": "Zero-Sum Balance"
+    },
+    {
+      "id": "places-service",
+      "type": "backend",
+      "label": "Places & AI Clustering",
+      "sublabel": "HAC Clustering & Cache-Aside",
+      "pos": [480, 560],
+      "size": [170, 68],
+      "tag": "Multi-Day Plan"
+    },
+    {
+      "id": "duffel-api",
+      "type": "external",
+      "label": "Duffel NDC Platform",
+      "sublabel": "Live Flights & Stays Sandbox",
+      "pos": [720, 200],
+      "size": [160, 68],
+      "tag": "Air & Hotel NDC"
+    },
+    {
+      "id": "mapbox-api",
+      "type": "external",
+      "label": "Mapbox API Engine",
+      "sublabel": "Geocoding v5 & Directions v5",
+      "pos": [720, 320],
+      "size": [160, 68],
+      "tag": "GPS & Routes"
+    },
+    {
+      "id": "cloudinary-api",
+      "type": "cloud",
+      "label": "Cloudinary CDN",
+      "sublabel": "Receipt OCR & WebP Storage",
+      "pos": [720, 440],
+      "size": [160, 68],
+      "tag": "Asset Pipeline"
+    },
+    {
+      "id": "postgres-db",
+      "type": "database",
+      "label": "PostgreSQL 16",
+      "sublabel": "ACID Ledger & 28 3NF Tables",
+      "pos": [940, 240],
+      "size": [160, 68],
+      "tag": "NUMERIC(12,2)"
+    },
+    {
+      "id": "mongo-db",
+      "type": "database",
+      "label": "MongoDB Atlas 7.0",
+      "sublabel": "Embedded Dynamic Timelines",
+      "pos": [940, 360],
+      "size": [160, 68],
+      "tag": "Sub-15ms Reads"
+    },
+    {
+      "id": "redis-cache",
+      "type": "database",
+      "label": "Redis 7.0 In-Memory",
+      "sublabel": "Cache-Aside & Rate Limiting",
+      "pos": [940, 120],
+      "size": [160, 68],
+      "tag": "RAM <50ms TTL"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Client Presentation Tier (Cross-Platform)",
+      "wraps": ["mobile-client", "web-client"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Node.js / Express Core Service Mesh",
+      "wraps": ["api-gateway", "auth-service", "booking-service", "itinerary-service", "expense-service", "places-service"]
+    },
+    {
+      "kind": "region",
+      "label": "External Global API Integrations",
+      "wraps": ["duffel-api", "mapbox-api", "cloudinary-api"]
+    },
+    {
+      "kind": "region",
+      "label": "Polyglot Persistence Layer (3 Data Engines)",
+      "wraps": ["postgres-db", "mongo-db", "redis-cache"]
+    }
+  ],
+  "connections": [
+    { "id": "m-to-gw", "from": "mobile-client", "to": "api-gateway", "label": "HTTPS / JWT", "variant": "emphasis" },
+    { "id": "w-to-gw", "from": "web-client", "to": "api-gateway", "label": "HTTPS / REST", "variant": "emphasis" },
+    { "id": "gw-to-auth", "from": "api-gateway", "to": "auth-service", "label": "validate token", "variant": "security" },
+    { "id": "gw-to-book", "from": "api-gateway", "to": "booking-service", "label": "/flights & /hotels" },
+    { "id": "gw-to-itin", "from": "api-gateway", "to": "itinerary-service", "label": "/itineraries" },
+    { "id": "gw-to-exp", "from": "api-gateway", "to": "expense-service", "label": "/trips/:id/expenses" },
+    { "id": "gw-to-plc", "from": "api-gateway", "to": "places-service", "label": "/places/ai-plan" },
+    { "id": "book-to-duffel", "from": "booking-service", "to": "duffel-api", "label": "NDC Search API" },
+    { "id": "itin-to-mapbox", "from": "itinerary-service", "to": "mapbox-api", "label": "Directions Driving" },
+    { "id": "exp-to-cloud", "from": "expense-service", "to": "cloudinary-api", "label": "Upload Bill Image" },
+    { "id": "auth-to-pg", "from": "auth-service", "to": "postgres-db", "label": "users & tokens" },
+    { "id": "book-to-redis", "from": "booking-service", "to": "redis-cache", "label": "Cache-Aside 1800s" },
+    { "id": "itin-to-mongo", "from": "itinerary-service", "to": "mongo-db", "label": "BSON Timeline" },
+    { "id": "exp-to-pg", "from": "expense-service", "to": "postgres-db", "label": "ACID BEGIN...COMMIT", "variant": "emphasis" },
+    { "id": "plc-to-redis", "from": "places-service", "to": "redis-cache", "label": "Places Cache" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Client Tier",
+      "items": [
+        "Expo 57 / React Native 0.86 with zero-whitespace edge-to-edge UI",
+        "Zustand lightweight stores for reactive offline-first state",
+        "Mapbox GL JS interactive route visualizer with live Geocoding"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Application Tier",
+      "items": [
+        "Duffel NDC live flight provider with fallback domestic catalogs",
+        "Greedy Debt Simplification reducing group bills to <= N-1 payments",
+        "Hierarchical Agglomerative Clustering (HAC) for AI day clustering"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Polyglot Persistence",
+      "items": [
+        "PostgreSQL 16: Strict 3NF monetary ledger with NUMERIC(12,2)",
+        "MongoDB Atlas 7.0: Embedded timeline documents for sub-15ms reads",
+        "Redis 7.0: Deterministic in-memory Cache-Aside with TTL eviction"
+      ]
+    }
+  ]
+}

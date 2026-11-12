@@ -74,39 +74,80 @@ describe('Unit Test: Booking Aggregator & Cache-Aside Service', () => {
   });
 
   test('should search hotels, cache results, and sort by price:asc, price:desc, and rating:desc', async () => {
-    const hotelQuery = {
-      city: 'DaNang',
-      checkIn: '2026-11-15',
-      checkOut: '2026-11-18',
-      guests: 2,
-      rooms: 1,
-    };
+    const duffelProvider = require('../../../src/providers/duffel.provider');
+    const spyDuffel = jest.spyOn(duffelProvider, 'searchHotels').mockResolvedValue([
+      {
+        id: 'duffel-acc-1',
+        provider: 'DUFFEL_STAYS',
+        name: 'Hotel Alpha',
+        city: 'Da Nang',
+        address: '123 Beach Road',
+        starRating: 4,
+        reviewScore: 8.5,
+        pricePerNight: 1500000,
+        currency: 'VND',
+      },
+      {
+        id: 'duffel-acc-2',
+        provider: 'DUFFEL_STAYS',
+        name: 'Hotel Beta Luxury',
+        city: 'Da Nang',
+        address: '456 Resort Way',
+        starRating: 5,
+        reviewScore: 9.6,
+        pricePerNight: 3500000,
+        currency: 'VND',
+      },
+      {
+        id: 'duffel-acc-3',
+        provider: 'DUFFEL_STAYS',
+        name: 'Hotel Gamma',
+        city: 'Da Nang',
+        address: '789 City Center',
+        starRating: 4,
+        reviewScore: 9.0,
+        pricePerNight: 2000000,
+        currency: 'VND',
+      },
+    ]);
 
-    // First search - Cache Miss
-    const res1 = await bookingService.searchHotels(hotelQuery);
-    expect(res1.meta.cached).toBe(false);
-    expect(res1.hotels.length).toBeGreaterThan(0);
+    try {
+      const hotelQuery = {
+        city: 'DaNang',
+        checkIn: '2026-11-15',
+        checkOut: '2026-11-18',
+        guests: 2,
+        rooms: 1,
+      };
 
-    // Second search - Cache Hit
-    const res2 = await bookingService.searchHotels(hotelQuery);
-    expect(res2.meta.cached).toBe(true);
+      // First search - Cache Miss
+      const res1 = await bookingService.searchHotels(hotelQuery);
+      expect(res1.meta.cached).toBe(false);
+      expect(res1.hotels.length).toBeGreaterThan(0);
 
-    // Sort by price:desc
-    const descHotels = await bookingService.searchHotels({ ...hotelQuery, sortBy: 'price:desc' });
-    for (let i = 0; i < descHotels.hotels.length - 1; i++) {
-      expect(descHotels.hotels[i].pricePerNight).toBeGreaterThanOrEqual(descHotels.hotels[i + 1].pricePerNight);
-    }
+      // Second search - Cache Hit
+      const res2 = await bookingService.searchHotels(hotelQuery);
+      expect(res2.meta.cached).toBe(true);
 
-    // Sort by price:asc
-    const ascHotels = await bookingService.searchHotels({ ...hotelQuery, sortBy: 'price:asc' });
-    for (let i = 0; i < ascHotels.hotels.length - 1; i++) {
-      expect(ascHotels.hotels[i].pricePerNight).toBeLessThanOrEqual(ascHotels.hotels[i + 1].pricePerNight);
-    }
+      // Sort by price:desc
+      const descHotels = await bookingService.searchHotels({ ...hotelQuery, sortBy: 'price:desc' });
+      for (let i = 0; i < descHotels.hotels.length - 1; i++) {
+        expect(descHotels.hotels[i].pricePerNight).toBeGreaterThanOrEqual(descHotels.hotels[i + 1].pricePerNight);
+      }
 
-    // Sort by rating:desc
-    const ratingHotels = await bookingService.searchHotels({ ...hotelQuery, sortBy: 'rating:desc' });
-    for (let i = 0; i < ratingHotels.hotels.length - 1; i++) {
-      expect(ratingHotels.hotels[i].reviewScore).toBeGreaterThanOrEqual(ratingHotels.hotels[i + 1].reviewScore);
+      // Sort by price:asc
+      const ascHotels = await bookingService.searchHotels({ ...hotelQuery, sortBy: 'price:asc' });
+      for (let i = 0; i < ascHotels.hotels.length - 1; i++) {
+        expect(ascHotels.hotels[i].pricePerNight).toBeLessThanOrEqual(ascHotels.hotels[i + 1].pricePerNight);
+      }
+
+      // Sort by rating:desc
+      const ratingHotels = await bookingService.searchHotels({ ...hotelQuery, sortBy: 'rating:desc' });
+      for (let i = 0; i < ratingHotels.hotels.length - 1; i++) {
+        expect(ratingHotels.hotels[i].reviewScore).toBeGreaterThanOrEqual(ratingHotels.hotels[i + 1].reviewScore);
+      }
+    } finally {
+      spyDuffel.mockRestore();
     }
   });
 

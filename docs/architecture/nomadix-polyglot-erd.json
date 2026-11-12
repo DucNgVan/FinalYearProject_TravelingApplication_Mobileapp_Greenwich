@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "diagram_type": "erd",
+  "meta": {
+    "title": "Nomadix Polyglot Persistence Schema",
+    "locale": "en",
+    "output": "nomadix-polyglot-erd.html",
+    "quality_profile": "showcase"
+  },
+  "layout": {
+    "mode": "grid",
+    "gapY": 36,
+    "gapX": 60
+  },
+  "entities": [
+    {
+      "id": "users",
+      "label": "users",
+      "tag": "identity",
+      "width": 260,
+      "row": 0,
+      "col": 0,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "email", "type": "varchar(255)", "key": "uk" },
+        { "name": "password_hash", "type": "varchar(255)" },
+        { "name": "full_name", "type": "varchar(100)" },
+        { "name": "role", "type": "varchar(20)" },
+        { "name": "is_email_verified", "type": "boolean" },
+        { "name": "created_at", "type": "timestamp" }
+      ]
+    },
+    {
+      "id": "user_tokens",
+      "label": "user_tokens",
+      "tag": "identity",
+      "width": 260,
+      "row": 1,
+      "col": 0,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "user_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "token_hash", "type": "varchar(255)" },
+        { "name": "token_type", "type": "varchar(50)" },
+        { "name": "expires_at", "type": "timestamp" }
+      ]
+    },
+    {
+      "id": "trip_members",
+      "label": "trip_members",
+      "tag": "expenses",
+      "width": 260,
+      "row": 0,
+      "col": 1,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "trip_id", "type": "varchar(50)" },
+        { "name": "user_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "role", "type": "varchar(20)" },
+        { "name": "joined_at", "type": "timestamp" }
+      ]
+    },
+    {
+      "id": "trip_expenses",
+      "label": "trip_expenses",
+      "tag": "expenses",
+      "width": 260,
+      "row": 1,
+      "col": 1,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "trip_id", "type": "varchar(50)" },
+        { "name": "payer_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "amount", "type": "numeric(12,2)" },
+        { "name": "currency", "type": "varchar(3)" },
+        { "name": "description", "type": "varchar(255)" },
+        { "name": "split_type", "type": "varchar(20)" },
+        { "name": "receipt_url", "type": "text" },
+        { "name": "created_at", "type": "timestamp" }
+      ]
+    },
+    {
+      "id": "trip_expense_splits",
+      "label": "trip_expense_splits",
+      "tag": "expenses",
+      "width": 260,
+      "row": 2,
+      "col": 1,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "expense_id", "type": "uuid", "key": "fk", "references": "trip_expenses.id" },
+        { "name": "user_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "allocated_amount", "type": "numeric(12,2)" }
+      ]
+    },
+    {
+      "id": "trip_settlements",
+      "label": "trip_settlements",
+      "tag": "expenses",
+      "width": 260,
+      "row": 3,
+      "col": 1,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "trip_id", "type": "varchar(50)" },
+        { "name": "debtor_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "creditor_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "amount", "type": "numeric(12,2)" },
+        { "name": "status", "type": "varchar(20)" },
+        { "name": "confirmed_at", "type": "timestamp" }
+      ]
+    },
+    {
+      "id": "itineraries",
+      "label": "itineraries (MongoDB)",
+      "tag": "timelines",
+      "width": 260,
+      "row": 0,
+      "col": 2,
+      "attributes": [
+        { "name": "_id", "type": "ObjectId", "key": "pk" },
+        { "name": "title", "type": "String" },
+        { "name": "destinationCity", "type": "String" },
+        { "name": "startDate", "type": "Date" },
+        { "name": "endDate", "type": "Date" },
+        { "name": "ownerId", "type": "String (uuid)" },
+        { "name": "collaborators", "type": "Array<Object>" },
+        { "name": "days", "type": "Array<SubDocument>" }
+      ]
+    },
+    {
+      "id": "bookings",
+      "label": "bookings",
+      "tag": "reservations",
+      "width": 260,
+      "row": 1,
+      "col": 2,
+      "attributes": [
+        { "name": "id", "type": "uuid", "key": "pk" },
+        { "name": "user_id", "type": "uuid", "key": "fk", "references": "users.id" },
+        { "name": "booking_reference", "type": "varchar(20)", "key": "uk" },
+        { "name": "type", "type": "varchar(20)" },
+        { "name": "total_amount", "type": "numeric(12,2)" },
+        { "name": "status", "type": "varchar(20)" }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_user_tokens",
+      "from": "user_tokens",
+      "to": "users",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_trip_members_user",
+      "from": "trip_members",
+      "to": "users",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_trip_expenses_payer",
+      "from": "trip_expenses",
+      "to": "users",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_splits_expense",
+      "from": "trip_expense_splits",
+      "to": "trip_expenses",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_splits_user",
+      "from": "trip_expense_splits",
+      "to": "users",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_settlement_debtor",
+      "from": "trip_settlements",
+      "to": "users",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_booking_user",
+      "from": "bookings",
+      "to": "users",
+      "fromCardinality": "many",
+      "toCardinality": "one"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "PostgreSQL 16 Financial Integrity",
+      "items": [
+        "All ledger balances use NUMERIC(12,2) with ACID transactions",
+        "Strict foreign key constraints ensure non-dangling debt splits"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "MongoDB Atlas 7.0 Timeline Polymorphism",
+      "items": [
+        "Multi-day stops, collaborators, and transit are embedded in 1 document",
+        "Sub-15ms reads without relational multi-table JOIN overhead"
+      ]
+    }
+  ]
+}

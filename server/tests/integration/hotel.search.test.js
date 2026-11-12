@@ -1,9 +1,43 @@
 const request = require('supertest');
 const app = require('../../src/app');
+const duffelProvider = require('../../src/providers/duffel.provider');
 
 describe('Integration Test: GET /api/v1/hotels/search (TDD RED Phase)', () => {
   const validCheckIn = '2026-11-15';
   const validCheckOut = '2026-11-18'; // 3 nights
+
+  beforeEach(() => {
+    jest.spyOn(duffelProvider, 'searchHotels').mockResolvedValue([
+      {
+        id: 'duffel-acc-01',
+        provider: 'DUFFEL_STAYS',
+        name: 'Vinpearl Luxury Da Nang',
+        city: 'Da Nang',
+        address: 'Truong Sa, Da Nang',
+        starRating: 5,
+        reviewScore: 9.4,
+        pricePerNight: 2800000,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
+      },
+      {
+        id: 'duffel-acc-02',
+        provider: 'DUFFEL_STAYS',
+        name: 'Novotel Danang Premier',
+        city: 'Da Nang',
+        address: 'Bach Dang, Da Nang',
+        starRating: 4,
+        reviewScore: 8.8,
+        pricePerNight: 1750000,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600',
+      },
+    ]);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   test('RED-BK-10: should return 200 OK with hotel options for valid query parameters', async () => {
     const res = await request(app)

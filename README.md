@@ -1,68 +1,73 @@
-# 🌍 Nomadix — Smart Collaborative Travel Platform & Expense Splitting
+# 🌍 Nomadix — Smart Travel Platform with Collaborative Planning & Cultural Gamification
 
 > **Final Year Project (FYP) — University of Greenwich**  
-> **Student:** Nguyễn Văn Đức (DucNgVan) — `ducnva.wk@gmail.com`  
+> **Student:** Nguyễn Văn Đức  
 > **Degree Program:** BSc (Hons) Computing  
-> **Current Status:** Phase 5 Active (Module 4 Group Expense Ledger, Greedy Debt Simplification & Cross-DB Guard Complete - 100% TDD GREEN)  
+> **Status:** Week 1 Complete (Analysis & Design Phase)  
 
 ---
 
-## 📖 Project Overview
-Nomadix is a modern collaborative travel mobile platform designed to streamline squad trip planning and automated shared expense settlement. It eliminates "app sprawl" by combining flight/hotel booking discovery, real-time shared multi-day itineraries, and in-trip group expense splitting into one seamless mobile experience.
+## 📖 About Nomadix
 
-### 🎯 Key Value Pillars
-1. **Smart Booking Discovery:** Aggregation of live flight NDC offers and accommodations with sub-50ms Redis cache-aside response.
-2. **Collaborative Itinerary Planning:** Interactive mapping with synchronized squad timeline and multi-city route visualization.
-3. **Group Expense Ledger & Debt Simplification:** In-trip shared financial ledger with automated debt reduction algorithm minimizing payments among squad members.
+**Nomadix** is an all-in-one mobile travel ecosystem engineered to eliminate "app sprawl" for independent and group travelers. It seamlessly bridges:
 
----
-
-## 🚀 Backend Implementation Progress (Module 1, 2, 3 & 4 Complete)
-* **Module 1 (Auth & RBAC):** Bcrypt 12 rounds, JWT + SHA-256 Refresh Token rotation, Dual-mode UserRepository, Joi DTO validation.
-* **Module 2 (Smart Booking Aggregator):**
-  * Live Duffel NDC Flights API integration with aircraft details, baggage policies, and CO2 carbon emissions.
-  * Google Places API (New) adapter for accommodations and domestic high-fidelity mock fallback.
-  * `NormalizerService`: Heterogeneous data standardization to `UnifiedFlight` and `UnifiedHotel` with price-optimized deduplication.
-  * `CacheService`: Redis Cache-Aside engine with sub-50ms RAM latency (TTL 1800s flights / 3600s hotels).
-* **Module 3 (Collaborative Itinerary Planner & Maps):**
-  * Mongoose Schema for MongoDB Atlas 7.0 supporting multi-day timelines (`days[]`), activities (`items[]`), and squad members (`collaborators[]`).
-  * `GeoUtil`: Haversine great-circle distance algorithm on WGS84 ellipsoid & multi-modal transit duration calculator.
-  * `ItineraryService`: Creation, stop additions with automated distance calculation, atomic drag-and-drop timeline reordering, and squad role authorization (`OWNER`, `EDITOR`, `VIEWER`).
-* **Module 4 (Group Expense Tracking & Bill Splitting Hub):**
-  * PostgreSQL 16 ACID financial ledger (`trip_expenses`, `trip_expense_splits`, `trip_settlements`) with atomic transaction lifecycle (`BEGIN...COMMIT/ROLLBACK`).
-  * `DebtUtil`: Greedy Minimum Cash-Flow Reduction Algorithm ($O(N \log N)$) condensing tangled multi-member debts to at most $N-1$ direct payments while preserving zero-sum balance invariant ($\sum \text{NetBalance}_i = 0$).
-  * 4 split modes supported: Equal (`equal`), Exact (`exact`), Percentage (`percentage`), and Shares (`shares`) with remainder cent/dong redistribution eliminating rounding losses.
-  * Cloudinary receipt integration with automated WebP conversion and client-side compression.
-  * `CrossDbIntegrityService`: Cross-database consistency guard detecting orphan PostgreSQL expense records and executing compensating rollbacks.
-* **Global Places & AI Clustering:**
-  * Curated global places search and hierarchical clustering algorithm minimizing inter-stop travel time across itinerary days.
-* **Testing & Quality:**
-  * 100% TDD GREEN (All 36 backend test suites passed, 136 tests passing with >= 80% branch coverage).
-* **Active Endpoints:**
-  * `GET /`: API Manifest
-  * `GET /health`: System health status
-  * `POST /api/v1/auth/register`: User registration
-  * `POST /api/v1/auth/login`: User login
-  * `GET /api/v1/flights/search`: Flight offers aggregation, multi-facet filtering & sorting
-  * `GET /api/v1/hotels/search`: Hotel discovery & accommodation search
-  * `POST /api/v1/itineraries`: Create new multi-day collaborative trip
-  * `GET /api/v1/itineraries`: List user trips (as owner or collaborator)
-  * `GET /api/v1/itineraries/:id`: Fetch detailed trip timeline & collaborators
-  * `DELETE /api/v1/itineraries/:id`: Remove trip (Owner only)
-  * `POST /api/v1/itineraries/:id/collaborators`: Invite squad companion
-  * `PATCH /api/v1/itineraries/:id/collaborators/:userId/status`: Accept/decline squad invitation
-  * `POST /api/v1/itineraries/:id/days/:dayNumber/items`: Add stop to day timeline (with auto-calculated Haversine transit)
-  * `PUT /api/v1/itineraries/:id/days/:dayNumber/reorder`: Atomic drag-and-drop reordering of stops
-  * `POST /api/v1/trips/:tripId/expenses`: Record group expense with split allocations
-  * `GET /api/v1/trips/:tripId/expenses`: List all trip expenses and splits
-  * `POST /api/v1/trips/:tripId/expenses/receipt`: Upload bill receipt image to Cloudinary
-  * `GET /api/v1/trips/:tripId/expenses/summary`: Member net balance sheet
-  * `GET /api/v1/trips/:tripId/debts/settlement-plan`: Optimized minimal debt settlement plan
-  * `POST /api/v1/trips/:tripId/debts/settle`: Settle debt between members
-  * `GET /api/v1/places/search`: Global places search with category filtering
-  * `POST /api/v1/places/ai-plan`: Geographic clustering of places into multi-day itinerary
+1. **Smart Booking Search & Aggregation:** Live comparison of flights and hotels across multiple OTA providers with a sub-50ms Redis cache-aside engine and automatic mock fallback.
+2. **Collaborative Itinerary Planner & Maps Routing:** Multi-day journey mapping with embedded Google Maps routing, dynamic polyline visualization, drag-and-drop stop reordering, and **real-time companion invitations** where all travel squad members view and edit the exact same synchronized itinerary.
+3. **Group Expense Tracking & Bill Splitting Hub:** In-trip shared financial ledger where members capture/upload bill receipts (Cloudinary CDN), log expenditures across categories, split costs equally or custom (exact amounts/shares), view live net balances ($\sum \text{NetBalance}_i = 0$), and execute a **Greedy Minimum Cash-Flow Reduction Algorithm** to settle group debts in at most $N-1$ payments.
+4. **Cultural Gamification & Location Engine (USP):** Verified on-site GPS geofencing ($\le 100\text{m}$), native watermarked photo capture, educational cultural quizzes, XP progression, and automated City Explorer Badges.
+5. **Verified Community Q&A Forum:** A destination-oriented travel forum where travelers holding City Badges automatically receive an authenticated gold **"City Verified"** badge on their answers, solving the widespread epidemic of unvetted, fake travel advice.
 
 ---
 
-## 🔮 Next Milestone
-* **Phase 6:** Client Mobile Application (React Native / Expo SDK 57) — Interactive Map Discovery, Multi-City Route Planner, Booking Hub, and Squad Expense Sharing UI.
+## 🏛️ System Architecture & Polyglot Persistence
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                           REACT NATIVE MOBILE CLIENT                             │
+└────────────────────────────────────────┬─────────────────────────────────────────┘
+                                         │ HTTPS / JWT
+                                         ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                       EXPRESS.JS MODULAR API GATEWAY                             │
+└──────────────┬─────────────────────────┼─────────────────────────┬───────────────┘
+               │                         │                         │
+               ▼                         ▼                         ▼
+┌─────────────────────────────┐ ┌────────────────────────┐ ┌─────────────────────────┐
+│        POSTGRESQL 16        │ │    MONGODB ATLAS 7     │ │         REDIS 7         │
+│    (Relational 3NF ACID)    │ │  (Embedded Documents)  │ │    (In-Memory Cache)    │
+├─────────────────────────────┤ ├────────────────────────┤ ├─────────────────────────┤
+│ • 9 Identity & RBAC Tables  │ │ • `itineraries`        │ │ • Flight Cache (1800s)  │
+│ • 7 Gamification Tables     │ │   (collaborators array)│ │ • Hotel Cache (3600s)   │
+│ • 8 Booking & Manifest Tabs │ │ • `forum_questions`    │ │ • Landmark Cache (24h)  │
+│ • 4 Group Expense & Debts   │ │ • `forum_answers`      │ │ • Rate Limiting (900s)  │
+│   (28 Tables Total)         │ │ • `community_reports`  │ │ • Check-in Nonce (300s) │
+└─────────────────────────────┘ └────────────────────────┘ └─────────────────────────┘
+```
+
+---
+
+## 📑 Complete Documentation Portal
+
+The entire project specification has been organized into a dedicated **[Master Documentation Portal (documentation/README.md)](./documentation/README.md)**:
+
+* **[Phase 1: Project Foundation (Day 1)](./documentation/01-project-foundation/README.md)** — Problem statements, vision, target personas, SMART objectives, 7 core modules, and 22-step MVP script.
+* **[Phase 2: Requirements Specification (Day 2)](./documentation/02-requirements/README.md)** — 42 Functional Requirements (`FR-01` to `FR-42`), 8 ISO/IEC 25010 NFRs, 35 User Stories, and exhaustive BDD Gherkin specifications for [Booking & Itinerary](./documentation/02-requirements/06-detailed-booking-and-itinerary-specs.md), [Gamification & Forum](./documentation/02-requirements/07-detailed-gamification-and-community-specs.md), and [Collaborative Planning & Expense Sharing](./documentation/02-requirements/08-detailed-collaborative-planning-and-expense-sharing-specs.md).
+* **[Phase 3: Use Case Analysis (Day 3)](./documentation/03-use-cases/README.md)** — 5 system actors (including Trip Companion), 22 Use Cases with UML 2.5 diagrams, and 10 core specifications (`UC-01` to `UC-10`).
+* **[Phase 4: System Architecture (Day 4)](./documentation/04-architecture/README.md)** — 5-tier architecture, component models, and 6 core sequence flow diagrams (including Companion Invitation & Bill Split/Settlement).
+* **[Phase 5: Technical Research (Day 5)](./documentation/05-tech-research/README.md)** — Technology stack evaluation (Greedy Cash-Flow $O(N \log N)$), external API feasibility matrices (`/nomadix/receipts/{tripId}/`), and Mock Provider fallback engine.
+* **[Phase 6: Database Schema & ERD (Day 6)](./documentation/06-database-analysis/README.md)** — **[00-master-database-schema.md](./documentation/06-database-analysis/00-master-database-schema.md)** (28 PostgreSQL 3NF tables, 4 MongoDB collections, Redis taxonomy, production DDL, [08-group-expenses-and-collaboration-erd.md](./documentation/06-database-analysis/08-group-expenses-and-collaboration-erd.md), and [exported .mmd diagrams](./documentation/06-database-analysis/diagrams/)).
+
+---
+
+## 💻 Tech Stack Summary
+
+| Layer | Technologies |
+|---|---|
+| **Mobile Client** | React Native, React Navigation, react-native-maps, VisionCamera |
+| **API Gateway & Services** | Node.js, Express.js, Joi, Winston, Bcrypt, JWT |
+| **Relational Database** | PostgreSQL 16 (strict 3NF, 28 tables, UUID v4, ACID financial transactions) |
+| **Document Store** | MongoDB Atlas 7.0, Mongoose 8 (collaborators array, GeoJSON, 2dsphere indexing) |
+| **In-Memory Cache** | Redis 7 (Cache-Aside, TTL expiration, Rate limiting) |
+| **Cloud Assets** | Cloudinary CDN (Bill receipts `/nomadix/receipts/{tripId}/`, watermark overlays) |
+| **Algorithms & Logic** | Greedy Min-Cashflow Algorithm ($O(N \log N)$), Haversine GPS formula, WGS84 Geofencing ($\le 100\text{m}$) |
+| **External Providers** | Amadeus Flight Offers API, RapidAPI Hotels, Google Maps Distance Matrix |

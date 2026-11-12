@@ -39,13 +39,28 @@ app.get('/', (req, res) => {
   });
 });
 
-// Healthcheck endpoint
-app.get('/health', (req, res) => {
+// Healthcheck endpoint with real database health status
+app.get('/health', async (req, res) => {
+  let dbStatus = {
+    postgres: 'NOT_CONFIGURED',
+    mongodb: 'NOT_CONFIGURED',
+    redis: 'NOT_CONFIGURED',
+  };
+
+  try {
+    const databaseManager = require('./db/connection');
+    dbStatus = await databaseManager.checkDatabaseHealth();
+  } catch (_) {}
+
   res.status(200).json({
     status: 'UP',
     timestamp: new Date().toISOString(),
+    databases: dbStatus,
   });
 });
+
+// Serve static client preview
+app.use('/preview', express.static(path.resolve(__dirname, '../../client/preview')));
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
