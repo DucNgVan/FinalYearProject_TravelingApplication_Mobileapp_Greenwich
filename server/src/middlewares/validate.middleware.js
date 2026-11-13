@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const registerSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email({ tlds: { allow: false } }).required().messages({
     'string.email': 'Invalid email format',
     'any.required': 'Email is required',
   }),
@@ -12,16 +12,44 @@ const registerSchema = Joi.object({
   fullName: Joi.string().min(2).max(100).required().messages({
     'any.required': 'Full name is required',
   }),
+  role: Joi.string().valid('TRAVELER', 'ADMIN', 'MODERATOR').optional(),
+  dateOfBirth: Joi.string().allow('', null).optional(),
+  phoneNumber: Joi.string().allow('', null).optional(),
+  otp: Joi.string().allow('', null).optional(),
+});
+
+const sendOtpSchema = Joi.object({
+  identifier: Joi.string().required().messages({
+    'any.required': 'Identifier (email or phone) is required',
+  }),
+  type: Joi.string().valid('email', 'phone').default('email'),
+});
+
+const verifyOtpSchema = Joi.object({
+  identifier: Joi.string().required().messages({
+    'any.required': 'Identifier is required',
+  }),
+  otp: Joi.string().length(6).required().messages({
+    'string.length': 'OTP must be exactly 6 digits',
+    'any.required': 'OTP is required',
+  }),
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email({ tlds: { allow: false } }).required().messages({
     'string.email': 'Invalid email format',
     'any.required': 'Email is required',
   }),
   password: Joi.string().required().messages({
     'any.required': 'Password is required',
   }),
+});
+
+const googleAuthSchema = Joi.object({
+  idToken: Joi.string().required().messages({
+    'any.required': 'idToken is required',
+  }),
+  profile: Joi.object().unknown(true).optional(),
 });
 
 const flightSearchSchema = Joi.object({
@@ -51,16 +79,15 @@ const flightSearchSchema = Joi.object({
       'any.required': 'departureDate is required',
     }),
   passengers: Joi.number().integer().min(1).max(9).default(1),
-  cabinClass: Joi.string().valid('ECONOMY', 'PREMIUM_ECONOMY', 'BUSINESS', 'FIRST').default('ECONOMY'),
+  cabinClass: Joi.string().uppercase().valid('ECONOMY', 'PREMIUM_ECONOMY', 'BUSINESS', 'FIRST').default('ECONOMY'),
   directOnly: Joi.alternatives().try(Joi.boolean(), Joi.string()).optional(),
   maxPrice: Joi.number().positive().optional(),
   sortBy: Joi.string().optional(),
 });
 
 const hotelSearchSchema = Joi.object({
-  city: Joi.string().min(2).required().messages({
-    'any.required': 'Destination city is required',
-  }),
+  city: Joi.string().min(2).optional(),
+  destination: Joi.string().min(2).optional(),
   checkIn: Joi.string()
     .isoDate()
     .required()
@@ -92,7 +119,7 @@ const hotelSearchSchema = Joi.object({
   minRating: Joi.number().min(1).max(5).optional(),
   maxPrice: Joi.number().positive().optional(),
   sortBy: Joi.string().optional(),
-}).custom((obj, helpers) => {
+}).or('city', 'destination').custom((obj, helpers) => {
   if (obj.guests > obj.rooms * 4) {
     return helpers.message('Guest capacity exceeded: Maximum 4 guests per room');
   }
@@ -172,10 +199,11 @@ const createItinerarySchema = Joi.object({
 });
 
 const inviteCollaboratorSchema = Joi.object({
-  userId: Joi.string().required().messages({
-    'any.required': 'userId is required',
-  }),
+  userId: Joi.string().optional(),
+  email: Joi.string().email({ tlds: { allow: false } }).optional(),
   role: Joi.string().valid('OWNER', 'EDITOR', 'VIEWER').default('VIEWER'),
+}).or('userId', 'email').messages({
+  'object.missing': 'Either userId or email is required',
 });
 
 const updateStatusSchema = Joi.object({
@@ -193,6 +221,7 @@ const addStopSchema = Joi.object({
     .default('ATTRACTION'),
   startTime: Joi.string().optional(),
   endTime: Joi.string().optional(),
+  timeSlot: Joi.string().allow('', null).optional(),
   location: Joi.object({
     name: Joi.string().required(),
     address: Joi.string().required(),
@@ -220,10 +249,28 @@ const placesSearchSchema = Joi.object({
 });
 
 const placesAiPlanSchema = Joi.object({
+  city: Joi.string().allow('', null).optional(),
+  destinationCity: Joi.string().allow('', null).optional(),
   places: Joi.array().items(Joi.object().unknown(true)).min(1).required().messages({
     'any.required': 'places array is required',
   }),
   durationDays: Joi.number().integer().min(1).max(30).default(1),
+});
+
+const currencyLatestSchema = Joi.object({
+  base: Joi.string().uppercase().length(3).default('USD'),
+});
+
+const currencyConvertSchema = Joi.object({
+  from: Joi.string().uppercase().length(3).required().messages({
+    'any.required': 'from currency is required',
+  }),
+  to: Joi.string().uppercase().length(3).required().messages({
+    'any.required': 'to currency is required',
+  }),
+  amount: Joi.number().positive().required().messages({
+    'any.required': 'amount is required and must be positive',
+  }),
 });
 
 module.exports = {
@@ -231,6 +278,9 @@ module.exports = {
   validateQuery,
   registerSchema,
   loginSchema,
+  googleAuthSchema,
+  sendOtpSchema,
+  verifyOtpSchema,
   flightSearchSchema,
   hotelSearchSchema,
   createItinerarySchema,
@@ -240,5 +290,7 @@ module.exports = {
   reorderSchema,
   placesSearchSchema,
   placesAiPlanSchema,
+  currencyLatestSchema,
+  currencyConvertSchema,
 };
 

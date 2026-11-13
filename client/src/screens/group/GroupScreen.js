@@ -22,11 +22,11 @@ export default function GroupScreen() {
 
   // Packing list state
   const [packingItems, setPackingItems] = useState([
-    { id: '1', title: 'CCCD & Hộ chiếu', category: 'Giấy tờ', assignee: 'Cả nhóm', checked: true },
-    { id: '2', title: 'Kem chống nắng SPF 50+', category: 'Cá nhân', assignee: 'Linh', checked: true },
-    { id: '3', title: 'Sạc dự phòng 20.000mAh', category: 'Thiết bị', assignee: 'Đức', checked: false },
-    { id: '4', title: 'Thuốc say xe & Panadol', category: 'Y tế', assignee: 'Hoàng', checked: false },
-    { id: '5', title: 'Gậy selfie & Tripod', category: 'Thiết bị', assignee: 'Đức', checked: true },
+    { id: '1', title: 'ID Cards & Passports', category: 'Documents', assignee: 'All Squad', checked: true },
+    { id: '2', title: 'Sunscreen SPF 50+', category: 'Personal', assignee: 'Alex', checked: true },
+    { id: '3', title: 'Powerbank 20,000mAh', category: 'Electronics', assignee: 'Duc', checked: false },
+    { id: '4', title: 'First Aid Kit & Panadol', category: 'Medical', assignee: 'Sarah', checked: false },
+    { id: '5', title: 'Selfie Stick & Tripod', category: 'Electronics', assignee: 'Duc', checked: true },
   ]);
 
   const [newItemTitle, setNewItemTitle] = useState('');
@@ -44,8 +44,8 @@ export default function GroupScreen() {
       {
         id: String(Date.now()),
         title: newItemTitle.trim(),
-        category: 'Đồ dùng chung',
-        assignee: user?.fullName || 'Tôi',
+        category: 'Shared Gear',
+        assignee: user?.fullName || 'Me',
         checked: false,
       },
     ]);
@@ -55,8 +55,8 @@ export default function GroupScreen() {
   // Mock squad collaborators
   const collaborators = currentTrip?.collaborators || [
     { id: 'u1', fullName: user?.fullName || 'Guest Traveler', email: user?.email || 'guest@nomadix.app', role: 'OWNER' },
-    { id: 'u2', fullName: 'Linh Hoàng', email: 'linh@gmail.com', role: 'EDITOR' },
-    { id: 'u3', fullName: 'Nam Trần', email: 'nam@gmail.com', role: 'VIEWER' },
+    { id: 'u2', fullName: 'Linh Hoang', email: 'linh@gmail.com', role: 'EDITOR' },
+    { id: 'u3', fullName: 'Nam Tran', email: 'nam@gmail.com', role: 'VIEWER' },
   ];
 
   return (
@@ -69,10 +69,10 @@ export default function GroupScreen() {
       <View style={styles.headerRow}>
         <View>
           <Text style={[styles.headerTitle, { color: isDark ? '#FFFFFF' : '#111827' }]}>
-            Group & Sổ Quỹ
+            Squad & Shared Ledger
           </Text>
           <Text style={[styles.headerSubtitle, { color: themeColors.textMuted }]}>
-            {currentTrip?.title || 'Đà Nẵng & Hội An 2026'} • 3 Thành viên
+            {currentTrip?.title || 'Danang & Hoi An 2026'} • {collaborators.length} Members
           </Text>
         </View>
 
@@ -80,7 +80,7 @@ export default function GroupScreen() {
           style={[styles.inviteBtn, { backgroundColor: themeColors.pineGreen || '#2E7D5B' }]}
           activeOpacity={0.8}
         >
-          <Text style={styles.inviteBtnText}>+ Mời bạn</Text>
+          <Text style={styles.inviteBtnText}>+ Invite Friend</Text>
         </TouchableOpacity>
       </View>
 
@@ -96,7 +96,7 @@ export default function GroupScreen() {
         ]}
       >
         <Text style={[styles.sectionLabel, { color: themeColors.textMuted }]}>
-          Thành viên nhóm (Squad Members)
+          SQUAD MEMBERS
         </Text>
 
         <View style={styles.membersList}>
@@ -110,10 +110,10 @@ export default function GroupScreen() {
 
               <View style={styles.memberInfo}>
                 <Text style={[styles.memberName, { color: isDark ? '#FFFFFF' : '#111827' }]}>
-                  {member.fullName || 'Thành viên'}
+                  {member.fullName || 'Member'}
                 </Text>
                 <Text style={[styles.memberEmail, { color: themeColors.textMuted }]}>
-                  {member.email || 'member@nomadix.vn'}
+                  {member.email || 'member@nomadix.app'}
                 </Text>
               </View>
 
@@ -132,7 +132,7 @@ export default function GroupScreen() {
                   ]}
                 >
                   {member.role === 'OWNER'
-                    ? 'Chủ chuyến đi (Owner)'
+                    ? 'Trip Owner'
                     : member.role === 'EDITOR'
                     ? 'Editor'
                     : member.role === 'VIEWER'
@@ -157,26 +157,26 @@ export default function GroupScreen() {
         ]}
       >
         <Text style={[styles.sectionLabel, { color: themeColors.textMuted }]}>
-          Quỹ chuyến đi & Chia tiền (Expenses)
+          TRIP BUDGET & EXPENSES
         </Text>
 
         {/* Total Spend Hero Card (Dark Background like TREK) */}
         <View style={[styles.totalSpendCard, { backgroundColor: isDark ? '#121316' : '#111827' }]}>
-          <Text style={styles.totalSpendLabel}>Tổng chi tiêu (Total Trip Spend)</Text>
-          <Text style={styles.totalSpendAmount}>12.450.000 ₫</Text>
-          <Text style={styles.totalSpendSub}>Bao gồm vé bay, phòng khách sạn và ăn uống</Text>
+          <Text style={styles.totalSpendLabel}>Total Trip Spend</Text>
+          <Text style={styles.totalSpendAmount}>12,450,000 ₫</Text>
+          <Text style={styles.totalSpendSub}>Includes flights, hotel stays & squad activities</Text>
         </View>
 
         {/* You Owe / You're Owed Row */}
         <View style={styles.balancesRow}>
           <View style={[styles.balanceBox, { backgroundColor: isDark ? '#121316' : '#F9FAFB', borderColor: isDark ? '#2A2D35' : '#E5E7EB' }]}>
-            <Text style={[styles.balanceBoxLabel, { color: '#EF4444' }]}>Bạn đang nợ (You owe)</Text>
+            <Text style={[styles.balanceBoxLabel, { color: '#EF4444' }]}>You Owe</Text>
             <Text style={[styles.balanceBoxAmount, { color: isDark ? '#FFFFFF' : '#111827' }]}>0 ₫</Text>
           </View>
 
           <View style={[styles.balanceBox, { backgroundColor: isDark ? '#121316' : '#F9FAFB', borderColor: isDark ? '#2A2D35' : '#E5E7EB' }]}>
-            <Text style={[styles.balanceBoxLabel, { color: '#2E7D5B' }]}>Bạn được nhận (You're owed)</Text>
-            <Text style={[styles.balanceBoxAmount, { color: isDark ? '#FFFFFF' : '#111827' }]}>850.000 ₫</Text>
+            <Text style={[styles.balanceBoxLabel, { color: '#2E7D5B' }]}>You're Owed</Text>
+            <Text style={[styles.balanceBoxAmount, { color: isDark ? '#FFFFFF' : '#111827' }]}>850,000 ₫</Text>
           </View>
         </View>
 
@@ -185,10 +185,10 @@ export default function GroupScreen() {
           <Text style={{ fontSize: 16, marginRight: 8 }}>✅</Text>
           <View style={{ flex: 1 }}>
             <Text style={[styles.settleUpTitle, { color: isDark ? '#FFFFFF' : '#166534' }]}>
-              Mọi người đã cân bằng nợ (Everyone's square)
+              All balances are settled
             </Text>
             <Text style={[styles.settleUpSub, { color: isDark ? '#9CA3AF' : '#2E7D5B' }]}>
-              Thuật toán Greedy Minimum Cash-flow $O(N \log N)$ tối ưu không phát sinh dư nợ
+              Greedy Minimum Cash-flow reduction $O(N \log N)$ ensures zero remaining debt
             </Text>
           </View>
         </View>
@@ -207,17 +207,17 @@ export default function GroupScreen() {
       >
         <View style={styles.cardHeaderRow}>
           <Text style={[styles.sectionLabel, { color: themeColors.textMuted }]}>
-            Đồ cần chuẩn bị (Packing List)
+            PACKING LIST
           </Text>
           <Text style={[styles.packingProgress, { color: themeColors.pineGreen || '#2E7D5B' }]}>
-            {packingItems.filter((i) => i.checked).length}/{packingItems.length} hoàn thành
+            {packingItems.filter((i) => i.checked).length}/{packingItems.length} completed
           </Text>
         </View>
 
         {/* Add Item Row */}
         <View style={styles.addPackingRow}>
           <TextInput
-            placeholder="Thêm đồ cần mang (Add item)..."
+            placeholder="Add item to packing list..."
             placeholderTextColor={themeColors.textMuted}
             value={newItemTitle}
             onChangeText={setNewItemTitle}
@@ -246,10 +246,7 @@ export default function GroupScreen() {
             <TouchableOpacity
               key={item.id}
               testID={`packing-item-${index}`}
-              style={[
-                styles.packingItemRow,
-                { borderBottomColor: isDark ? '#2A2D35' : '#F1F5F9' },
-              ]}
+              style={styles.packingItemRow}
               onPress={() => handleTogglePacking(index)}
               activeOpacity={0.7}
             >
@@ -268,7 +265,7 @@ export default function GroupScreen() {
                   {item.title}
                 </Text>
                 <Text style={[styles.itemSubtitle, { color: themeColors.textMuted }]}>
-                  {item.category} • Phụ trách: {item.assignee}
+                  {item.category} • Assigned: {item.assignee}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -467,7 +464,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
-    borderBottomWidth: 1,
   },
   checkbox: {
     width: 22,

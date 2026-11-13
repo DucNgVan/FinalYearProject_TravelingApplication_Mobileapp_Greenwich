@@ -50,14 +50,15 @@ describe('Component & Theme Test: HomeScreen 100% English, Unified Pine Green #2
     });
   });
 
-  it('RED-HOME-ENG-01: HomeScreen Quick Shortcuts labels are in English without Vietnamese text', () => {
-    const { getByText, queryByText } = render(<HomeScreen />);
+  it('RED-HOME-ENG-01: HomeScreen Travel Radar widget labels are in English without Vietnamese text', () => {
+    const { getByText, queryByText, getAllByText } = render(<HomeScreen />);
 
     // English labels
-    expect(getByText('Flights')).toBeTruthy();
-    expect(getByText('Hotels')).toBeTruthy();
-    expect(getByText('Plan')).toBeTruthy();
-    expect(getByText('Squad & Split')).toBeTruthy();
+    expect(getByText('TRAVEL RADAR & WEATHER')).toBeTruthy();
+    expect(getAllByText(/Da Nang/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Sunny|Partly Cloudy/i).length).toBeGreaterThan(0);
+    expect(getByText(/Today/i)).toBeTruthy();
+    expect(getByText(/Tomorrow/i)).toBeTruthy();
 
     // Must NOT have old Vietnamese labels
     expect(queryByText('Vé máy bay')).toBeNull();

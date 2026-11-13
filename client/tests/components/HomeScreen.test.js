@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import HomeScreen from '../../src/screens/home/HomeScreen';
+import { useItineraryStore } from '../../src/stores/itinerary.store';
 
 describe('Component Test: HomeScreen (TREK-Inspired Central Hub)', () => {
   const mockOnNavigateTab = jest.fn();
@@ -8,20 +9,27 @@ describe('Component Test: HomeScreen (TREK-Inspired Central Hub)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useItineraryStore.setState({
+      trips: [
+        {
+          id: 'trip-berlin-01',
+          title: 'Berlin 2026',
+          destination: 'Berlin',
+          days: [{ dayIndex: 0, items: [{}, {}] }],
+          coverImage: 'https://images.unsplash.com/photo-1560969184-10fe8719e047',
+        },
+      ],
+    });
   });
 
-  test('RED-FE-HOME-01: should render brand header with logo, notification bell, and avatar button', () => {
-    const { getByTestId, getByText } = render(
+  test('RED-FE-HOME-01: should render brand header with logo and notification bell (avatar removed per concept)', () => {
+    const { getByTestId, getByText, queryByTestId } = render(
       <HomeScreen onNavigateTab={mockOnNavigateTab} onOpenProfile={mockOnOpenProfile} />
     );
 
     expect(getByText(/NOMADIX/i)).toBeTruthy();
     expect(getByTestId('home-bell-btn')).toBeTruthy();
-    const avatarBtn = getByTestId('home-avatar-btn');
-    expect(avatarBtn).toBeTruthy();
-
-    fireEvent.press(avatarBtn);
-    expect(mockOnOpenProfile).toHaveBeenCalledTimes(1);
+    expect(queryByTestId('home-avatar-btn')).toBeNull();
   });
 
   test('RED-FE-HOME-02: should render Hero Trip Card with title, dates, destinations, and traveler count', () => {
@@ -71,7 +79,7 @@ describe('Component Test: HomeScreen (TREK-Inspired Central Hub)', () => {
     expect(getByTestId('currency-converter-widget')).toBeTruthy();
   });
 
-  test('RED-FE-HOME-05: should render Collections card and Quick Shortcuts to Flights, Hotels, Plan, and Group', () => {
+  test('RED-FE-HOME-05: should render Collections card and Travel Radar & Weather widget', () => {
     const { getByTestId, getByText } = render(
       <HomeScreen onNavigateTab={mockOnNavigateTab} onOpenProfile={mockOnOpenProfile} />
     );
@@ -79,21 +87,7 @@ describe('Component Test: HomeScreen (TREK-Inspired Central Hub)', () => {
     expect(getByTestId('collections-card')).toBeTruthy();
     expect(getByText(/COLLECTIONS|BỘ SƯU TẬP/i)).toBeTruthy();
 
-    const btnFlights = getByTestId('shortcut-flights');
-    const btnHotels = getByTestId('shortcut-hotels');
-    const btnPlan = getByTestId('shortcut-plan');
-    const btnGroup = getByTestId('shortcut-group');
-
-    fireEvent.press(btnFlights);
-    expect(mockOnNavigateTab).toHaveBeenCalledWith('flights');
-
-    fireEvent.press(btnHotels);
-    expect(mockOnNavigateTab).toHaveBeenCalledWith('hotels');
-
-    fireEvent.press(btnPlan);
-    expect(mockOnNavigateTab).toHaveBeenCalledWith('plan');
-
-    fireEvent.press(btnGroup);
-    expect(mockOnNavigateTab).toHaveBeenCalledWith('group');
+    expect(getByTestId('home-travel-radar-widget')).toBeTruthy();
+    expect(getByText(/TRAVEL RADAR & WEATHER/i)).toBeTruthy();
   });
 });

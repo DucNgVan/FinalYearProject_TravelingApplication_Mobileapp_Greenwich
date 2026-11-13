@@ -4,6 +4,10 @@ const { validateQuery, flightSearchSchema } = require('../middlewares/validate.m
 
 const router = express.Router();
 
+router.get('/', validateQuery(flightSearchSchema), (req, res, next) => {
+  flightController.search(req, res, next);
+});
+
 router.get('/search', validateQuery(flightSearchSchema), (req, res, next) => {
   flightController.search(req, res, next);
 });

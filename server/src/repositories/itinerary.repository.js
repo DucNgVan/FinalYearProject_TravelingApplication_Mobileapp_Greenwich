@@ -8,6 +8,10 @@ class ItineraryRepository {
     this.model = mongooseModel;
   }
 
+  setModel(mongooseModel) {
+    this.model = mongooseModel;
+  }
+
   async create(itineraryData) {
     const id = crypto.randomUUID();
     const now = new Date();

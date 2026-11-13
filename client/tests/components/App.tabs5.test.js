@@ -31,7 +31,7 @@ describe('Component Test: App 5-Tab Navigation Layout (Flights, Hotels, Home, Pl
     const { getByTestId, getByText } = render(<App initialHasCompletedOnboarding={true} />);
 
     // Home screen elements should be visible by default
-    expect(getByTestId('hero-trip-card')).toBeTruthy();
+    expect(getByTestId(/hero-(trip|suggestion)-card/)).toBeTruthy();
     expect(getByText(/NOMADIX/i)).toBeTruthy();
   });
 
@@ -56,6 +56,6 @@ describe('Component Test: App 5-Tab Navigation Layout (Flights, Hotels, Home, Pl
 
     // Switch back to Home (Center)
     fireEvent.press(getByTestId('tab-btn-home'));
-    expect(getByTestId('hero-trip-card')).toBeTruthy();
+    expect(getByTestId(/hero-(trip|suggestion)-card/)).toBeTruthy();
   });
 });

@@ -57,7 +57,7 @@ describe('Component Test: Flight Search Preference Chips Layout & Styling (RED P
   });
 
   test('RED-CHIP-FIX-03: preference chips render concise balanced labels (Direct, Connecting, Baggage)', () => {
-    const { getByText, getAllByTestId } = render(<FlightSearchScreen />);
+    const { getByText, getAllByText, getAllByTestId } = render(<FlightSearchScreen />);
     fireEvent.press(getByText('Edit'));
 
     const directChips = getAllByTestId('pref-checkbox-direct');
@@ -69,8 +69,8 @@ describe('Component Test: Flight Search Preference Chips Layout & Styling (RED P
     expect(baggageChips.length).toBeGreaterThan(0);
 
     // Labels are concise and clear
-    expect(getByText(/Direct/i)).toBeTruthy();
-    expect(getByText(/Connecting/i)).toBeTruthy();
-    expect(getByText(/Baggage/i)).toBeTruthy();
+    expect(getAllByText(/Direct/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Connecting/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Baggage/i).length).toBeGreaterThan(0);
   });
 });

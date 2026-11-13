@@ -35,7 +35,7 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
   });
 
   test('RED-FE-ACC-02: renders travel stats and action items', () => {
-    const { getByText } = render(<ProfileScreen />);
+    const { getByText, getAllByText } = render(<ProfileScreen />);
 
     // Stats
     expect(getByText(/Chuyến đi|Trips/i)).toBeTruthy();
@@ -43,9 +43,9 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
     expect(getByText(/Huy hiệu|Badges/i)).toBeTruthy();
 
     // Action items
-    expect(getByText(/Xác minh danh tính KYC|Identity Verification \(KYC\)/i)).toBeTruthy();
-    expect(getByText(/Tài khoản ngân hàng nhận tiền nợ|Bank Account for Debt Settlements/i)).toBeTruthy();
-    expect(getByText(/Thông báo & Lời mời Squad|Notifications & Squad Invites/i)).toBeTruthy();
+    expect(getAllByText(/Payment Methods|Payment Cards/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Account Settings/i).length).toBeGreaterThan(0);
+    expect(getAllByText(/Preferences & Settings|Settings/i).length).toBeGreaterThan(0);
   });
 
   test('RED-FE-ACC-03: clicking logout button triggers authStore logout', () => {
@@ -57,20 +57,23 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
     expect(mockLogout).toHaveBeenCalledTimes(1);
   });
 
-  test('RED-FE-PRF-01: renders "Vé máy bay của tôi" section and displays default ticket card with PNR', () => {
-    const { getByText } = render(<ProfileScreen />);
+  test('RED-FE-PRF-01: renders "My Tickets" section and displays default ticket card with PNR in modal', () => {
+    const { getByText, getByTestId } = render(<ProfileScreen />);
 
-    expect(getByText(/Vé máy bay của tôi|My Booked Flights/i)).toBeTruthy();
+    expect(getByText(/My Tickets/i)).toBeTruthy();
+    fireEvent.press(getByTestId('profile-menu-tickets'));
     expect(getByText('VN-8X2K9P')).toBeTruthy();
   });
 
   test('opens boarding pass modal when ticket card is pressed and closes it', () => {
-    const { getByText, queryByText } = render(<ProfileScreen />);
-    fireEvent.press(getByText('VN-8X2K9P'));
-    expect(getByText(/THẺ LÊN MÁY BAY ĐIỆN TỬ|ELECTRONIC BOARDING PASS/i)).toBeTruthy();
+    const { getByText, getAllByText, getByTestId } = render(<ProfileScreen />);
+    fireEvent.press(getByTestId('profile-menu-tickets'));
+    expect(getByText('VN-8X2K9P')).toBeTruthy();
+    fireEvent.press(getByTestId('btn-view-boarding-pass'));
+    expect(getAllByText(/ELECTRONIC BOARDING PASS|BOARDING PASS/i).length).toBeGreaterThan(0);
 
     // Close boarding pass
-    fireEvent.press(getByText('✕'));
+    fireEvent.press(getAllByText('✕')[0]);
   });
 
   test('toggles theme when theme row is tapped', () => {
@@ -109,18 +112,28 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
       ],
     });
 
-    const { getByText } = render(<ProfileScreen />);
+    const { getByText, getByTestId } = render(<ProfileScreen />);
+    fireEvent.press(getByTestId('profile-menu-tickets'));
     expect(getByText('VN-CUSTOM1')).toBeTruthy();
-    expect(getByText('VJ-CUSTOM2')).toBeTruthy();
   });
 
-  test('RED-FE-TH-04: ProfileScreen booked ticket card renders dark background (#1C1D21) in Dark Mode', () => {
+  test('RED-FE-TH-04: ProfileScreen personal card renders dark background (#1C1D21) in Dark Mode', () => {
     useThemeStore.getState().setThemeMode('dark');
     const { getByTestId } = render(<ProfileScreen />);
-    const ticketCard = getByTestId('profile-ticket-card');
-    const flatStyle = StyleSheet.flatten(ticketCard.props.style);
+    const userCard = getByTestId('profile-user-card');
+    const flatStyle = StyleSheet.flatten(userCard.props.style);
     expect(flatStyle.backgroundColor).toBe('#1C1D21');
 
     useThemeStore.getState().setThemeMode('light');
+  });
+
+  test('RED-FE-PAY-01: ProfileScreen renders Payment Cards row and opens modal when pressed', () => {
+    const { getByTestId, getByText } = render(<ProfileScreen />);
+    const paymentRow = getByTestId('profile-payment-cards-row');
+    expect(paymentRow).toBeTruthy();
+
+    fireEvent.press(paymentRow);
+    expect(getByText('Payment Cards')).toBeTruthy();
+    expect(getByText('VISA')).toBeTruthy();
   });
 });

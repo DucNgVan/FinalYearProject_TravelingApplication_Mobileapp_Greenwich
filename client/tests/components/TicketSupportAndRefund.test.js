@@ -69,7 +69,7 @@ describe('Ticket Support, Change & Refund Flow (TDD RED)', () => {
       />
     );
 
-    expect(getAllByText(/Trung tâm Hỗ trợ & Đổi\/Hoàn vé/i).length).toBeGreaterThanOrEqual(1);
+    expect(getAllByText(/Trung tâm Hỗ trợ & Đổi\/Hoàn vé|Ticket Support & Refunds/i).length).toBeGreaterThanOrEqual(1);
     expect(getByText(/Báo giá hoàn tiền|Refund Quote/i)).toBeTruthy();
 
     // Confirm Cancellation & Refund

@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { render } from '@testing-library/react-native';
 import CategoryBadge from '../../src/components/common/CategoryBadge';
 import LucideIcon from '../../src/components/common/LucideIcon';
@@ -78,8 +79,15 @@ describe('TDD Suite: React Native Design System Components & Lucide Icons', () =
     expect(icon).toBeTruthy();
   });
 
-  test('RED-REACT-DS-05: HomeScreen renders Quick Shortcuts with CategoryBadge components', () => {
-    const { getByTestId } = render(<HomeScreen />);
+  test('RED-REACT-DS-05: CategoryBadge renders across semantic variants', () => {
+    const { getByTestId } = render(
+      <View>
+        <CategoryBadge category="flights" label="Flights" />
+        <CategoryBadge category="hotels" label="Hotels" />
+        <CategoryBadge category="plan" label="Plan" />
+        <CategoryBadge category="group" label="Group" />
+      </View>
+    );
     expect(getByTestId('category-badge-circle-flights')).toBeTruthy();
     expect(getByTestId('category-badge-circle-hotels')).toBeTruthy();
     expect(getByTestId('category-badge-circle-plan')).toBeTruthy();

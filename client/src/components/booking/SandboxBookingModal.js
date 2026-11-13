@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { useBookingStore } from '../../stores/booking.store';
 import { useThemeStore } from '../../stores/theme.store';
+import { usePaymentStore } from '../../stores/payment.store';
+import { CardIcon } from '../common/NomadixIcons';
 import SeatMapSelector from './SeatMapSelector';
 
 const ANCILLARY_OPTIONS = [
@@ -142,14 +144,14 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
               {/* Add-on Ancillaries & Seat Selection */}
               <View style={styles.ancillaryCard}>
                 <View style={styles.ancillaryHeader}>
-                  <Text style={styles.ancillaryTitle}>Dịch vụ mua thêm (Add-on Services)</Text>
+                  <Text style={styles.ancillaryTitle}>Add-on Services</Text>
                   <TouchableOpacity
                     testID="btn-open-seatmap"
                     style={styles.seatPillSmall}
                     onPress={() => setIsSeatMapVisible(true)}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.seatPillSmallText}>💺 Ghế: {selectedSeat.code}</Text>
+                    <Text style={styles.seatPillSmallText}>💺 Seat: {selectedSeat.code}</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -177,6 +179,30 @@ const SandboxBookingModal = ({ visible, flight, onClose, onBookingSuccess }) => 
                       </TouchableOpacity>
                     );
                   })}
+                </View>
+              </View>
+
+              {/* Payment Method Card with Live Saved Card */}
+              <View testID="checkout-payment-method-card" style={styles.paymentMethodCard}>
+                <View style={styles.paymentMethodHeader}>
+                  <Text style={styles.paymentMethodTitle}>💳 Payment Method</Text>
+                  <Text style={styles.changeCardLink}>Default Card</Text>
+                </View>
+                <View style={styles.cardInfoRow}>
+                  <View style={styles.cardMiniChip}>
+                    <CardIcon size={18} color="#0B7A75" />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Text style={styles.cardNameText}>
+                      Visa (•••• 4821)
+                    </Text>
+                    <Text style={styles.cardSubText}>
+                      Exp: 08/28 · Secured by PCI-DSS
+                    </Text>
+                  </View>
+                  <View style={styles.cardVerifiedBadge}>
+                    <Text style={styles.cardVerifiedBadgeText}>Verified</Text>
+                  </View>
                 </View>
               </View>
 
@@ -472,6 +498,63 @@ const getStyles = (colors, isDark) => StyleSheet.create({
     fontSize: 11,
     color: colors.textMuted,
     marginTop: 2,
+  },
+  paymentMethodCard: {
+    backgroundColor: isDark ? '#1C1D21' : '#FFFFFF',
+    borderRadius: 14,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: isDark ? '#2A2D35' : '#E2E8F0',
+    marginBottom: 12,
+  },
+  paymentMethodHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  paymentMethodTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  changeCardLink: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#0B7A75',
+  },
+  cardInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardMiniChip: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#E3F2F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardNameText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  cardSubText: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginTop: 1,
+  },
+  cardVerifiedBadge: {
+    backgroundColor: '#E3F2F0',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  cardVerifiedBadgeText: {
+    color: '#0B7A75',
+    fontSize: 10,
+    fontWeight: '800',
   },
   balanceCard: {
     backgroundColor: '#F0FDF4',

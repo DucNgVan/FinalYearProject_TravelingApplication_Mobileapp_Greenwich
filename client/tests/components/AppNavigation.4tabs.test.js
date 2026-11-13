@@ -53,11 +53,11 @@ describe('Component Test: App 4-Tab Navigation (Flight, Hotel, Plan, Account)', 
     expect(queryByText('Group')).toBeNull();
   });
 
-  test('RED-FE-NAV-4TAB-02: clicking avatar on Home switches to ProfileScreen', () => {
+  test('RED-FE-NAV-4TAB-02: clicking Profile tab in dock switches to ProfileScreen', () => {
     const { getByTestId, getByText } = render(<App initialHasCompletedOnboarding={true} />);
 
-    const avatarBtn = getByTestId('home-avatar-btn');
-    fireEvent.press(avatarBtn);
+    const profileBtn = getByTestId('tab-btn-profile');
+    fireEvent.press(profileBtn);
 
     // ProfileScreen content should appear
     expect(getByText('Nguyễn Văn Đức')).toBeTruthy();

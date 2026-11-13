@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const itineraryRepository = require('../repositories/itinerary.repository');
+const userRepository = require('../repositories/user.repository');
 const { calculateHaversineDistance, estimateTransitTime } = require('../utils/geo.util');
 
 class ItineraryService {
@@ -81,7 +82,13 @@ class ItineraryService {
     return trip;
   }
 
-  async inviteCollaborator(itineraryId, callerUserId, { userId, role = 'VIEWER' }) {
+  async inviteCollaborator(itineraryId, callerUserId, { userId, email, role = 'VIEWER' }) {
+    let targetUserId = userId;
+    if (!targetUserId && email) {
+      const user = await userRepository.findByEmail(email);
+      targetUserId = user ? user.id : email;
+    }
+
     const trip = await itineraryRepository.findById(itineraryId);
     if (!trip) {
       const err = new Error('Itinerary not found');
@@ -99,13 +106,13 @@ class ItineraryService {
       throw err;
     }
 
-    const existingIndex = trip.collaborators.findIndex((c) => c.userId === userId);
+    const existingIndex = trip.collaborators.findIndex((c) => c.userId === targetUserId);
     if (existingIndex >= 0) {
       trip.collaborators[existingIndex].role = role;
       trip.collaborators[existingIndex].status = 'PENDING';
     } else {
       trip.collaborators.push({
-        userId,
+        userId: targetUserId,
         role,
         status: 'PENDING',
         joinedAt: new Date(),
@@ -162,7 +169,8 @@ class ItineraryService {
       throw err;
     }
 
-    const day = trip.days.find((d) => d.dayNumber === parseInt(dayNumber, 10));
+    const parsed = parseInt(dayNumber, 10);
+    const day = trip.days.find((d) => d.dayNumber === parsed) || (parsed === 0 ? trip.days[0] : null);
     if (!day) {
       const err = new Error('Specified day does not exist in itinerary');
       err.code = 'NOT_FOUND';
@@ -218,7 +226,8 @@ class ItineraryService {
       throw err;
     }
 
-    const day = trip.days.find((d) => d.dayNumber === parseInt(dayNumber, 10));
+    const parsed = parseInt(dayNumber, 10);
+    const day = trip.days.find((d) => d.dayNumber === parsed) || (parsed === 0 ? trip.days[0] : null);
     if (!day) {
       const err = new Error('Specified day does not exist in itinerary');
       err.code = 'NOT_FOUND';

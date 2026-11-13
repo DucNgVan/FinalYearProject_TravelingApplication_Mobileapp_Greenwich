@@ -389,17 +389,7 @@ export default function RegisterScreen({ navigation }) {
                 activeOpacity={0.7}
               >
                 <Text style={styles.googleIconText}>G</Text>
-                <Text style={styles.socialBtnText}>Google</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                testID="facebook-register-btn"
-                style={styles.socialBtn}
-                onPress={handleQuickDemoRegister}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.facebookIconText}>f</Text>
-                <Text style={styles.socialBtnText}>Facebook</Text>
+                <Text style={styles.socialBtnText}>Continue with Google</Text>
               </TouchableOpacity>
             </View>
 
@@ -586,12 +576,6 @@ const getStyles = (themeColors) =>
       fontWeight: '900',
       fontSize: 14,
       color: '#EA4335',
-      marginRight: 6,
-    },
-    facebookIconText: {
-      fontWeight: '900',
-      fontSize: 14,
-      color: '#1877F2',
       marginRight: 6,
     },
     socialBtnText: {

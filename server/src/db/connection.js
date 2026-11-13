@@ -25,11 +25,13 @@ class DatabaseConnectionManager {
         process.env.DATABASE_URL ||
         `postgresql://${process.env.PG_USER || 'nomadix'}:${process.env.PG_PASSWORD || 'nomadix_secret'}@${process.env.PG_HOST || 'localhost'}:${process.env.PG_PORT || 5432}/${process.env.PG_DATABASE || 'nomadix_dev'}`;
 
+      const isCloudPostgres = connectionString.includes('supabase') || connectionString.includes('sslmode=require');
       this.pgPool = new Pool({
         connectionString,
         max: 10,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 5000,
+        ssl: isCloudPostgres ? { rejectUnauthorized: false } : undefined,
       });
 
       // Verify PostgreSQL
@@ -56,13 +58,21 @@ class DatabaseConnectionManager {
 
     // 3. Initialize Redis Client
     if (!this.redisClient) {
-      this.redisClient = new Redis({
-        host: process.env.REDIS_HOST || 'localhost',
-        port: Number(process.env.REDIS_PORT) || 6379,
-        lazyConnect: true,
-        maxRetriesPerRequest: 3,
-        retryStrategy: (times) => Math.min(times * 50, 1000),
-      });
+      if (process.env.REDIS_URL) {
+        this.redisClient = new Redis(process.env.REDIS_URL, {
+          lazyConnect: true,
+          maxRetriesPerRequest: 3,
+          retryStrategy: (times) => Math.min(times * 50, 1000),
+        });
+      } else {
+        this.redisClient = new Redis({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: Number(process.env.REDIS_PORT) || 6379,
+          lazyConnect: true,
+          maxRetriesPerRequest: 3,
+          retryStrategy: (times) => Math.min(times * 50, 1000),
+        });
+      }
 
       await this.redisClient.connect();
       await this.redisClient.ping();

@@ -54,7 +54,7 @@ describe('Component Test: LoginScreen', () => {
     fireEvent.changeText(getByPlaceholderText(/email/i), 'traveler@nomadix.vn');
     fireEvent.press(getByText(/đăng nhập|login/i));
 
-    const errorMessage = await findByText(/vui lòng nhập mật khẩu/i);
+    const errorMessage = await findByText(/vui lòng nhập mật khẩu|Please enter your password/i);
     expect(errorMessage).toBeTruthy();
     expect(mockLogin).not.toHaveBeenCalled();
   });

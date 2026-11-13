@@ -62,11 +62,11 @@ describe('UI Deletions & Dark Mode Contrast Fixes (RED Phase)', () => {
     useThemeStore.getState().setThemeMode('light');
   });
 
-  test('RED-CONTRAST-02: ProfileScreen action menu icons in dark mode have bright white text color (#FFFFFF)', () => {
+  test('RED-CONTRAST-02: ProfileScreen action menu items in dark mode have bright white text color (#FFFFFF)', () => {
     useThemeStore.getState().setThemeMode('dark');
     const { getByText } = render(<ProfileScreen />);
-    const checkIcon = getByText('✓');
-    const flatStyle = StyleSheet.flatten(checkIcon.props.style);
+    const menuTitle = getByText('My Tickets');
+    const flatStyle = StyleSheet.flatten(menuTitle.props.style);
     expect(flatStyle.color).toBe('#FFFFFF');
 
     useThemeStore.getState().setThemeMode('light');

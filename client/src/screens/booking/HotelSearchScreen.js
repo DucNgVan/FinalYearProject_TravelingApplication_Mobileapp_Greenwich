@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../components/common/Input';
@@ -51,6 +52,45 @@ const FEATURED_STAYS = [
     price: '2,400,000 ₫',
     destination: 'Hoi An',
     emoji: '🏮',
+  },
+];
+
+const NEARBY_GPS_STAYS = [
+  {
+    id: 'nearby-1',
+    name: 'Vinpearl Resort & Spa Da Nang',
+    city: 'Da Nang',
+    location: 'Non Nuoc Beach, Da Nang',
+    starRating: 5,
+    reviewScore: 9.4,
+    pricePerNight: 2450000,
+    price: '2,450,000 ₫',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop',
+    distance: '0.8 km from your current GPS location',
+  },
+  {
+    id: 'nearby-2',
+    name: 'Novotel Danang Premier Han River',
+    city: 'Da Nang',
+    location: 'Bach Dang, Da Nang',
+    starRating: 5,
+    reviewScore: 9.1,
+    pricePerNight: 1850000,
+    price: '1,850,000 ₫',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop',
+    distance: '1.2 km from your current GPS location',
+  },
+  {
+    id: 'nearby-3',
+    name: 'Haian Beach Hotel & Spa',
+    city: 'Da Nang',
+    location: 'My Khe Beach, Da Nang',
+    starRating: 4,
+    reviewScore: 8.9,
+    pricePerNight: 1250000,
+    price: '1,250,000 ₫',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=800&auto=format&fit=crop',
+    distance: '2.1 km from your current GPS location',
   },
 ];
 
@@ -293,6 +333,65 @@ export default function HotelSearchScreen({ navigation }) {
                   <Text style={[styles.featuredPrice, { color: themeColors.primary }]}>
                     {stay.price} <Text style={[styles.perNight, { color: themeColors.textMuted }]}>/ night</Text>
                   </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Nearby Stays Around Your Location (Da Nang GPS auto-detect) */}
+        <View testID="nearby-stays-section" style={styles.nearbySection}>
+          <View style={styles.featuredHeaderRow}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={{ fontSize: 16 }}>📍</Text>
+              <Text style={[styles.sectionTitle, { color: themeColors.text }]}>
+                Nearby Stays Around You (Da Nang)
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.nearbyList}>
+            {NEARBY_GPS_STAYS.map((stay) => (
+              <TouchableOpacity
+                key={stay.id}
+                testID={`nearby-hotel-${stay.id}`}
+                style={[
+                  styles.nearbyCard,
+                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
+                ]}
+                activeOpacity={0.8}
+                onPress={() => {
+                  setSelectedHotelToBook({
+                    ...stay,
+                    address: stay.location,
+                  });
+                  setIsBookingModalVisible(true);
+                }}
+              >
+                <Image
+                  source={{ uri: stay.thumbnailUrl }}
+                  style={styles.nearbyImage}
+                />
+                <View style={styles.nearbyInfo}>
+                  <View style={styles.nearbyTopRow}>
+                    <Text style={[styles.nearbyName, { color: themeColors.text }]} numberOfLines={1}>
+                      {stay.name}
+                    </Text>
+                    <View style={styles.ratingBadge}>
+                      <Text style={styles.ratingText}>★ {stay.starRating}</Text>
+                    </View>
+                  </View>
+                  <Text style={[styles.nearbyDistance, { color: mode === 'dark' ? '#4ADE80' : '#0B7A75' }]}>
+                    {stay.distance}
+                  </Text>
+                  <View style={styles.nearbyBottomRow}>
+                    <Text style={[styles.nearbyPrice, { color: themeColors.primary }]}>
+                      {stay.price} <Text style={[styles.perNight, { color: themeColors.textMuted }]}>/ night</Text>
+                    </Text>
+                    <View style={[styles.bookMiniBtn, { backgroundColor: themeColors.primary }]}>
+                      <Text style={styles.bookMiniBtnText}>Book Now</Text>
+                    </View>
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}
@@ -1209,6 +1308,84 @@ const styles = StyleSheet.create({
   perNight: {
     fontSize: 9,
     fontWeight: '400',
+  },
+  nearbySection: {
+    marginTop: 20,
+    marginBottom: 8,
+  },
+  gpsTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  gpsTagText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  nearbyList: {
+    gap: 12,
+    marginTop: 8,
+  },
+  nearbyCard: {
+    flexDirection: 'row',
+    borderRadius: 18,
+    borderWidth: 1,
+    overflow: 'hidden',
+    height: 100,
+  },
+  nearbyImage: {
+    width: 100,
+    height: '100%',
+  },
+  nearbyInfo: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'space-between',
+  },
+  nearbyTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  nearbyName: {
+    fontSize: 13,
+    fontWeight: '800',
+    flex: 1,
+    marginRight: 6,
+  },
+  ratingBadge: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  ratingText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#D97706',
+  },
+  nearbyDistance: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  nearbyBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  nearbyPrice: {
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  bookMiniBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+  bookMiniBtnText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
   },
   squadBanner: {
     flexDirection: 'row',

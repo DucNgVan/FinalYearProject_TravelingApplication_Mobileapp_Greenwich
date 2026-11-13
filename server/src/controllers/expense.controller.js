@@ -5,7 +5,7 @@ class ExpenseController {
   async createExpense(req, res, next) {
     try {
       const { tripId } = req.params;
-      const payerId = req.user.userId;
+      const payerId = req.body.payerId || req.body.paidBy || req.user.userId;
       const {
         title,
         amount,
@@ -18,6 +18,19 @@ class ExpenseController {
         customSplits,
       } = req.body;
 
+      const resolvedSplitStrategy = splitStrategy || req.body.splitType || 'equal';
+      let resolvedParticipants = participants;
+      let resolvedCustomSplits = customSplits;
+
+      if ((!resolvedParticipants || resolvedParticipants.length === 0) && Array.isArray(req.body.splits)) {
+        resolvedParticipants = req.body.splits.map((s) => (typeof s === 'string' ? s : s.userId));
+        resolvedCustomSplits = req.body.splits.map((s) => ({
+          userId: s.userId || s,
+          splitAmount: s.amount !== undefined ? s.amount : s.splitAmount,
+          percentage: s.percentage,
+        }));
+      }
+
       const expense = await expenseService.addExpense({
         tripId,
         payerId,
@@ -26,10 +39,10 @@ class ExpenseController {
         currency,
         category,
         receiptUrl,
-        splitStrategy,
+        splitStrategy: resolvedSplitStrategy,
         notes,
-        participants,
-        customSplits,
+        participants: resolvedParticipants,
+        customSplits: resolvedCustomSplits,
       });
 
       return res.status(201).json({
@@ -115,6 +128,7 @@ class ExpenseController {
           totalExpense: summary.totalTripExpense,
           memberBalances: summary.memberBalances,
           simplifiedSettlements: plan.settlementPlan,
+          settlementPlan: plan.settlementPlan,
         },
       });
     } catch (err) {

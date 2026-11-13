@@ -68,7 +68,7 @@ export default function SeatMapSelector({
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={styles.title}>Cabin Seat Map • Sơ đồ ghế ngồi</Text>
+              <Text style={styles.title}>Cabin Seat Map</Text>
               <Text style={styles.subtitle}>{aircraft} • 3-3 Cabin Layout</Text>
             </View>
             <TouchableOpacity style={styles.closeBtn} onPress={onClose}>

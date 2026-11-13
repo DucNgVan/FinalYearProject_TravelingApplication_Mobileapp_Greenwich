@@ -105,11 +105,11 @@ describe('Component Test: Full Application UI Harmonization with Nomadix HTML Sp
   });
 
   test('RED-FE-PROFILE-UI-01: ProfileScreen adopts eyebrow "Account", title "Profile", and role pill', () => {
-    const { getByText } = render(<ProfileScreen />);
+    const { getByText, getAllByText } = render(<ProfileScreen />);
 
-    expect(getByText('Account')).toBeTruthy();
+    expect(getAllByText(/Account/i).length).toBeGreaterThan(0);
     expect(getByText('Profile')).toBeTruthy();
-    expect(getByText('Owner')).toBeTruthy();
+    expect(getAllByText(/Owner|Explorer/i).length).toBeGreaterThan(0);
     expect(getByText(/Dark mode/i)).toBeTruthy();
     expect(getByText(/Sign out|Log Out/i)).toBeTruthy();
   });

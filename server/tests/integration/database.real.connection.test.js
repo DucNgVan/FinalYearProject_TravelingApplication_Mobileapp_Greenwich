@@ -18,8 +18,11 @@ describe('TDD RED Phase: Real Database Connection & Healthcheck Integration', ()
     const result = await pool.query('SELECT NOW() as current_time, current_database() as db_name');
     expect(result.rows).toBeDefined();
     expect(result.rows.length).toBe(1);
-    expect(result.rows[0].db_name).toBe('nomadix_dev');
+    expect(['nomadix_dev', 'postgres']).toContain(result.rows[0].db_name);
     expect(result.rows[0].current_time).toBeInstanceOf(Date);
+
+    const tablesRes = await pool.query("SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';");
+    expect(Number(tablesRes.rows[0].count)).toBeGreaterThanOrEqual(28);
   });
 
   test('RED-DB-LIVE-02: Successfully connects to real MongoDB container and pings admin db', async () => {

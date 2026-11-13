@@ -139,11 +139,64 @@ class MockBookingProvider {
       .replace(/\s+/g, '');
 
     const allHotels = [
+      // Hội An
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Anantara Hoi An Resort',
+        city: 'Hội An',
+        cityKey: 'hoian',
+        address: '1 Phạm Hồng Thái, Cẩm Châu, TP. Hội An',
+        starRating: 5,
+        reviewScore: 9.4,
+        pricePerNight: 3450000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
+      },
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Four Seasons Resort The Nam Hai, Hoi An',
+        city: 'Hội An',
+        cityKey: 'hoian',
+        address: 'Khối Hà My Đông B, Điện Bàn, Hội An',
+        starRating: 5,
+        reviewScore: 9.8,
+        pricePerNight: 11200000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600',
+      },
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Little Riverside Hoi An Luxury Hotel & Spa',
+        city: 'Hội An',
+        cityKey: 'hoian',
+        address: '09 Phan Bội Châu, Cẩm Châu, TP. Hội An',
+        starRating: 4,
+        reviewScore: 9.2,
+        pricePerNight: 1850000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600',
+      },
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Hoi An Historic Hotel',
+        city: 'Hội An',
+        cityKey: 'hoian',
+        address: '10 Trần Hưng Đạo, Sơn Phong, TP. Hội An',
+        starRating: 4,
+        reviewScore: 9.0,
+        pricePerNight: 1250000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600',
+      },
       // Đà Lạt
       {
         id: crypto.randomUUID(),
         provider: 'MOCK_HOTEL_PROVIDER',
-        name: 'Ana Mandara Villas Dalat Resort',
+        name: 'Ana Mandara Villas Dalat Resort & Spa',
         city: 'Đà Lạt',
         cityKey: 'dalat',
         address: 'Đường Lê Lai, Phường 5, TP. Đà Lạt',
@@ -219,7 +272,33 @@ class MockBookingProvider {
         currency: 'VND',
         thumbnailUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600',
       },
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Haian Riverfront Hotel Da Nang',
+        city: 'Đà Nẵng',
+        cityKey: 'danang',
+        address: '182 Bạch Đằng, Hải Châu, Đà Nẵng',
+        starRating: 4,
+        reviewScore: 9.0,
+        pricePerNight: 1400000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600',
+      },
       // Hà Nội
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Sofitel Legend Metropole Hanoi',
+        city: 'Hà Nội',
+        cityKey: 'hanoi',
+        address: '15 Ngô Quyền, Hoàn Kiếm, Hà Nội',
+        starRating: 5,
+        reviewScore: 9.7,
+        pricePerNight: 6800000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
+      },
       {
         id: crypto.randomUUID(),
         provider: 'MOCK_HOTEL_PROVIDER',
@@ -247,13 +326,54 @@ class MockBookingProvider {
         currency: 'VND',
         thumbnailUrl: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600',
       },
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Park Hyatt Saigon',
+        city: 'TP. Hồ Chí Minh',
+        cityKey: 'hochiminh',
+        address: '2 Lam Sơn Square, Bến Nghé, Quận 1, TP. HCM',
+        starRating: 5,
+        reviewScore: 9.6,
+        pricePerNight: 5500000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600',
+      },
+      // Tokyo
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'Aman Tokyo',
+        city: 'Tokyo',
+        cityKey: 'tokyo',
+        address: 'The Otemachi Tower, 1-5-6 Otemachi, Chiyoda-ku, Tokyo',
+        starRating: 5,
+        reviewScore: 9.8,
+        pricePerNight: 18500000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600',
+      },
+      // Paris
+      {
+        id: crypto.randomUUID(),
+        provider: 'MOCK_HOTEL_PROVIDER',
+        name: 'The Ritz Paris',
+        city: 'Paris',
+        cityKey: 'paris',
+        address: '15 Place Vendôme, 75001 Paris, France',
+        starRating: 5,
+        reviewScore: 9.9,
+        pricePerNight: 24500000 * rooms,
+        currency: 'VND',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
+      },
     ];
 
     const matchedHotels = allHotels.filter(
       (h) => h.cityKey.includes(cleanCity) || cleanCity.includes(h.cityKey)
     );
 
-    return matchedHotels.length > 0 ? matchedHotels : allHotels;
+    return matchedHotels;
   }
 }
 

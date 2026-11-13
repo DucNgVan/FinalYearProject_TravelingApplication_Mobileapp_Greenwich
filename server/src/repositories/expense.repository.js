@@ -10,6 +10,10 @@ class ExpenseRepository {
     this.pool = pgPool;
   }
 
+  setPool(pgPool) {
+    this.pool = pgPool;
+  }
+
   async createExpense({
     id = crypto.randomUUID(),
     tripId,

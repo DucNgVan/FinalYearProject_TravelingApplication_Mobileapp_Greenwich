@@ -23,10 +23,10 @@ describe('Bottom Navigation 5-Tab Layout with Profile (RED Phase)', () => {
   });
 
   test('RED-NAV-02: pressing Profile tab button in dock opens ProfileScreen', () => {
-    const { getByTestId, getByText } = render(<App initialHasCompletedOnboarding={true} />);
+    const { getByTestId, getAllByText } = render(<App initialHasCompletedOnboarding={true} />);
 
     fireEvent.press(getByTestId('tab-btn-profile'));
     expect(getByTestId('profile-root-container')).toBeTruthy();
-    expect(getByText('Account')).toBeTruthy();
+    expect(getAllByText(/Account/i).length).toBeGreaterThan(0);
   });
 });

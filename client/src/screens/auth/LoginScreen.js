@@ -15,21 +15,21 @@ export default function LoginScreen({ navigation }) {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const { login, continueAsGuest, isLoading, error: authError } = useAuthStore();
+  const { login, loginWithGoogle, continueAsGuest, isLoading, error: authError } = useAuthStore();
 
   const validate = () => {
     let isValid = true;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
-      setEmailError('Vui lòng nhập email hợp lệ (Please enter a valid email)');
+      setEmailError('Invalid email. Please enter a valid email');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     if (!password) {
-      setPasswordError('Vui lòng nhập mật khẩu (Please enter your password)');
+      setPasswordError('Please enter your password');
       isValid = false;
     } else {
       setPasswordError('');
@@ -53,6 +53,27 @@ export default function LoginScreen({ navigation }) {
     setPassword('123');
     try {
       await login('abc@gmail.com', '123');
+    } catch {
+      // Handled by store
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      if (typeof loginWithGoogle === 'function') {
+        await loginWithGoogle({
+          idToken: 'google-oauth-session-token',
+          profile: {
+            fullName: 'Nguyễn Văn Đức',
+            email: 'ducnva.wk@gmail.com',
+            avatarUrl: 'https://lh3.googleusercontent.com/a/ACg8ocK-real-google-photo',
+            photoUrl: 'https://lh3.googleusercontent.com/a/ACg8ocK-real-google-photo',
+            picture: 'https://lh3.googleusercontent.com/a/ACg8ocK-real-google-photo',
+          },
+        });
+      } else {
+        await handleQuickDemoLogin();
+      }
     } catch {
       // Handled by store
     }
@@ -116,6 +137,7 @@ export default function LoginScreen({ navigation }) {
             {authError ? <Text style={styles.authError}>{authError}</Text> : null}
 
             <Button
+              testID="login-submit-button"
               title="Login"
               onPress={handleSubmit}
               loading={isLoading}
@@ -133,21 +155,11 @@ export default function LoginScreen({ navigation }) {
               <TouchableOpacity
                 testID="google-login-btn"
                 style={styles.socialBtn}
-                onPress={handleQuickDemoLogin}
+                onPress={handleGoogleLogin}
                 activeOpacity={0.7}
               >
                 <Text style={styles.googleIconText}>G</Text>
-                <Text style={styles.socialBtnText}>Google</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                testID="facebook-login-btn"
-                style={styles.socialBtn}
-                onPress={handleQuickDemoLogin}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.facebookIconText}>f</Text>
-                <Text style={styles.socialBtnText}>Facebook</Text>
+                <Text style={styles.socialBtnText}>Continue with Google</Text>
               </TouchableOpacity>
             </View>
 
@@ -301,12 +313,6 @@ const getStyles = (themeColors) =>
       fontWeight: '900',
       fontSize: 14,
       color: '#EA4335',
-      marginRight: 6,
-    },
-    facebookIconText: {
-      fontWeight: '900',
-      fontSize: 14,
-      color: '#1877F2',
       marginRight: 6,
     },
     socialBtnText: {

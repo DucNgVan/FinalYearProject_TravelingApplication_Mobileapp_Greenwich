@@ -1,0 +1,11 @@
+{
+  "name": "nomadix-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "test:e2e": "cd e2e && npx e2e run",
+    "test:all": "npm run test:server && npm run test:client && npm run test:e2e"
+  }
+}

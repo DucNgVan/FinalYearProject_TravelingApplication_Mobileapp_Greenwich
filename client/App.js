@@ -11,6 +11,13 @@ import PlanScreen from './src/screens/plan/PlanScreen';
 import GroupScreen from './src/screens/group/GroupScreen';
 import ProfileScreen from './src/screens/account/ProfileScreen';
 import LucideIcon from './src/components/common/LucideIcon';
+import {
+  FlightIcon,
+  HotelIcon,
+  HomeIcon,
+  PlanIcon,
+  ProfileIcon,
+} from './src/components/common/NomadixIcons';
 import { useAuthStore } from './src/stores/auth.store';
 import { useThemeStore } from './src/stores/theme.store';
 import { colors } from './src/theme/colors';
@@ -101,7 +108,14 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
         return <GroupScreen />;
       case 'profile':
       case 'account':
-        return <ProfileScreen />;
+        return (
+          <ProfileScreen
+            onLogout={() => {
+              setActiveTab('home');
+              setAuthScreen('login');
+            }}
+          />
+        );
       default:
         return (
           <HomeScreen
@@ -148,8 +162,8 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
             onPress={() => setActiveTab('flights')}
             activeOpacity={0.7}
           >
-            <LucideIcon
-              name="plane"
+            <FlightIcon
+              testID="lucide-icon-plane"
               color={activeTab === 'flights' ? (isDark ? '#FFFFFF' : '#0F172A') : themeColors.textMuted}
               size={20}
             />
@@ -172,8 +186,8 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
             onPress={() => setActiveTab('hotels')}
             activeOpacity={0.7}
           >
-            <LucideIcon
-              name="hotel"
+            <HotelIcon
+              testID="lucide-icon-hotel"
               color={activeTab === 'hotels' ? (isDark ? '#FFFFFF' : '#0F172A') : themeColors.textMuted}
               size={20}
             />
@@ -189,17 +203,11 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
             </Text>
           </TouchableOpacity>
 
-          {/* Center: Home (Prominent Focal Dock Button) */}
+          {/* Center: Home (Focal Dock Button without outer circular ring) */}
           <View testID="tab-col-home" style={styles.centerHomeColumn}>
             <TouchableOpacity
               testID="tab-btn-home"
-              style={[
-                styles.centerHomeButton,
-                {
-                  backgroundColor: isDark ? '#1C1D21' : '#FFFFFF',
-                  borderColor: isDark ? '#2A2D35' : '#E2E8F0',
-                },
-              ]}
+              style={styles.centerHomeButton}
               onPress={() => setActiveTab('home')}
               activeOpacity={0.8}
             >
@@ -208,14 +216,16 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
                 style={[
                   styles.centerHomeNBadge,
                   {
-                    backgroundColor: isDark ? '#FFFFFF' : '#111827',
+                    backgroundColor: isDark ? '#FFFFFF' : '#0E1B2C',
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.centerHomeNText,
-                    { color: isDark ? '#111827' : '#FFFFFF' },
+                    {
+                      color: isDark ? '#0E1B2C' : '#FFFFFF',
+                    },
                   ]}
                 >
                   N
@@ -239,8 +249,8 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
             onPress={() => setActiveTab('plan')}
             activeOpacity={0.7}
           >
-            <LucideIcon
-              name="map"
+            <PlanIcon
+              testID="lucide-icon-map"
               color={activeTab === 'plan' ? (isDark ? '#FFFFFF' : '#0F172A') : themeColors.textMuted}
               size={20}
             />
@@ -263,8 +273,8 @@ export default function App({ initialHasCompletedOnboarding = false, initialTab 
             onPress={() => setActiveTab('profile')}
             activeOpacity={0.7}
           >
-            <LucideIcon
-              name="user"
+            <ProfileIcon
+              testID="lucide-icon-users"
               color={activeTab === 'profile' ? (isDark ? '#FFFFFF' : '#0F172A') : themeColors.textMuted}
               size={20}
             />
@@ -339,20 +349,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   centerHomeButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -22, // elevated -mt-6 like HTML
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 6,
+    justifyContent: 'center',
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginHorizontal: 2,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    borderColor: 'transparent',
+    elevation: 0,
+    shadowOpacity: 0,
   },
   centerHomeNBadge: {
     width: 22,

@@ -5,7 +5,6 @@ const normalizerService = require('./normalizer.service');
 const cacheService = require('./cache.service');
 
 class BookingService {
-  // Orchestrates parallel queries across multiple providers with cache-aside
   /**
    * Search and aggregate flights
    */
@@ -103,7 +102,8 @@ class BookingService {
    */
   async searchHotels(query) {
     const {
-      city,
+      city: rawCity,
+      destination: rawDestination,
       checkIn,
       checkOut,
       guests = 2,
@@ -112,6 +112,8 @@ class BookingService {
       maxPrice,
       sortBy,
     } = query;
+
+    const city = rawCity || rawDestination;
 
     const nights = Math.max(
       1,
@@ -140,31 +142,20 @@ class BookingService {
       };
     }
 
-    // 2. Fetch from Provider (Google Places with resilient fallback to Mock Provider)
+    // 2. Fetch from Live Duffel Stays API with Resilient Mock Fallback
     let rawHotels = [];
-    let dataSource = 'MOCK_PROVIDER';
+    let dataSource = 'DUFFEL_STAYS_LIVE';
 
-    if (process.env.GOOGLE_PLACES_API_KEY && process.env.NODE_ENV !== 'test') {
-      try {
-        rawHotels = await googleProvider.searchHotels({
-          city,
-          checkIn,
-          checkOut,
-          guests: parseInt(guests, 10),
-        });
-        if (rawHotels && rawHotels.length > 0) {
-          dataSource = 'GOOGLE_PLACES_LIVE';
-        } else {
-          rawHotels = await mockProvider.searchHotels({
-            city,
-            checkIn,
-            checkOut,
-            guests: parseInt(guests, 10),
-            rooms: parseInt(rooms, 10),
-          });
-          dataSource = 'MOCK_PROVIDER';
-        }
-      } catch (err) {
+    try {
+      rawHotels = await duffelProvider.searchHotels({
+        city,
+        checkIn,
+        checkOut,
+        guests: parseInt(guests, 10),
+        rooms: parseInt(rooms, 10),
+      });
+
+      if (!rawHotels || rawHotels.length === 0) {
         rawHotels = await mockProvider.searchHotels({
           city,
           checkIn,
@@ -172,9 +163,11 @@ class BookingService {
           guests: parseInt(guests, 10),
           rooms: parseInt(rooms, 10),
         });
-        dataSource = 'MOCK_PROVIDER';
+        if (rawHotels && rawHotels.length > 0) {
+          dataSource = 'MOCK_HOTEL_PROVIDER';
+        }
       }
-    } else {
+    } catch {
       rawHotels = await mockProvider.searchHotels({
         city,
         checkIn,
@@ -182,14 +175,16 @@ class BookingService {
         guests: parseInt(guests, 10),
         rooms: parseInt(rooms, 10),
       });
-      dataSource = 'MOCK_PROVIDER';
+      dataSource = 'MOCK_HOTEL_PROVIDER';
     }
 
     // 3. Normalize
-    const normalized = rawHotels.map((h) => normalizerService.normalizeHotel(h, nights));
+    const normalized = (rawHotels || []).map((h) => normalizerService.normalizeHotel(h, nights));
 
     // 4. Store in Cache (TTL: 3600s / 60m)
-    await cacheService.set(cacheKey, normalized, 3600);
+    if (normalized.length > 0) {
+      await cacheService.set(cacheKey, normalized, 3600);
+    }
 
     // 5. Filter and Sort
     const filtered = this._filterAndSortHotels(normalized, { minRating, maxPrice, sortBy });
@@ -199,7 +194,7 @@ class BookingService {
       meta: {
         totalResults: filtered.length,
         cached: false,
-        dataSource: 'MOCK_PROVIDER',
+        dataSource,
       },
     };
   }

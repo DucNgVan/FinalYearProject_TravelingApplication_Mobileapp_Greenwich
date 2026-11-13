@@ -87,7 +87,7 @@ export default function TicketSupportModal({
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={styles.title}>Trung tâm Hỗ trợ & Đổi/Hoàn vé</Text>
+              <Text style={styles.title}>Ticket Support & Refunds</Text>
               <Text style={styles.subtitle}>Duffel Ticket Support & Refunds • PNR: {ticket.pnr || 'VN-8X2K9P'}</Text>
             </View>
             <TouchableOpacity style={styles.closeBtn} onPress={handleClose}>
@@ -111,7 +111,7 @@ export default function TicketSupportModal({
                   activeTab === 'refund' ? styles.segmentPillTextActive : styles.segmentPillTextInactive,
                 ]}
               >
-                Hủy vé & Hoàn tiền
+                Cancel & Refund
               </Text>
             </TouchableOpacity>
 
@@ -129,7 +129,7 @@ export default function TicketSupportModal({
                   activeTab === 'change' ? styles.segmentPillTextActive : styles.segmentPillTextInactive,
                 ]}
               >
-                Đổi chuyến bay
+                Change Flight
               </Text>
             </TouchableOpacity>
           </View>
@@ -139,15 +139,15 @@ export default function TicketSupportModal({
               <View style={styles.successBox}>
                 <Text style={styles.successIcon}>✓</Text>
                 <Text style={styles.successTitle}>
-                  {actionDone === 'refund' ? 'Yêu cầu hoàn tiền thành công!' : 'Đổi chuyến bay thành công!'}
+                  {actionDone === 'refund' ? 'Refund Request Submitted Successfully!' : 'Flight Changed Successfully!'}
                 </Text>
                 <Text style={styles.successDesc}>
                   {actionDone === 'refund'
-                    ? `Duffel API đã tiếp nhận lệnh hoàn tiền ${netRefund.toLocaleString('vi-VN')}₫ về tài khoản gốc của bạn.`
-                    : 'Vé mới đã được cập nhật trực tiếp vào tài khoản Nomadix của bạn.'}
+                    ? `Duffel API accepted refund request of ${netRefund.toLocaleString('en-US')} VND to your original payment method.`
+                    : 'Your updated ticket is now active in your Nomadix account.'}
                 </Text>
                 <TouchableOpacity style={styles.doneBtn} onPress={handleClose}>
-                  <Text style={styles.doneBtnText}>Hoàn tất</Text>
+                  <Text style={styles.doneBtnText}>Done</Text>
                 </TouchableOpacity>
               </View>
             ) : activeTab === 'refund' ? (
@@ -157,30 +157,30 @@ export default function TicketSupportModal({
                   <Text style={styles.briefRoute}>
                     {ticket.origin} → {ticket.destination} ({ticket.airlineName || 'Vietnam Airlines'})
                   </Text>
-                  <Text style={styles.briefFlightNum}>Số hiệu: {ticket.flightNumber || 'VN-0240'}</Text>
+                  <Text style={styles.briefFlightNum}>Flight: {ticket.flightNumber || 'VN-0240'}</Text>
                 </View>
 
                 {/* Refund Quote Breakdown */}
                 <View style={styles.quoteCard}>
-                  <Text style={styles.quoteTitle}>Báo giá hoàn tiền (Refund Quote)</Text>
+                  <Text style={styles.quoteTitle}>Refund Quote</Text>
                   <View style={styles.quoteRow}>
-                    <Text style={styles.quoteLabel}>Tổng tiền vé đã thanh toán:</Text>
-                    <Text style={styles.quoteVal}>{totalPaid.toLocaleString('vi-VN')}₫</Text>
+                    <Text style={styles.quoteLabel}>Total Fare Paid:</Text>
+                    <Text style={styles.quoteVal}>{totalPaid.toLocaleString('en-US')} VND</Text>
                   </View>
                   <View style={styles.quoteRow}>
-                    <Text style={styles.quoteLabel}>Phí hủy hãng hàng không (15%):</Text>
+                    <Text style={styles.quoteLabel}>Airline Cancellation Fee (15%):</Text>
                     <Text style={[styles.quoteVal, { color: '#EF4444' }]}>
-                      -{penalty.toLocaleString('vi-VN')}₫
+                      -{penalty.toLocaleString('en-US')} VND
                     </Text>
                   </View>
                   <View style={[styles.quoteRow, styles.quoteTotalRow]}>
-                    <Text style={styles.quoteTotalLabel}>Thực nhận hoàn tiền:</Text>
-                    <Text style={styles.quoteTotalVal}>{netRefund.toLocaleString('vi-VN')}₫</Text>
+                    <Text style={styles.quoteTotalLabel}>Net Refund Amount:</Text>
+                    <Text style={styles.quoteTotalVal}>{netRefund.toLocaleString('en-US')} VND</Text>
                   </View>
                 </View>
 
                 <Text style={styles.policyNotice}>
-                  ℹ️ Theo chính sách Duffel API & IATA, tiền hoàn sẽ chuyển về phương thức thanh toán gốc trong vòng 3-5 ngày làm việc.
+                  ℹ️ In accordance with Duffel API & IATA policies, refunds will be credited to your original payment method within 3-5 business days.
                 </Text>
 
                 <TouchableOpacity
@@ -193,7 +193,7 @@ export default function TicketSupportModal({
                   {isProcessing ? (
                     <ActivityIndicator color={isDark ? '#111827' : '#FFFFFF'} />
                   ) : (
-                    <Text style={styles.actionBtnText}>Xác nhận Hủy & Nhận Hoàn Tiền</Text>
+                    <Text style={styles.actionBtnText}>Confirm Cancellation & Refund</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -203,15 +203,15 @@ export default function TicketSupportModal({
                   <Text style={styles.briefRoute}>
                     {ticket.origin} → {ticket.destination}
                   </Text>
-                  <Text style={styles.briefFlightNum}>Chuyến hiện tại: {ticket.flightNumber} ({ticket.departureTime ? ticket.departureTime.slice(0, 10) : '2026-10-15'})</Text>
+                  <Text style={styles.briefFlightNum}>Current Flight: {ticket.flightNumber} ({ticket.departureTime ? ticket.departureTime.slice(0, 10) : '2026-10-15'})</Text>
                 </View>
 
                 <View style={styles.quoteCard}>
-                  <Text style={styles.quoteTitle}>Đề xuất chuyến bay thay thế</Text>
-                  <Text style={styles.quoteLabel}>Chuyến bay mới khả dụng: VN-0882 (+3 ngày sau)</Text>
+                  <Text style={styles.quoteTitle}>Alternative Flight Proposal</Text>
+                  <Text style={styles.quoteLabel}>Available replacement flight: VN-0882 (+3 days later)</Text>
                   <View style={styles.quoteRow}>
-                    <Text style={styles.quoteLabel}>Phí chênh lệch vé:</Text>
-                    <Text style={[styles.quoteVal, { color: '#10B981' }]}>0₫ (Miễn phí đổi lần đầu)</Text>
+                    <Text style={styles.quoteLabel}>Fare Difference:</Text>
+                    <Text style={[styles.quoteVal, { color: '#10B981' }]}>0 VND (Free 1st change)</Text>
                   </View>
                 </View>
 
@@ -225,7 +225,7 @@ export default function TicketSupportModal({
                   {isProcessing ? (
                     <ActivityIndicator color={isDark ? '#111827' : '#FFFFFF'} />
                   ) : (
-                    <Text style={styles.actionBtnText}>Xác nhận Đổi Chuyến Bay Mới</Text>
+                    <Text style={styles.actionBtnText}>Confirm Flight Change</Text>
                   )}
                 </TouchableOpacity>
               </View>

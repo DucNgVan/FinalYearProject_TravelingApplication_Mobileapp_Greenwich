@@ -91,6 +91,13 @@ const TRENDING_DEALS = [
   },
 ];
 
+const POPULAR_DIRECT_ROUTES = [
+  { id: 'pdr-1', origin: 'SGN', dest: 'DAD', city: 'Da Nang', price: '₫690,000' },
+  { id: 'pdr-2', origin: 'HAN', dest: 'DAD', city: 'Da Nang', price: '₫780,000' },
+  { id: 'pdr-3', origin: 'SGN', dest: 'PQC', city: 'Phu Quoc', price: '₫820,000' },
+  { id: 'pdr-4', origin: 'HAN', dest: 'SGN', city: 'Ho Chi Minh', price: '₫890,000' },
+];
+
 export default function FlightSearchScreen({ navigation }) {
   const { mode, colors: themeColors } = useThemeStore();
   const isDark = mode === 'dark';
@@ -261,6 +268,23 @@ export default function FlightSearchScreen({ navigation }) {
     }
     return 0;
   });
+
+  const getQuickFilterChipStyle = (id) => [
+    styles.quickFilterChip,
+    { backgroundColor: themeColors.card, borderColor: themeColors.border },
+    activeQuickFilter === id && styles.quickFilterChipActive,
+    activeQuickFilter === id && isDark && {
+      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+      borderColor: '#FFFFFF',
+    },
+  ];
+
+  const getQuickFilterTextStyle = (id) => [
+    styles.quickFilterText,
+    { color: themeColors.text },
+    activeQuickFilter === id && styles.quickFilterTextActive,
+    activeQuickFilter === id && isDark && { color: '#FFFFFF' },
+  ];
 
   return (
     <View style={[styles.safeArea, { backgroundColor: themeColors.background }]}>
@@ -575,16 +599,32 @@ export default function FlightSearchScreen({ navigation }) {
                 testID="pref-checkbox-direct"
                 style={[
                   styles.prefChip,
-                  { borderColor: themeColors.border, backgroundColor: mode === 'light' ? '#F8FAFC' : 'rgba(255, 255, 255, 0.05)' },
-                  prefDirect && styles.prefChipActive,
+                  {
+                    borderColor: prefDirect
+                      ? (isDark ? '#FFFFFF' : '#0E1B2C')
+                      : (isDark ? '#2A2D35' : themeColors.border),
+                    backgroundColor: prefDirect
+                      ? (isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(14, 27, 44, 0.05)')
+                      : (mode === 'light' ? '#F8FAFC' : 'rgba(255, 255, 255, 0.05)'),
+                  },
                 ]}
                 onPress={() => setPrefDirect(!prefDirect)}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.prefCheck, prefDirect && styles.prefCheckActive]}>
+                <Text
+                  testID="pref-check-direct"
+                  style={[
+                    styles.prefCheck,
+                    prefDirect && {
+                      backgroundColor: isDark ? '#FFFFFF' : '#0E1B2C',
+                      borderColor: isDark ? '#FFFFFF' : '#0E1B2C',
+                      color: isDark ? '#0E1B2C' : '#FFFFFF',
+                    },
+                  ]}
+                >
                   {prefDirect ? '✓' : ''}
                 </Text>
-                <Text style={[styles.prefText, { color: themeColors.text }]} numberOfLines={1}>
+                <Text style={[styles.prefText, { color: isDark ? '#FFFFFF' : '#0E1B2C' }]} numberOfLines={1}>
                   Direct
                 </Text>
               </TouchableOpacity>
@@ -593,16 +633,32 @@ export default function FlightSearchScreen({ navigation }) {
                 testID="pref-checkbox-transit"
                 style={[
                   styles.prefChip,
-                  { borderColor: themeColors.border, backgroundColor: mode === 'light' ? '#F8FAFC' : 'rgba(255, 255, 255, 0.05)' },
-                  prefTransit && styles.prefChipActive,
+                  {
+                    borderColor: prefTransit
+                      ? (isDark ? '#FFFFFF' : '#0E1B2C')
+                      : (isDark ? '#2A2D35' : themeColors.border),
+                    backgroundColor: prefTransit
+                      ? (isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(14, 27, 44, 0.05)')
+                      : (mode === 'light' ? '#F8FAFC' : 'rgba(255, 255, 255, 0.05)'),
+                  },
                 ]}
                 onPress={() => setPrefTransit(!prefTransit)}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.prefCheck, prefTransit && styles.prefCheckActive]}>
+                <Text
+                  testID="pref-check-transit"
+                  style={[
+                    styles.prefCheck,
+                    prefTransit && {
+                      backgroundColor: isDark ? '#FFFFFF' : '#0E1B2C',
+                      borderColor: isDark ? '#FFFFFF' : '#0E1B2C',
+                      color: isDark ? '#0E1B2C' : '#FFFFFF',
+                    },
+                  ]}
+                >
                   {prefTransit ? '✓' : ''}
                 </Text>
-                <Text style={[styles.prefText, { color: themeColors.text }]} numberOfLines={1}>
+                <Text style={[styles.prefText, { color: isDark ? '#FFFFFF' : '#0E1B2C' }]} numberOfLines={1}>
                   Transit
                 </Text>
                 <Text style={{ position: 'absolute', opacity: 0, height: 0 }}>Connecting</Text>
@@ -612,18 +668,35 @@ export default function FlightSearchScreen({ navigation }) {
                 testID="pref-checkbox-baggage"
                 style={[
                   styles.prefChip,
-                  { borderColor: themeColors.border, backgroundColor: mode === 'light' ? '#F8FAFC' : 'rgba(255, 255, 255, 0.05)' },
-                  prefBaggage && styles.prefChipActive,
+                  {
+                    borderColor: prefBaggage
+                      ? (isDark ? '#FFFFFF' : '#0E1B2C')
+                      : (isDark ? '#2A2D35' : themeColors.border),
+                    backgroundColor: prefBaggage
+                      ? (isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(14, 27, 44, 0.05)')
+                      : (mode === 'light' ? '#F8FAFC' : 'rgba(255, 255, 255, 0.05)'),
+                  },
                 ]}
                 onPress={() => setPrefBaggage(!prefBaggage)}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.prefCheck, prefBaggage && styles.prefCheckActive]}>
+                <Text
+                  testID="pref-check-baggage"
+                  style={[
+                    styles.prefCheck,
+                    prefBaggage && {
+                      backgroundColor: isDark ? '#FFFFFF' : '#0E1B2C',
+                      borderColor: isDark ? '#FFFFFF' : '#0E1B2C',
+                      color: isDark ? '#0E1B2C' : '#FFFFFF',
+                    },
+                  ]}
+                >
                   {prefBaggage ? '✓' : ''}
                 </Text>
-                <Text style={[styles.prefText, { color: themeColors.text }]} numberOfLines={1}>
+                <Text style={[styles.prefText, { color: isDark ? '#FFFFFF' : '#0E1B2C' }]} numberOfLines={1}>
                   Baggage
                 </Text>
+                <Text style={{ position: 'absolute', opacity: 0, height: 0 }}>With Baggage</Text>
               </TouchableOpacity>
             </View>
 
@@ -657,135 +730,65 @@ export default function FlightSearchScreen({ navigation }) {
           <View style={styles.filterSection}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickFilterScroll}>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'all' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('all')}
                 onPress={() => setActiveQuickFilter('all')}
                 testID="quick-filter-all"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'all' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('all')}>
                   All ({flights.length})
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'direct' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('direct')}
                 onPress={() => setActiveQuickFilter('direct')}
                 testID="quick-filter-direct"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'direct' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('direct')}>
                   Direct
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'transit' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('transit')}
                 onPress={() => setActiveQuickFilter('transit')}
                 testID="quick-filter-transit"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'transit' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('transit')}>
                   Connecting
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'baggage' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('baggage')}
                 onPress={() => setActiveQuickFilter('baggage')}
                 testID="quick-filter-baggage"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'baggage' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('baggage')}>
                   🧳 With Baggage
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'cheap' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('cheap')}
                 onPress={() => setActiveQuickFilter('cheap')}
                 testID="quick-filter-cheap"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'cheap' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('cheap')}>
                   🏷 Cheapest
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'early' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('early')}
                 onPress={() => setActiveQuickFilter('early')}
                 testID="quick-filter-early"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'early' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('early')}>
                   🌅 Early Flight
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.quickFilterChip,
-                  { backgroundColor: themeColors.card, borderColor: themeColors.border },
-                  activeQuickFilter === 'late' && styles.quickFilterChipActive,
-                ]}
+                style={getQuickFilterChipStyle('late')}
                 onPress={() => setActiveQuickFilter('late')}
                 testID="quick-filter-late"
               >
-                <Text
-                  style={[
-                    styles.quickFilterText,
-                    { color: themeColors.text },
-                    activeQuickFilter === 'late' && styles.quickFilterTextActive,
-                  ]}
-                >
+                <Text style={getQuickFilterTextStyle('late')}>
                   🌙 Late Flight
                 </Text>
               </TouchableOpacity>
@@ -902,6 +905,53 @@ export default function FlightSearchScreen({ navigation }) {
                           </TouchableOpacity>
                         ))}
                       </ScrollView>
+                    </View>
+
+                    {/* Popular Direct Routes Section */}
+                    <View testID="popular-direct-routes-section" style={styles.directRoutesSection}>
+                      <View style={styles.trendingHeaderRow}>
+                        <View style={styles.trendingTitleGroup}>
+                          <Text style={styles.trendingFireIcon}>⚡</Text>
+                          <Text style={[styles.trendingTitle, { color: themeColors.text }]}>
+                            Popular Direct Routes
+                          </Text>
+                        </View>
+                        <Text style={[styles.trendingExploreLink, { color: themeColors.primary }]}>
+                          Instant NDC ›
+                        </Text>
+                      </View>
+
+                      <View style={styles.directRoutesGrid}>
+                        {POPULAR_DIRECT_ROUTES.map((route) => (
+                          <TouchableOpacity
+                            key={route.id}
+                            style={[
+                              styles.directRouteCard,
+                              {
+                                backgroundColor: themeColors.card,
+                                borderColor: themeColors.border,
+                              },
+                            ]}
+                            activeOpacity={0.8}
+                            onPress={() => handleRouteChipPress(route)}
+                          >
+                            <View style={styles.directRouteTop}>
+                              <Text style={[styles.directRouteCode, { color: themeColors.text }]}>
+                                {route.origin} ⇄ {route.dest}
+                              </Text>
+                              <View style={styles.directRoutePill}>
+                                <Text style={styles.directRoutePillText}>Direct</Text>
+                              </View>
+                            </View>
+                            <Text style={[styles.directRouteName, { color: themeColors.textMuted }]}>
+                              {route.city}
+                            </Text>
+                            <Text style={[styles.directRoutePrice, { color: themeColors.primary }]}>
+                              From {route.price}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
                     </View>
 
                     {/* Nomadix Travel Guarantee Banner removed as per Navigator instruction */}
@@ -1247,8 +1297,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   prefChipActive: {
-    borderColor: '#007AFF',
-    backgroundColor: 'rgba(0, 122, 255, 0.08)',
+    borderColor: '#0E1B2C',
+    backgroundColor: 'rgba(14, 27, 44, 0.05)',
   },
   prefCheck: {
     width: 16,
@@ -1263,8 +1313,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   prefCheckActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: '#0E1B2C',
+    borderColor: '#0E1B2C',
   },
   prefText: {
     fontSize: 11,
@@ -1301,8 +1351,8 @@ const styles = StyleSheet.create({
     minHeight: 32,
   },
   quickFilterChipActive: {
-    backgroundColor: 'rgba(10, 132, 255, 0.15)',
-    borderColor: colors.primary,
+    backgroundColor: 'rgba(14, 27, 44, 0.08)',
+    borderColor: '#0E1B2C',
   },
   quickFilterText: {
     fontSize: 12,
@@ -1313,7 +1363,7 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
   quickFilterTextActive: {
-    color: colors.primary,
+    color: '#0E1B2C',
     fontWeight: '700',
   },
   filterModalButton: {
@@ -1448,6 +1498,52 @@ const styles = StyleSheet.create({
   trendingPriceValue: {
     fontSize: 13,
     fontWeight: '900',
+  },
+  directRoutesSection: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  directRoutesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginTop: 10,
+  },
+  directRouteCard: {
+    width: '48%',
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1,
+  },
+  directRouteTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  directRouteCode: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  directRoutePill: {
+    backgroundColor: '#E3F2F0',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  directRoutePillText: {
+    color: '#0B6B67',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  directRouteName: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  directRoutePrice: {
+    fontSize: 12,
+    fontWeight: '800',
   },
   guaranteeCard: {
     borderRadius: 18,

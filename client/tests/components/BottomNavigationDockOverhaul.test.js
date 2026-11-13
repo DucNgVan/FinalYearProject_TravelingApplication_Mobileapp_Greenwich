@@ -35,7 +35,7 @@ describe('TDD Suite: Bottom Navigation Dock Overhaul (1-Color Vector Icons & Whi
     useThemeStore.getState().setThemeMode('light');
   });
 
-  test('RED-NAV-01: Center Home button must have elevated white background (#FFFFFF), subtle ring border, and dark text', () => {
+  test('RED-NAV-01: Center Home button must be flat without outer circular ring, and dark text', () => {
     const { getByTestId, getByText } = render(<App initialHasCompletedOnboarding={true} />);
 
     const homeBtn = getByTestId('tab-btn-home');
@@ -43,9 +43,8 @@ describe('TDD Suite: Bottom Navigation Dock Overhaul (1-Color Vector Icons & Whi
       ? Object.assign({}, ...homeBtn.props.style)
       : homeBtn.props.style;
 
-    // Home button background must be #FFFFFF in light mode
-    expect(homeBtnStyle.backgroundColor).toBe('#FFFFFF');
-    expect(homeBtnStyle.borderColor).toBe('#E2E8F0');
+    // Home button outer circle removed (borderWidth 0 or transparent)
+    expect(homeBtnStyle.borderWidth || 0).toBe(0);
 
     // Label must be dark text #0F172A
     const homeLabel = getByText('Home');

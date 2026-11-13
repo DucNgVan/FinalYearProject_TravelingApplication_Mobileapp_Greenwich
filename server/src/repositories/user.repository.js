@@ -40,6 +40,10 @@ class UserRepository {
     this.pool = pgPool;
   }
 
+  setPool(pgPool) {
+    this.pool = pgPool;
+  }
+
   async findByEmail(email) {
     const normalizedEmail = email.toLowerCase().trim();
     if (this.pool) {
@@ -58,7 +62,7 @@ class UserRepository {
     return memoryUsers.get(normalizedEmail) || null;
   }
 
-  async create({ email, passwordHash, fullName }) {
+  async create({ email, passwordHash, fullName, phoneNumber = null, isEmailVerified = false, avatarUrl = null }) {
     const normalizedEmail = email.toLowerCase().trim();
     const id = crypto.randomUUID();
     const newUser = {
@@ -66,6 +70,9 @@ class UserRepository {
       email: normalizedEmail,
       password_hash: passwordHash,
       full_name: fullName,
+      phone_number: phoneNumber,
+      avatar_url: avatarUrl,
+      is_email_verified: isEmailVerified,
       role: 'traveler',
       xp: 0,
       level: 1,
@@ -77,10 +84,10 @@ class UserRepository {
     if (this.pool) {
       try {
         const res = await this.pool.query(
-          `INSERT INTO users (id, email, password_hash, full_name, role_id)
-           VALUES ($1, $2, $3, $4, 2)
-           RETURNING id, email, full_name, role_id, xp, level, status, created_at`,
-          [id, normalizedEmail, passwordHash, fullName]
+          `INSERT INTO users (id, email, password_hash, full_name, phone_number, is_email_verified, role_id, avatar_url)
+           VALUES ($1, $2, $3, $4, $5, $6, 2, $7)
+           RETURNING id, email, full_name, phone_number, avatar_url, is_email_verified, role_id, xp, level, status, created_at`,
+          [id, normalizedEmail, passwordHash, fullName, phoneNumber, isEmailVerified, avatarUrl]
         );
         return { ...res.rows[0], role: 'traveler' };
       } catch (err) {
@@ -90,6 +97,46 @@ class UserRepository {
 
     memoryUsers.set(normalizedEmail, newUser);
     return newUser;
+  }
+
+  async updateGoogleProfile(userId, { avatarUrl = null, fullName = null }) {
+    if (this.pool) {
+      try {
+        const updates = [];
+        const values = [userId];
+        let idx = 2;
+
+        if (fullName) {
+          updates.push(`full_name = $${idx++}`);
+          values.push(fullName);
+        }
+        if (avatarUrl) {
+          updates.push(`avatar_url = $${idx++}`);
+          values.push(avatarUrl);
+        }
+
+        if (updates.length > 0) {
+          const res = await this.pool.query(
+            `UPDATE users SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $1 RETURNING *`,
+            values
+          );
+          if (res.rows[0]) return { ...res.rows[0], role: 'traveler' };
+        }
+      } catch (err) {
+        // Fallback to memory store
+      }
+    }
+
+    for (const [key, user] of memoryUsers.entries()) {
+      if (user.id === userId) {
+        if (fullName) user.full_name = fullName;
+        if (avatarUrl) user.avatar_url = avatarUrl;
+        user.updated_at = new Date();
+        memoryUsers.set(key, user);
+        return user;
+      }
+    }
+    return null;
   }
 
   async saveRefreshToken({ userId, tokenHash, expiresAt }) {

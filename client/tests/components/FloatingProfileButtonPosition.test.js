@@ -40,11 +40,11 @@ describe('TDD Suite: Floating Profile Button Removal (Eliminate Clutter from Vie
     expect(queryByTestId('floating-profile-btn')).toBeNull();
   });
 
-  test('RED-PROF-POS-02: Profile is cleanly accessible via HomeScreen avatar button', () => {
+  test('RED-PROF-POS-02: Profile is cleanly accessible via bottom dock profile button', () => {
     const { getByTestId, getAllByText } = render(<App initialHasCompletedOnboarding={true} />);
-    const avatarBtn = getByTestId('home-avatar-btn');
-    expect(avatarBtn).toBeTruthy();
-    fireEvent.press(avatarBtn);
+    const profileBtn = getByTestId('tab-btn-profile');
+    expect(profileBtn).toBeTruthy();
+    fireEvent.press(profileBtn);
     expect(getAllByText(/Profile/i).length).toBeGreaterThan(0);
   });
 });

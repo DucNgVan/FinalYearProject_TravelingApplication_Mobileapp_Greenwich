@@ -1,6 +1,9 @@
 # Dependency directories
 node_modules/
 server/node_modules/
+e2e/node_modules/
+.e2e/
+e2e/.e2e/
 
 # Environment files
 .env

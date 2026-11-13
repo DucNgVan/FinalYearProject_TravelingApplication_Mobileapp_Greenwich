@@ -68,13 +68,13 @@ describe('TDD Suite: Mockup Harmonization & 8px Grid System', () => {
     expect(hotelEyebrowStyle.marginBottom).toBe(8);
   });
 
-  test('RED-GRID-04: Bottom dock Home button must match Image 2 with elevated white background (#FFFFFF) and dark text', () => {
+  test('RED-GRID-04: Bottom dock Home button must have outer circular ring removed and dark text', () => {
     const { getByTestId, getByText } = render(<App initialHasCompletedOnboarding={true} />);
     const homeBtn = getByTestId('tab-btn-home');
     const homeBtnStyle = Array.isArray(homeBtn.props.style)
       ? Object.assign({}, ...homeBtn.props.style)
       : homeBtn.props.style;
-    expect(homeBtnStyle.backgroundColor).toBe('#FFFFFF');
+    expect(homeBtnStyle.borderWidth || 0).toBe(0);
 
     const homeLabel = getByText('Home');
     const labelStyle = Array.isArray(homeLabel.props.style)

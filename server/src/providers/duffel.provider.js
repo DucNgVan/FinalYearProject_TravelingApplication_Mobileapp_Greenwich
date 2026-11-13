@@ -2,10 +2,119 @@
  * Duffel Travel API Provider (Flights & Stays)
  * Next-Gen Travel Tech API Integration
  */
+const CITY_COORDINATES = {
+  danang: { latitude: 16.0544, longitude: 108.2022 },
+  hanoi: { latitude: 21.0285, longitude: 105.8542 },
+  hochiminh: { latitude: 10.8231, longitude: 106.6297 },
+  dalat: { latitude: 11.9404, longitude: 108.4583 },
+  hoian: { latitude: 15.8801, longitude: 108.3380 },
+  phuquoc: { latitude: 10.2899, longitude: 103.9840 },
+  nhatrang: { latitude: 12.2388, longitude: 109.1967 },
+  tokyo: { latitude: 35.6762, longitude: 139.6503 },
+  paris: { latitude: 48.8566, longitude: 2.3522 },
+  bangkok: { latitude: 13.7563, longitude: 100.5018 },
+  singapore: { latitude: 1.3521, longitude: 103.8198 },
+  newyork: { latitude: 40.7128, longitude: -74.0060 },
+  london: { latitude: 51.5074, longitude: -0.1278 },
+};
+
 class DuffelProvider {
   constructor(apiToken = process.env.DUFFEL_API_TOKEN) {
     this.apiToken = apiToken;
     this.baseUrl = 'https://api.duffel.com';
+  }
+
+  /**
+   * Search accommodations via Duffel Stays API
+   */
+  async searchHotels({ city, checkIn, checkOut, guests = 2, rooms = 1 }) {
+    if (!this.apiToken) {
+      throw new Error('DUFFEL_API_TOKEN is not configured');
+    }
+
+    const cleanCityKey = (city || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '');
+
+    const coords = CITY_COORDINATES[cleanCityKey] || CITY_COORDINATES.danang;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      const guestList = Array.from({ length: parseInt(guests, 10) || 2 }, () => ({ type: 'adult' }));
+      const response = await fetch(`${this.baseUrl}/stays/search`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.apiToken}`,
+          'Duffel-Version': 'v2',
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Connection: 'close',
+        },
+        body: JSON.stringify({
+          data: {
+            rooms: parseInt(rooms, 10) || 1,
+            location: {
+              geographic_coordinates: coords,
+              radius: 20,
+            },
+            check_in_date: checkIn,
+            check_out_date: checkOut,
+            guests: guestList,
+          },
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Duffel Stays API returned ${response.status}: ${errorBody}`);
+      }
+
+      const json = await response.json();
+      const rawResults = json.data?.results || [];
+      return this._mapDuffelStays(rawResults, city);
+    } catch (err) {
+      clearTimeout(timeout);
+      throw err;
+    }
+  }
+
+  /**
+   * Map Duffel Stays results to UnifiedHotel schema
+   */
+  _mapDuffelStays(results, city) {
+    return results.map((item, idx) => {
+      const acc = item.accommodation || {};
+      const loc = acc.location || {};
+      const address = loc.address?.line_one || `${city}, Vietnam`;
+      const rating = acc.rating || 4;
+      const reviewScore = acc.review_score ? parseFloat((acc.review_score * 2).toFixed(1)) : 9.0;
+
+      let amount = parseFloat(item.cheapest_rate_total_amount || '100');
+      if (item.cheapest_rate_currency === 'USD') {
+        amount = Math.round(amount * 25000);
+      } else if (item.cheapest_rate_currency === 'EUR') {
+        amount = Math.round(amount * 27000);
+      }
+
+      return {
+        id: item.id || acc.id || `duffel-stay-${idx}`,
+        provider: 'DUFFEL_STAYS',
+        name: acc.name || 'Duffel Stay Hotel',
+        city,
+        address,
+        starRating: rating,
+        reviewScore,
+        pricePerNight: amount,
+        currency: 'VND',
+        thumbnailUrl: acc.photos?.[0]?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
+      };
+    });
   }
 
   /**

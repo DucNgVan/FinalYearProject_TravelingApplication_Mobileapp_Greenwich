@@ -1,17 +1,20 @@
+const OpenTripMapProvider = require('./opentripmap.provider');
+
 /**
  * Places Provider
- * Integrates external Places APIs (Foursquare, Mapbox) with resilient fallback
+ * Integrates external Places APIs (OpenTripMap, Foursquare, Mapbox) with resilient fallback
  * to a high-fidelity curated global catalog (Da Nang, Hoi An, Hanoi, Tokyo, Paris, New York, etc.)
  */
 class PlacesProvider {
-  constructor({ foursquareApiKey, mapboxToken } = {}) {
+  constructor({ foursquareApiKey, mapboxToken, openTripMapApiKey } = {}) {
     this.foursquareApiKey = foursquareApiKey || process.env.FOURSQUARE_API_KEY;
     this.mapboxToken = mapboxToken || process.env.MAPBOX_ACCESS_TOKEN;
+    this.openTripMapProvider = new OpenTripMapProvider({ apiKey: openTripMapApiKey });
     this.fetchClient = this._defaultFetchClient.bind(this);
   }
 
   async _defaultFetchClient(city, category, query) {
-    // If external Foursquare API key is available, query Foursquare Places v3
+    // 1. If external Foursquare API key is available, query Foursquare Places v3
     if (this.foursquareApiKey && this.foursquareApiKey !== 'mock_key') {
       const params = new URLSearchParams({
         near: city,
@@ -26,12 +29,24 @@ class PlacesProvider {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Foursquare API error: status ${response.status}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          return data.results;
+        }
       }
+    }
 
-      const data = await response.json();
-      return data.results || [];
+    // 2. OpenTripMap Provider (Sync-and-Serve API)
+    if (this.openTripMapProvider && this.openTripMapProvider.apiKey) {
+      try {
+        const otmPlaces = await this.openTripMapProvider.searchPlacesByCity(city);
+        if (otmPlaces && otmPlaces.length > 0) {
+          return otmPlaces;
+        }
+      } catch {
+        // Fallback to catalog
+      }
     }
 
     // Default: throw so we use the robust curated catalog

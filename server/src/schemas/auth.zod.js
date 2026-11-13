@@ -19,6 +19,8 @@ const registerSchema = z.object({
     .string({ required_error: 'Full name is required' })
     .min(1, 'Full name is required')
     .trim(),
+  dateOfBirth: z.string().optional(),
+  phoneNumber: z.string().optional(),
 });
 
 /**

@@ -97,7 +97,8 @@ class NormalizerService {
       reviewScore: raw.reviewScore || 8.0,
       pricePerNight,
       currency: 'VND',
-      thumbnailUrl: raw.thumbnailUrl || null,
+      thumbnailUrl: raw.thumbnailUrl || raw.heroPhoto || null,
+      heroPhoto: raw.heroPhoto || raw.thumbnailUrl || null,
       nights: calculatedNights,
       totalPrice: pricePerNight * calculatedNights,
     };

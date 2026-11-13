@@ -48,6 +48,18 @@ class AuthController {
       next(err);
     }
   }
+
+  async googleAuth(req, res, next) {
+    try {
+      const result = await authService.googleAuth(req.body);
+      return res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new AuthController();

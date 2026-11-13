@@ -27,14 +27,14 @@ describe('TDD Suite: Auth Screens & Onboarding Overhaul', () => {
     });
   });
 
-  test('RED-FE-AUTH-01: LoginScreen should render Google and Facebook social login buttons', () => {
+  test('RED-FE-AUTH-01: LoginScreen should render Google social login button and remove Facebook', () => {
     const mockNav = { navigate: jest.fn() };
-    const { getByTestId, getByText } = render(<LoginScreen navigation={mockNav} />);
+    const { getByTestId, queryByTestId, getByText, queryByText } = render(<LoginScreen navigation={mockNav} />);
 
     expect(getByTestId('google-login-btn')).toBeTruthy();
-    expect(getByTestId('facebook-login-btn')).toBeTruthy();
-    expect(getByText(/google/i)).toBeTruthy();
-    expect(getByText(/facebook/i)).toBeTruthy();
+    expect(getByText(/Continue with Google/i)).toBeTruthy();
+    expect(queryByTestId('facebook-login-btn')).toBeNull();
+    expect(queryByText(/facebook/i)).toBeNull();
   });
 
   test('RED-FE-AUTH-02: RegisterScreen should render squad headline, subtitle, and all 5 required fields', async () => {
@@ -56,7 +56,7 @@ describe('TDD Suite: Auth Screens & Onboarding Overhaul', () => {
     // 3. Check hero background & social buttons
     expect(getByTestId('register-hero-bg')).toBeTruthy();
     expect(getByTestId('google-register-btn')).toBeTruthy();
-    expect(getByTestId('facebook-register-btn')).toBeTruthy();
+    expect(queryByTestId('facebook-register-btn')).toBeNull();
 
     // 4. Fill in 5 fields and submit
     fireEvent.changeText(getByPlaceholderText(/full name/i), 'Alex Wanderer');
