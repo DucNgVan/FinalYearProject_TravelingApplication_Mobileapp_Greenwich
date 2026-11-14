@@ -119,15 +119,15 @@ export default function RegisterScreen({ navigation }) {
     if (sendOtp) {
       try {
         const res = await sendOtp(targetIdentifier, verificationChannel);
-        const code = res?.devOtp || '';
+        const code = res?.devOtp || '123456';
         setDevOtp(code);
         setOtpError('');
         setShowOtpModal(true);
         if (code) {
           Alert.alert(
-            '📲 Verification OTP Code',
-            `Your OTP code is: [ ${code} ]\nSent to: ${targetIdentifier}`,
-            [{ text: 'Enter Code Now', onPress: () => {} }]
+            '📲 Demo OTP Verification',
+            `Mã xác thực DEMO là: [ ${code} ]\n(Bấm vào banner để tự động điền)`,
+            [{ text: 'Nhập mã ngay', onPress: () => {} }]
           );
         }
         return;

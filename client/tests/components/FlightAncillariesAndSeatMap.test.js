@@ -55,6 +55,9 @@ describe('Flight Ancillaries & Interactive Cabin Seat Map (TDD RED)', () => {
       />
     );
 
+    // Switch to seats & ancillaries step
+    fireEvent.press(getByTestId('booking-step-seats'));
+
     // Should render ancillaries section
     expect(getByText(/Dịch vụ mua thêm|Add-on Services|Ancillaries/i)).toBeTruthy();
     expect(getByTestId('ancillary-baggage-20kg')).toBeTruthy();

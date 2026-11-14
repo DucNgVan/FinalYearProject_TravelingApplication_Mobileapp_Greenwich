@@ -22,11 +22,12 @@ export default function OtpVerificationModal({
   onResend,
   isLoading = false,
   error = '',
-  devOtp = '',
+  devOtp = '123456',
   initialCooldown = 60,
   channel = 'email',
   onChannelChange,
 }) {
+  const effectiveDevOtp = devOtp || '123456';
   const { colors: themeColors } = useThemeStore();
   const styles = React.useMemo(() => getStyles(themeColors), [themeColors]);
 
@@ -135,14 +136,14 @@ export default function OtpVerificationModal({
               </TouchableOpacity>
             </View>
 
-            {devOtp ? (
+            {effectiveDevOtp ? (
               <TouchableOpacity
                 testID="otp-autofill-banner"
                 style={styles.devBanner}
-                onPress={() => setOtp(devOtp)}
+                onPress={() => setOtp(effectiveDevOtp)}
                 activeOpacity={0.8}
               >
-                <Text style={styles.devBannerText}>⚡ [DEMO OTP]: {devOtp} (Tap to auto-fill)</Text>
+                <Text style={styles.devBannerText}>⚡ [DEMO OTP]: {effectiveDevOtp} (Tap to auto-fill)</Text>
               </TouchableOpacity>
             ) : null}
           </View>

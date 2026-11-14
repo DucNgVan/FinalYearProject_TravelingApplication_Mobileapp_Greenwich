@@ -66,9 +66,32 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
   const [convertFormModalVisible, setConvertFormModalVisible] = useState(false);
   const [modalAmount, setModalAmount] = useState('100');
   const [inlinePickerTarget, setInlinePickerTarget] = useState(null); // null | 'from' | 'to'
+  const [weatherData, setWeatherData] = useState(GPS_WEATHER_DATA);
 
   useEffect(() => {
     fetchRates('USD');
+    const loadWeather = async () => {
+      try {
+        const res = await fetch('/api/v1/weather/forecast?city=Da%20Nang');
+        if (res && res.ok) {
+          const json = await res.json();
+          if (json && json.success && json.data) {
+            setWeatherData((prev) => ({
+              ...prev,
+              ...json.data,
+              city: json.data.city || prev.city,
+              temp: json.data.temp || prev.temp,
+              condition: json.data.condition || prev.condition,
+              icon: json.data.icon || prev.icon,
+              forecast: json.data.forecast || prev.forecast,
+            }));
+          }
+        }
+      } catch (e) {
+        // Resilient fallback to offline GPS_WEATHER_DATA
+      }
+    };
+    loadWeather();
   }, []);
 
   // Real-time Exchange rate logic powered by CurrencyRateAPI
@@ -232,15 +255,18 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
         </View>
       )}
 
-      {/* 3. Segmented Filter Pills: Planned, Archived, Completed */}
-      <View style={[styles.segmentedContainer, { backgroundColor: isDark ? '#1C1D21' : '#EAECEF' }]}>
+      {/* 3. Segmented Filter Pills: Planned, Archived, Completed (High-Contrast Flight-Style Capsule) */}
+      <View
+        testID="home-segmented-container"
+        style={[styles.segmentedContainer, { backgroundColor: isDark ? '#1C1D21' : '#E2E8F0' }]}
+      >
         <TouchableOpacity
           testID="segmented-pill-planned"
           style={[
             styles.segmentPill,
             activeSegment === 'planned' && [
               styles.segmentPillActive,
-              { backgroundColor: isDark ? '#121316' : '#FFFFFF' },
+              { backgroundColor: isDark ? '#FFFFFF' : '#111827' },
             ],
           ]}
           onPress={() => setActiveSegment('planned')}
@@ -248,7 +274,11 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
           <Text
             style={[
               styles.segmentPillText,
-              { color: activeSegment === 'planned' ? textColor : textMuted },
+              {
+                color: activeSegment === 'planned'
+                  ? (isDark ? '#111827' : '#FFFFFF')
+                  : (isDark ? '#94A3B8' : '#64748B'),
+              },
               activeSegment === 'planned' && styles.segmentPillTextActive,
             ]}
           >
@@ -262,7 +292,7 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
             styles.segmentPill,
             activeSegment === 'archived' && [
               styles.segmentPillActive,
-              { backgroundColor: isDark ? '#121316' : '#FFFFFF' },
+              { backgroundColor: isDark ? '#FFFFFF' : '#111827' },
             ],
           ]}
           onPress={() => setActiveSegment('archived')}
@@ -270,7 +300,11 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
           <Text
             style={[
               styles.segmentPillText,
-              { color: activeSegment === 'archived' ? textColor : textMuted },
+              {
+                color: activeSegment === 'archived'
+                  ? (isDark ? '#111827' : '#FFFFFF')
+                  : (isDark ? '#94A3B8' : '#64748B'),
+              },
               activeSegment === 'archived' && styles.segmentPillTextActive,
             ]}
           >
@@ -284,7 +318,7 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
             styles.segmentPill,
             activeSegment === 'completed' && [
               styles.segmentPillActive,
-              { backgroundColor: isDark ? '#121316' : '#FFFFFF' },
+              { backgroundColor: isDark ? '#FFFFFF' : '#111827' },
             ],
           ]}
           onPress={() => setActiveSegment('completed')}
@@ -292,7 +326,11 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
           <Text
             style={[
               styles.segmentPillText,
-              { color: activeSegment === 'completed' ? textColor : textMuted },
+              {
+                color: activeSegment === 'completed'
+                  ? (isDark ? '#111827' : '#FFFFFF')
+                  : (isDark ? '#94A3B8' : '#64748B'),
+              },
               activeSegment === 'completed' && styles.segmentPillTextActive,
             ]}
           >
@@ -301,104 +339,127 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
         </TouchableOpacity>
       </View>
 
-      {/* 4. Currency Converter Widget with pure vector outline SwapIcon */}
+      {/* 4. Currency Converter Widget with Flight-Card Dark Header Strip (#0E1B2C) */}
       <View
         testID="currency-converter-widget"
         style={[
-          styles.cardContainer,
+          styles.executiveCardWrapper,
           {
             backgroundColor: cardBg,
             borderColor,
           },
         ]}
       >
-        <View style={styles.cardHeaderRow}>
-          <Text style={[styles.cardSectionLabel, { color: textMuted }]}>CURRENCY</Text>
-          <SwapIcon size={16} color={textMuted} />
-        </View>
-
-        <View style={styles.converterInputsRow}>
-          {/* FROM Box */}
-          <View
-            style={[styles.currencyBox, { backgroundColor: isDark ? '#121316' : '#F9FAFB', borderColor }]}
-          >
-            <TouchableOpacity
-              testID="currency-from-box"
-              style={{ flex: 1 }}
-              onPress={() => {
-                setModalAmount(fromAmount);
-                setInlinePickerTarget(null);
-                setConvertFormModalVisible(true);
-              }}
-              activeOpacity={0.85}
-            >
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text style={styles.currencyBoxLabel}>FROM</Text>
-                <Text style={{ fontSize: 9, color: textMuted, fontWeight: '700' }}>✎ TAP</Text>
-              </View>
-              <TextInput
-                testID="currency-from-input"
-                value={fromAmount}
-                onChangeText={setFromAmount}
-                keyboardType="numeric"
-                style={[styles.currencyAmountInput, { color: textColor }]}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              testID="currency-from-select"
-              style={styles.currencyBadge}
-              onPress={() => {
-                setSelectingCurrencyTarget('from');
-                setCurrencyModalVisible(true);
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.currencyBadgeText, { color: textColor }]}>{fromCurrency}</Text>
-              <Text style={{ fontSize: 10, color: textMuted, marginLeft: 2 }}>▾</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Swap Button with Outline SwapIcon */}
-          <TouchableOpacity
-            testID="currency-swap-btn"
-            style={[styles.swapButton, { backgroundColor: '#0E1B2C' }]}
-            onPress={handleSwapCurrency}
-            activeOpacity={0.8}
-          >
-            <SwapIcon size={18} color="#FFFFFF" />
-          </TouchableOpacity>
-
-          {/* TO Box */}
-          <View style={[styles.currencyBox, { backgroundColor: isDark ? '#121316' : '#F9FAFB', borderColor }]}>
-            <Text style={styles.currencyBoxLabel}>TO</Text>
-            <Text style={[styles.currencyAmountInput, { color: textColor }]}>
-              {convertedAmount}
-            </Text>
-            <TouchableOpacity
-              testID="currency-to-select"
-              style={styles.currencyBadge}
-              onPress={() => {
-                setSelectingCurrencyTarget('to');
-                setCurrencyModalVisible(true);
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.currencyBadgeText, { color: textColor }]}>{toCurrency}</Text>
-              <Text style={{ fontSize: 10, color: textMuted, marginLeft: 2 }}>▾</Text>
-            </TouchableOpacity>
+        {/* Dark Header Strip */}
+        <View
+          testID="currency-header-strip"
+          style={[
+            styles.executiveHeaderStrip,
+            { backgroundColor: isDark ? '#0B131F' : '#0E1B2C' },
+          ]}
+        >
+          <View style={styles.headerStripLeft}>
+            <SwapIcon size={15} color="#FFFFFF" />
+            <View style={{ marginLeft: 8 }}>
+              <Text style={styles.headerStripTitle}>CURRENCY EXCHANGE</Text>
+              <Text style={styles.headerStripSubtitle}>Real-Time FX Rates</Text>
+            </View>
           </View>
         </View>
 
-        <Text style={[styles.exchangeRateFormula, { color: textMuted }]}>
-          1 {fromCurrency} = {exchangeRate} {toCurrency}
-        </Text>
+        {/* Card Body */}
+        <View style={styles.executiveCardBody}>
+          <View style={styles.converterInputsRow}>
+            {/* FROM Box */}
+            <View
+              style={[
+                styles.currencyBox,
+                { backgroundColor: isDark ? '#121316' : '#F8FAFC', borderColor },
+              ]}
+            >
+              <TouchableOpacity
+                testID="currency-from-box"
+                style={{ flex: 1 }}
+                onPress={() => {
+                  setModalAmount(fromAmount);
+                  setInlinePickerTarget(null);
+                  setConvertFormModalVisible(true);
+                }}
+                activeOpacity={0.85}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text style={styles.currencyBoxLabel}>FROM</Text>
+                  <Text style={{ fontSize: 9, color: textMuted, fontWeight: '700' }}>✎ TAP</Text>
+                </View>
+                <TextInput
+                  testID="currency-from-input"
+                  value={fromAmount}
+                  onChangeText={setFromAmount}
+                  keyboardType="numeric"
+                  style={[styles.currencyAmountInput, { color: textColor }]}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                testID="currency-from-select"
+                style={styles.currencyBadge}
+                onPress={() => {
+                  setSelectingCurrencyTarget('from');
+                  setCurrencyModalVisible(true);
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.currencyBadgeText, { color: textColor }]}>{fromCurrency}</Text>
+                <Text style={{ fontSize: 10, color: textMuted, marginLeft: 2 }}>▾</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Swap Button with Outline SwapIcon */}
+            <TouchableOpacity
+              testID="currency-swap-btn"
+              style={[styles.swapButton, { backgroundColor: isDark ? '#334155' : '#0E1B2C' }]}
+              onPress={handleSwapCurrency}
+              activeOpacity={0.8}
+            >
+              <SwapIcon size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+
+            {/* TO Box */}
+            <View
+              style={[
+                styles.currencyBox,
+                { backgroundColor: isDark ? '#121316' : '#F8FAFC', borderColor },
+              ]}
+            >
+              <Text style={styles.currencyBoxLabel}>TO</Text>
+              <Text style={[styles.currencyAmountInput, { color: textColor }]}>
+                {convertedAmount}
+              </Text>
+              <TouchableOpacity
+                testID="currency-to-select"
+                style={styles.currencyBadge}
+                onPress={() => {
+                  setSelectingCurrencyTarget('to');
+                  setCurrencyModalVisible(true);
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.currencyBadgeText, { color: textColor }]}>{toCurrency}</Text>
+                <Text style={{ fontSize: 10, color: textMuted, marginLeft: 2 }}>▾</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <Text style={[styles.exchangeRateFormula, { color: textMuted }]}>
+            1 {fromCurrency} = {exchangeRate} {toCurrency}
+          </Text>
+        </View>
       </View>
 
-      {/* 5. Travel Radar & Weather Widget (GPS City with 3-4 day forecast) */}
+      {/* 5. Travel Radar & Weather Widget with Flight-Card Dark Header Strip (#0E1B2C) */}
       <View
         testID="home-travel-radar-widget"
         style={[
-          styles.cardContainer,
+          styles.executiveCardWrapper,
           {
             backgroundColor: cardBg,
             borderColor,
@@ -406,72 +467,80 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
           },
         ]}
       >
-        <View style={styles.cardHeaderRow}>
-          <Text style={[styles.cardSectionLabel, { color: textMuted }]}>
-            TRAVEL RADAR & WEATHER
-          </Text>
-        </View>
-
-        {/* GPS City Header & Current Condition */}
-        <View style={[styles.gpsWeatherHeader, { borderBottomColor: borderColor }]}>
-          <View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View testID="gps-weather-card">
+          {/* Dark Header Strip */}
+          <View
+            testID="weather-header-strip"
+            style={[
+              styles.executiveHeaderStrip,
+              { backgroundColor: isDark ? '#0B131F' : '#0E1B2C' },
+            ]}
+          >
+            <View style={styles.headerStripLeft}>
               <Text style={{ fontSize: 16 }}>📍</Text>
-              <Text style={[styles.gpsCityTitle, { color: textColor }]}>
-                {GPS_WEATHER_DATA.city}
-              </Text>
-              <Text style={[styles.gpsCitySub, { color: textMuted }]}>
-                • {GPS_WEATHER_DATA.locationLabel}
+              <View style={{ marginLeft: 6 }}>
+                <Text style={styles.headerStripTitle}>TRAVEL RADAR & WEATHER</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 1 }}>
+                  <Text style={[styles.headerStripSubtitle, { fontWeight: '700', color: '#FFFFFF' }]}>
+                    {weatherData.city}
+                  </Text>
+                  <Text style={styles.headerStripSubtitle}>
+                    • GPS Location • Humidity {weatherData.humidity || '65%'}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View testID="weather-temp-badge" style={styles.headerStripBadge}>
+              <Text style={styles.headerStripBadgeText}>
+                {weatherData.icon} {weatherData.temp} • {weatherData.condition}
               </Text>
             </View>
-            <Text style={[styles.gpsWeatherHighLow, { color: textMuted }]}>
-              {GPS_WEATHER_DATA.highLow} • Humidity {GPS_WEATHER_DATA.humidity}
-            </Text>
           </View>
 
-          <View style={{ alignItems: 'flex-end' }}>
-            <Text style={[styles.gpsCurrentTemp, { color: isDark ? '#38BDF8' : '#0284C7' }]}>
-              {GPS_WEATHER_DATA.icon} {GPS_WEATHER_DATA.temp}
-            </Text>
-            <Text style={[styles.gpsCurrentCondition, { color: textMuted }]}>
-              {GPS_WEATHER_DATA.condition}
-            </Text>
-          </View>
-        </View>
-
-        {/* 3-4 Day Forecast Row */}
-        <View style={styles.forecastRow}>
-          {GPS_WEATHER_DATA.forecast.map((fc, idx) => (
-            <View
-              key={fc.day}
-              testID={`weather-forecast-day-${idx}`}
-              style={[
-                styles.forecastCard,
-                {
-                  backgroundColor: isDark ? '#121316' : '#F8FAFC',
-                  borderColor,
-                },
-              ]}
-            >
-              <Text style={[styles.forecastDayText, { color: textMuted }]}>{fc.day}</Text>
-              <Text style={styles.forecastIcon}>{fc.icon}</Text>
-              <Text style={[styles.forecastTemp, { color: textColor }]}>{fc.temp}</Text>
-              <Text style={[styles.forecastCondition, { color: textMuted }]} numberOfLines={1}>
-                {fc.condition}
-              </Text>
-              <Text style={[styles.forecastHighLow, { color: textMuted }]}>
-                {fc.highLow}
-              </Text>
+          {/* 3-4 Day Forecast Row */}
+          <View style={styles.executiveCardBody}>
+            <View style={styles.forecastRow}>
+              {(weatherData.forecast || []).map((fc, idx) => (
+                <View
+                  key={fc.day || idx}
+                  testID={`weather-forecast-day-${idx}`}
+                  style={[
+                    styles.forecastCard,
+                    {
+                      backgroundColor: isDark ? '#121316' : '#F8FAFC',
+                      borderColor,
+                    },
+                    idx === 0 && { borderColor: isDark ? '#475569' : '#0E1B2C', borderWidth: 1.5 },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.forecastDayText,
+                      { color: idx === 0 ? (isDark ? '#FFFFFF' : '#0E1B2C') : textMuted },
+                    ]}
+                  >
+                    {fc.day}
+                  </Text>
+                  <Text style={styles.forecastIcon}>{fc.icon}</Text>
+                  <Text style={[styles.forecastTemp, { color: textColor }]}>{fc.temp}</Text>
+                  <Text style={[styles.forecastCondition, { color: textMuted }]} numberOfLines={1}>
+                    {fc.condition}
+                  </Text>
+                  <Text style={[styles.forecastHighLow, { color: textMuted }]}>
+                    {fc.highLow || fc.temp}
+                  </Text>
+                </View>
+              ))}
             </View>
-          ))}
+          </View>
         </View>
       </View>
 
-      {/* 6. Collections Card (Tokyo 2025 / Clean Explored Badge) */}
+      {/* 6. Collections Card with Flight-Card Dark Header Strip (#0E1B2C) */}
       <View
         testID="collections-card"
         style={[
-          styles.cardContainer,
+          styles.executiveCardWrapper,
           {
             backgroundColor: cardBg,
             borderColor,
@@ -479,23 +548,44 @@ export default function HomeScreen({ onNavigateTab, onOpenProfile }) {
           },
         ]}
       >
-        <View style={styles.cardHeaderRow}>
-          <Text style={[styles.cardSectionLabel, { color: textMuted }]}>COLLECTIONS</Text>
+        <View
+          testID="collections-header-strip"
+          style={[
+            styles.executiveHeaderStrip,
+            { backgroundColor: isDark ? '#0B131F' : '#0E1B2C' },
+          ]}
+        >
+          <View style={styles.headerStripLeft}>
+            <LucideIcon name="bookmark" size={14} color="#FFFFFF" strokeWidth={2.4} />
+            <View style={{ marginLeft: 8 }}>
+              <Text style={styles.headerStripTitle}>COLLECTIONS</Text>
+              <Text style={styles.headerStripSubtitle}>Expedition Archive</Text>
+            </View>
+          </View>
+          <View style={styles.headerStripBadge}>
+            <Text style={styles.headerStripBadgeText}>1 Explored</Text>
+          </View>
         </View>
 
-        <TouchableOpacity
-          style={[styles.collectionItemCard, { backgroundColor: REDESIGN_THEME.teal || '#0B7A75' }]}
-          activeOpacity={0.85}
-          onPress={() => onNavigateTab && onNavigateTab('plan')}
-        >
-          <View style={styles.collectionTextGroup}>
-            <Text style={styles.collectionTitle}>Tokyo 2025</Text>
-            <Text style={styles.collectionSubtitle}>Explored Itinerary</Text>
-          </View>
-          <View testID="home-explored-badge" style={styles.cleanCountBadge}>
-            <Text style={styles.cleanCountBadgeText}>8</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.executiveCardBody}>
+          <TouchableOpacity
+            testID="collection-item-card"
+            style={[
+              styles.collectionItemCard,
+              { backgroundColor: isDark ? '#161920' : '#0E1B2C' },
+            ]}
+            activeOpacity={0.85}
+            onPress={() => onNavigateTab && onNavigateTab('plan')}
+          >
+            <View style={styles.collectionTextGroup}>
+              <Text style={styles.collectionTitle}>Tokyo 2025</Text>
+              <Text style={styles.collectionSubtitle}>Explored Itinerary</Text>
+            </View>
+            <View testID="home-explored-badge" style={styles.cleanCountBadge}>
+              <Text style={styles.cleanCountBadgeText}>8</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Currency Selection Modal */}
@@ -826,7 +916,7 @@ const styles = StyleSheet.create({
   iconButton: {
     width: 42,
     height: 42,
-    borderRadius: 21,
+    borderRadius: 14,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -938,6 +1028,70 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 16,
     borderWidth: 1,
+  },
+  executiveCardWrapper: {
+    borderRadius: 22,
+    borderWidth: 1,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  executiveHeaderStrip: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerStripLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  headerStripTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.6,
+  },
+  headerStripSubtitle: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#94A3B8',
+    marginTop: 1,
+  },
+  headerStripBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 99,
+  },
+  headerStripBadgeText: {
+    color: '#F1F5F9',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  gpsRadarPill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  gpsRadarPillText: {
+    color: '#CBD5E1',
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  executiveCardBody: {
+    padding: 16,
   },
   cardHeaderRow: {
     flexDirection: 'row',

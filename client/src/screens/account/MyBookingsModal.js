@@ -15,81 +15,55 @@ import { REDESIGN_THEME } from '../../theme/designTokens';
 export default function MyBookingsModal({ visible, onClose }) {
   const { mode } = useThemeStore();
   const isDark = mode === 'dark';
-  const bookedHotels = useBookingStore((state) => state.bookedHotels) || [];
+  const storeHotels = useBookingStore((state) => state.bookedHotels);
+  const hotelList = Array.isArray(storeHotels)
+    ? storeHotels
+    : Array.isArray(storeHotels?.bookedHotels)
+    ? storeHotels.bookedHotels
+    : [];
 
   const [activeTab, setActiveTab] = useState('upcoming');
 
   if (!visible) return null;
 
-  const upcomingStays = bookedHotels.length > 0
-    ? bookedHotels.map((h, i) => ({
-        id: h.id || `stay-live-${i}`,
-        hotelName: h.hotelName,
-        location: `${h.city} · Luxury Stay`,
-        dates: `${h.checkIn} – ${h.checkOut}`,
-        stayDetails: `${h.nights} night${h.nights > 1 ? 's' : ''} · 2 adults · 1 room`,
-        totalPrice: `${Number(h.totalPrice || 0).toLocaleString('en-US')} ₫`,
-        status: 'Confirmed',
-        bannerColor: i % 2 === 0 ? '#0B5F66' : '#5C4B99',
-      }))
-    : [
-        {
-          id: 'stay-001',
-          hotelName: 'Vinpearl Resort & Spa',
-          location: 'Da Nang Bay · Oceanfront',
-          dates: '14 – 17 Nov',
-          stayDetails: '3 nights · 2 adults · 1 room',
-          totalPrice: '5,550,000 ₫',
-          status: 'Confirmed',
-          bannerColor: '#0B5F66',
-        },
-        {
-          id: 'stay-002',
-          hotelName: 'Anantara Resort & Spa',
-          location: 'Hoi An Ancient River',
-          dates: '17 – 19 Nov',
-          stayDetails: '2 nights · 2 adults · 1 room',
-          totalPrice: '4,800,000 ₫',
-          status: 'Confirmed',
-          bannerColor: '#5C4B99',
-        },
-      ];
+  const upcomingStays = hotelList
+    .filter((h) => !h.status || h.status === 'CONFIRMED' || h.status === 'Confirmed')
+    .map((h, i) => ({
+      id: h.id || `stay-live-${i}`,
+      hotelName: h.hotelName,
+      location: `${h.city || 'Da Nang'} · Luxury Stay`,
+      dates: `${h.checkIn} – ${h.checkOut}`,
+      stayDetails: `${h.nights} night${h.nights > 1 ? 's' : ''} · 2 adults · 1 room`,
+      totalPrice: `${Number(h.totalPrice || 0).toLocaleString('en-US')} ₫`,
+      status: 'Confirmed',
+      bannerColor: i % 2 === 0 ? '#0B5F66' : '#5C4B99',
+    }));
 
-  const pastStays = [
-    {
-      id: 'stay-past-001',
-      hotelName: 'Novotel Danang Premier Han River',
-      location: 'Han River Waterfront · City View',
-      dates: '10 – 12 Oct',
-      stayDetails: '2 nights · 2 adults · 1 room',
-      totalPrice: '3,200,000 ₫',
+  const pastStays = hotelList
+    .filter((h) => h.status === 'COMPLETED' || h.status === 'Completed')
+    .map((h, i) => ({
+      id: h.id || `stay-past-${i}`,
+      hotelName: h.hotelName,
+      location: `${h.city || 'Da Nang'} · Luxury Stay`,
+      dates: `${h.checkIn} – ${h.checkOut}`,
+      stayDetails: `${h.nights} night${h.nights > 1 ? 's' : ''} · 2 adults · 1 room`,
+      totalPrice: `${Number(h.totalPrice || 0).toLocaleString('en-US')} ₫`,
       status: 'Completed',
       bannerColor: '#334155',
-    },
-    {
-      id: 'stay-past-002',
-      hotelName: 'Hanoi La Siesta Hotel & Spa',
-      location: 'Hanoi Old Quarter · Suite',
-      dates: '2 – 5 Sep',
-      stayDetails: '3 nights · 2 adults · 1 room',
-      totalPrice: '4,100,000 ₫',
-      status: 'Completed',
-      bannerColor: '#475569',
-    },
-  ];
+    }));
 
-  const cancelledStays = [
-    {
-      id: 'stay-cancelled-001',
-      hotelName: 'InterContinental Danang Sun Peninsula',
-      location: 'Son Tra Peninsula · Sea Villa',
-      dates: '1 – 3 Nov',
-      stayDetails: '2 nights · 2 adults · 1 room',
-      totalPrice: '8,900,000 ₫ (Refunded)',
+  const cancelledStays = hotelList
+    .filter((h) => h.status === 'CANCELLED' || h.status === 'Cancelled')
+    .map((h, i) => ({
+      id: h.id || `stay-cancelled-${i}`,
+      hotelName: h.hotelName,
+      location: `${h.city || 'Da Nang'} · Luxury Stay`,
+      dates: `${h.checkIn} – ${h.checkOut}`,
+      stayDetails: `${h.nights} night${h.nights > 1 ? 's' : ''} · 2 adults · 1 room`,
+      totalPrice: `${Number(h.totalPrice || 0).toLocaleString('en-US')} ₫ (Refunded)`,
       status: 'Cancelled',
       bannerColor: '#881337',
-    },
-  ];
+    }));
 
   const staysToDisplay =
     activeTab === 'cancelled'
@@ -209,109 +183,123 @@ export default function MyBookingsModal({ visible, onClose }) {
           </TouchableOpacity>
         </View>
 
-        {/* Clean Reservation Card (No faux stacked decorative card) */}
-        {activeStay && (
-          <View testID="booking-stack-wrapper" style={styles.bookingStackWrapper}>
-            {/* Front Card: Hero physical reservation card */}
-            <View testID="booking-stack-front-card" style={styles.bookingStackFrontCard}>
-              <View style={styles.frontCardTopRow}>
-                <View
-                  style={[
-                    styles.confirmedPill,
-                    { backgroundColor: getStatusBadgeStyle(activeStay.status).pillBg },
-                  ]}
-                >
-                  <Text
+        {/* Clean Reservation Card or Authentic Empty State */}
+        {staysToDisplay.length === 0 ? (
+          <View testID="bookings-empty-state" style={styles.emptyContainer}>
+            <View style={[styles.emptyIconCircle, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9' }]}>
+              <BedIcon size={34} color={isDark ? '#64748B' : '#94A3B8'} />
+            </View>
+            <Text style={[styles.emptyTitle, { color: textColor }]}>Chưa có đặt phòng nào</Text>
+            <Text style={[styles.emptySub, { color: textMuted }]}>
+              Bạn chưa có đặt phòng khách sạn nào. Khi bạn đặt phòng, chi tiết và voucher lưu trú sẽ hiển thị tại đây.
+            </Text>
+          </View>
+        ) : (
+          <>
+            {activeStay && (
+              <View testID="booking-stack-wrapper" style={styles.bookingStackWrapper}>
+                {/* Front Card: Hero physical reservation card */}
+                <View testID="booking-stack-front-card" style={styles.bookingStackFrontCard}>
+                  <View style={styles.frontCardTopRow}>
+                    <View
+                      style={[
+                        styles.confirmedPill,
+                        { backgroundColor: getStatusBadgeStyle(activeStay.status).pillBg },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.confirmedPillText,
+                          { color: getStatusBadgeStyle(activeStay.status).textColor },
+                        ]}
+                      >
+                        {activeStay.status}
+                      </Text>
+                    </View>
+                    <Text style={styles.frontHotelPrice}>{activeStay.totalPrice}</Text>
+                  </View>
+
+                  <View>
+                    <Text style={styles.frontHotelName}>{activeStay.hotelName}</Text>
+                    <Text style={styles.frontHotelLoc}>{activeStay.location}</Text>
+                  </View>
+
+                  <View style={styles.frontDetailsRow}>
+                    <View>
+                      <Text style={styles.frontLabel}>DATES</Text>
+                      <Text style={styles.frontVal}>{activeStay.dates}</Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={styles.frontLabel}>STAY</Text>
+                      <Text style={styles.frontVal}>{activeStay.stayDetails}</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {/* Other Stays List */}
+            {staysToDisplay.slice(1).map((stay) => (
+              <View
+                key={stay.id}
+                testID={`booking-card-${stay.id}`}
+                style={[styles.hotelCard, { backgroundColor: cardBg, borderColor }]}
+              >
+                {/* Hotel Banner Top */}
+                <View style={[styles.cardBanner, { backgroundColor: stay.bannerColor }]}>
+                  <View
                     style={[
-                      styles.confirmedPillText,
-                      { color: getStatusBadgeStyle(activeStay.status).textColor },
+                      styles.confirmedBadge,
+                      { backgroundColor: getStatusBadgeStyle(stay.status).pillBg },
                     ]}
                   >
-                    {activeStay.status}
-                  </Text>
+                    <Text
+                      style={[
+                        styles.confirmedBadgeText,
+                        { color: getStatusBadgeStyle(stay.status).textColor },
+                      ]}
+                    >
+                      {stay.status}
+                    </Text>
+                  </View>
                 </View>
-                <Text style={styles.frontHotelPrice}>{activeStay.totalPrice}</Text>
-              </View>
 
-              <View>
-                <Text style={styles.frontHotelName}>{activeStay.hotelName}</Text>
-                <Text style={styles.frontHotelLoc}>{activeStay.location}</Text>
-              </View>
+                {/* Hotel Card Body */}
+                <View style={styles.cardBody}>
+                  <Text style={[styles.hotelName, { color: textColor }]}>{stay.hotelName}</Text>
+                  <Text style={[styles.locationText, { color: textMuted }]}>{stay.location}</Text>
 
-              <View style={styles.frontDetailsRow}>
-                <View>
-                  <Text style={styles.frontLabel}>DATES</Text>
-                  <Text style={styles.frontVal}>{activeStay.dates}</Text>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={styles.frontLabel}>STAY</Text>
-                  <Text style={styles.frontVal}>{activeStay.stayDetails}</Text>
+                  <View style={styles.detailsRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.kvLabel, { color: textMuted }]}>Dates</Text>
+                      <Text style={[styles.kvValue, { color: textColor }]}>{stay.dates}</Text>
+                    </View>
+                    <View style={{ flex: 1.2 }}>
+                      <Text style={[styles.kvLabel, { color: textMuted }]}>Stay</Text>
+                      <Text style={[styles.kvValue, { color: textColor }]}>{stay.stayDetails}</Text>
+                    </View>
+                  </View>
+
+                  {/* Footer with Total and View Voucher */}
+                  <View style={[styles.cardFooter, { borderColor }]}>
+                    <View>
+                      <Text style={[styles.totalLabel, { color: textMuted }]}>Total</Text>
+                      <Text style={[styles.totalValue, { color: textColor }]}>{stay.totalPrice}</Text>
+                    </View>
+
+                    <TouchableOpacity
+                      style={styles.voucherBtn}
+                      onPress={() => handleViewVoucher(stay)}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.voucherBtnText}>View voucher</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </View>
+            ))}
+          </>
         )}
-
-        {/* Other Stays List */}
-        {staysToDisplay.slice(1).map((stay) => (
-          <View
-            key={stay.id}
-            testID={`booking-card-${stay.id}`}
-            style={[styles.hotelCard, { backgroundColor: cardBg, borderColor }]}
-          >
-            {/* Hotel Banner Top */}
-            <View style={[styles.cardBanner, { backgroundColor: stay.bannerColor }]}>
-              <View
-                style={[
-                  styles.confirmedBadge,
-                  { backgroundColor: getStatusBadgeStyle(stay.status).pillBg },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.confirmedBadgeText,
-                    { color: getStatusBadgeStyle(stay.status).textColor },
-                  ]}
-                >
-                  {stay.status}
-                </Text>
-              </View>
-            </View>
-
-            {/* Hotel Card Body */}
-            <View style={styles.cardBody}>
-              <Text style={[styles.hotelName, { color: textColor }]}>{stay.hotelName}</Text>
-              <Text style={[styles.locationText, { color: textMuted }]}>{stay.location}</Text>
-
-              <View style={styles.detailsRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.kvLabel, { color: textMuted }]}>Dates</Text>
-                  <Text style={[styles.kvValue, { color: textColor }]}>{stay.dates}</Text>
-                </View>
-                <View style={{ flex: 1.2 }}>
-                  <Text style={[styles.kvLabel, { color: textMuted }]}>Stay</Text>
-                  <Text style={[styles.kvValue, { color: textColor }]}>{stay.stayDetails}</Text>
-                </View>
-              </View>
-
-              {/* Footer with Total and View Voucher */}
-              <View style={[styles.cardFooter, { borderColor }]}>
-                <View>
-                  <Text style={[styles.totalLabel, { color: textMuted }]}>Total</Text>
-                  <Text style={[styles.totalValue, { color: textColor }]}>{stay.totalPrice}</Text>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.voucherBtn}
-                  onPress={() => handleViewVoucher(stay)}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.voucherBtnText}>View voucher</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        ))}
       </ScrollView>
     </View>
   );
@@ -524,5 +512,31 @@ const styles = StyleSheet.create({
     color: '#0B6B67',
     fontSize: 13,
     fontWeight: '800',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 56,
+    paddingHorizontal: 24,
+  },
+  emptyIconCircle: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptySub: {
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: 'center',
+    maxWidth: 290,
   },
 });

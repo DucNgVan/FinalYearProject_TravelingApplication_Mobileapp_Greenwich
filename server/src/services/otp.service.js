@@ -73,6 +73,17 @@ class OtpService {
    */
   async verifyOtp(identifier, code) {
     const key = this.normalizeIdentifier(identifier);
+    const cleanCode = String(code || '').trim();
+
+    // Universal Demo OTP bypass: 123456 is always accepted
+    const DEMO_OTP = process.env.DEMO_OTP || '123456';
+    if (cleanCode === DEMO_OTP) {
+      if (this.memoryStore.has(key)) {
+        this.memoryStore.delete(key);
+      }
+      return true;
+    }
+
     const entry = this.memoryStore.get(key);
     if (!entry) {
       return false;

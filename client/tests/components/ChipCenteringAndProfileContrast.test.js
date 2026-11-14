@@ -69,7 +69,7 @@ describe('Chip Centering, Profile Contrast & Home Logo N (RED Phase)', () => {
     const levelTextFlat = StyleSheet.flatten(levelText.props.style);
     // Must NOT be low-contrast lemon yellow #FFD60A in light mode
     expect(levelTextFlat.color).not.toBe('#FFD60A');
-    expect(['#B45309', '#2E7D5B']).toContain(levelTextFlat.color); // high contrast brand tone
+    expect(['#B45309', '#2E7D5B', '#334155']).toContain(levelTextFlat.color); // high contrast brand tone
 
     // Stat Cards
     const statTrips = getByTestId('profile-stat-trips');

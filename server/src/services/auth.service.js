@@ -26,7 +26,7 @@ class AuthService {
     return { verified: true };
   }
 
-  async register({ email, password, fullName, phoneNumber = null, otp = null }) {
+  async register({ email, password, fullName, phoneNumber = null, dateOfBirth = null, otp = null }) {
     const existing = await userRepository.findByEmail(email);
     if (existing) {
       const err = new Error('Email is already registered');
@@ -53,6 +53,7 @@ class AuthService {
       passwordHash,
       fullName,
       phoneNumber,
+      dateOfBirth,
       isEmailVerified,
     });
 
@@ -75,6 +76,9 @@ class AuthService {
         id: createdUser.id,
         email: createdUser.email,
         fullName: createdUser.full_name,
+        phoneNumber: createdUser.phone_number || phoneNumber || null,
+        phone: createdUser.phone_number || phoneNumber || null,
+        dateOfBirth: createdUser.date_of_birth || dateOfBirth || null,
         role: createdUser.role,
         xp: createdUser.xp,
         level: createdUser.level,
@@ -121,6 +125,9 @@ class AuthService {
         id: user.id,
         email: user.email,
         fullName: user.full_name,
+        phoneNumber: user.phone_number || null,
+        phone: user.phone_number || null,
+        dateOfBirth: user.date_of_birth || null,
         role: user.role,
         xp: user.xp,
         level: user.level,

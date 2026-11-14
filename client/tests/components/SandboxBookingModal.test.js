@@ -14,7 +14,7 @@ describe('Component Test: SandboxBookingModal', () => {
   };
 
   test('RED-FE-SBX-04: renders passenger info, Duffel sandbox balance, and payment amount', () => {
-    const { getByText } = render(
+    const { getByText, getAllByText, getByTestId } = render(
       <SandboxBookingModal
         visible={true}
         flight={mockFlight}
@@ -23,16 +23,19 @@ describe('Component Test: SandboxBookingModal', () => {
       />
     );
 
+    // Navigate to Review & Pay step
+    fireEvent.press(getByTestId('booking-step-pay'));
+
     expect(getByText(/Duffel API Sandbox Payment/i)).toBeTruthy();
     expect(getByText(/Duffel Sandbox Test Balance|Số dư Duffel Sandbox Test/i)).toBeTruthy();
     expect(getByText(/50\.000\.000|50,000,000/i)).toBeTruthy();
-    expect(getByText(/2\.073\.060|2,073,060/i)).toBeTruthy();
+    expect(getAllByText(/2\.073\.060|2,073,060/i).length).toBeGreaterThanOrEqual(1);
     expect(getByText(/Confirm Booking.*Save to Account|Xác nhận Đặt Vé/i)).toBeTruthy();
   });
 
   test('RED-FE-SBX-05: confirming booking triggers success and displays PNR and e-ticket number', async () => {
     const onBookingSuccessMock = jest.fn();
-    const { getByText, findByText } = render(
+    const { getByText, findByText, getByTestId } = render(
       <SandboxBookingModal
         visible={true}
         flight={mockFlight}
@@ -40,6 +43,9 @@ describe('Component Test: SandboxBookingModal', () => {
         onBookingSuccess={onBookingSuccessMock}
       />
     );
+
+    // Navigate to Review & Pay step
+    fireEvent.press(getByTestId('booking-step-pay'));
 
     const confirmBtn = getByText(/Confirm Booking.*Save to Account|Xác nhận Đặt Vé/i);
     await act(async () => {

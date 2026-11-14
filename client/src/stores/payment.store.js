@@ -5,21 +5,8 @@ import { create } from 'zustand';
  * Supports card validation, formatting, brand detection, and default selection
  */
 export const usePaymentStore = create((set, get) => ({
-  cards: [
-    {
-      id: 'card-default-4821',
-      cardNumber: '•••• •••• •••• 4821',
-      rawNumber: '4821',
-      cardHolder: 'GUEST TRAVELER',
-      expiryDate: '08/28',
-      cardType: 'Visa · Credit',
-      brand: 'VISA',
-      isDefault: true,
-      usedFor: 'Flights & hotel bookings',
-      gradient: ['#0E1B2C', '#14485A', '#0B7A75'],
-    },
-  ],
-  selectedCardId: 'card-default-4821',
+  cards: [],
+  selectedCardId: null,
 
   getDefaultCard: () => {
     const { cards } = get();

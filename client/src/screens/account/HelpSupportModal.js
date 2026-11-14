@@ -17,6 +17,7 @@ import {
   SearchArrowIcon,
 } from '../../components/common/NomadixIcons';
 import { REDESIGN_THEME } from '../../theme/designTokens';
+import LiveSupportChatModal from '../../components/support/LiveSupportChatModal';
 
 export default function HelpSupportModal({ visible, onClose, onOpenTicketSupport }) {
   const { mode } = useThemeStore();
@@ -24,6 +25,7 @@ export default function HelpSupportModal({ visible, onClose, onOpenTicketSupport
 
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [liveChatVisible, setLiveChatVisible] = useState(false);
 
   if (!visible) return null;
 
@@ -101,13 +103,87 @@ export default function HelpSupportModal({ visible, onClose, onOpenTicketSupport
           />
         </View>
 
-        {/* 24/7 Direct Channels */}
+        {/* 1. FAQs Knowledge Base Section (Self-Service First) */}
+        <Text style={[styles.sectionTitle, { color: textMuted }]}>FREQUENTLY ASKED QUESTIONS (FAQ)</Text>
+        <View style={[styles.card, { backgroundColor: cardBg, borderColor }]}>
+          {filteredFaqs.map((faq) => {
+            const isExpanded = expandedFaq === faq.id;
+            return (
+              <View key={faq.id} style={styles.faqItem}>
+                <TouchableOpacity
+                  testID={`faq-toggle-${faq.id}`}
+                  style={styles.faqHeader}
+                  onPress={() => setExpandedFaq(isExpanded ? null : faq.id)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.faqQuestion, { color: textColor, flex: 1, paddingRight: 8 }]}>
+                    {faq.question}
+                  </Text>
+                  <Text style={{ color: primaryTeal, fontSize: 16, fontWeight: '800' }}>
+                    {isExpanded ? '−' : '+'}
+                  </Text>
+                </TouchableOpacity>
+
+                {isExpanded && (
+                  <View style={styles.faqBody}>
+                    <Text style={[styles.faqAnswer, { color: textMuted }]}>{faq.answer}</Text>
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </View>
+
+        {/* 2. Still Need Help Escalation Card (Revealed after FAQ) */}
+        <View style={[styles.escalationCard, { backgroundColor: cardBg, borderColor }]}>
+          <Text style={[styles.escalationEyebrow, { color: primaryTeal }]}>UNRESOLVED ISSUE?</Text>
+          <Text style={[styles.escalationTitle, { color: textColor }]}>
+            Couldn't find what you're looking for?
+          </Text>
+          <Text style={[styles.escalationSubtitle, { color: textMuted }]}>
+            If our knowledge base did not resolve your inquiry, connect directly with our 24/7 dedicated support desk.
+          </Text>
+
+          <TouchableOpacity
+            testID="btn-escalate-live-chat"
+            style={[styles.escalateBtn, { backgroundColor: isDark ? '#0284C7' : '#0E1B2C' }]}
+            onPress={() => setLiveChatVisible(true)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.escalateBtnText}>💬 Chat with Live Support Agent</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* 3. Dedicated Ticket & Refunds Card */}
+        <TouchableOpacity
+          testID="btn-support-ticket-link"
+          style={[styles.ticketSupportCard, { backgroundColor: isDark ? '#1A2938' : '#EAF4F4', borderColor: primaryTeal }]}
+          onPress={() => {
+            if (onOpenTicketSupport) {
+              onOpenTicketSupport();
+            } else {
+              Alert.alert('Ticket Support', 'Opening ticket change and refund center');
+            }
+          }}
+          activeOpacity={0.8}
+        >
+          <View style={[styles.channelIconBadge, { backgroundColor: '#FFFFFF' }]}>
+            <TicketIcon size={20} color="#0B7A75" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.ticketSupportTitle, { color: textColor }]}>Ticket Support & Refunds Center</Text>
+            <Text style={[styles.ticketSupportSub, { color: textMuted }]}>Request itinerary changes, refunds or emergency help</Text>
+          </View>
+          <ChevronRightIcon size={18} color={primaryTeal} />
+        </TouchableOpacity>
+
+        {/* 4. Direct Channels */}
         <Text style={[styles.sectionTitle, { color: textMuted }]}>DIRECT SUPPORT CHANNELS</Text>
         <View style={[styles.card, { backgroundColor: cardBg, borderColor }]}>
           <TouchableOpacity
             testID="btn-support-chat"
             style={styles.channelRow}
-            onPress={() => handleChannelPress('24/7 Live Chat', 'Connecting to Nomadix Support Specialist (Reply under 2 mins)...')}
+            onPress={() => setLiveChatVisible(true)}
             activeOpacity={0.7}
           >
             <View style={[styles.channelIconBadge, { backgroundColor: '#E3F2F0' }]}>
@@ -115,7 +191,7 @@ export default function HelpSupportModal({ visible, onClose, onOpenTicketSupport
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.channelTitle, { color: textColor }]}>24/7 Live Chat</Text>
-              <Text style={[styles.channelSub, { color: textMuted }]}>Instant assistance in under 2 minutes</Text>
+              <Text style={[styles.channelSub, { color: textMuted }]}>Connect directly with an on-duty specialist</Text>
             </View>
             <ChevronRightIcon size={18} color={textMuted} />
           </TouchableOpacity>
@@ -152,64 +228,14 @@ export default function HelpSupportModal({ visible, onClose, onOpenTicketSupport
             <ChevronRightIcon size={18} color={textMuted} />
           </TouchableOpacity>
         </View>
-
-        {/* Dedicated Ticket & Refunds Card */}
-        <TouchableOpacity
-          testID="btn-support-ticket-link"
-          style={[styles.ticketSupportCard, { backgroundColor: isDark ? '#1A2938' : '#EAF4F4', borderColor: primaryTeal }]}
-          onPress={() => {
-            if (onOpenTicketSupport) {
-              onOpenTicketSupport();
-            } else {
-              Alert.alert('Ticket Support', 'Opening ticket change and refund center');
-            }
-          }}
-          activeOpacity={0.8}
-        >
-          <View style={[styles.channelIconBadge, { backgroundColor: '#FFFFFF' }]}>
-            <TicketIcon size={20} color="#0B7A75" />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.ticketSupportTitle, { color: textColor }]}>Ticket Support & Refunds Center</Text>
-            <Text style={[styles.ticketSupportSub, { color: textMuted }]}>Request itinerary changes, refunds or emergency help</Text>
-          </View>
-          <ChevronRightIcon size={18} color={primaryTeal} />
-        </TouchableOpacity>
-
-        {/* FAQs Section */}
-        <Text style={[styles.sectionTitle, { color: textMuted }]}>FREQUENTLY ASKED QUESTIONS (FAQ)</Text>
-        <View style={[styles.card, { backgroundColor: cardBg, borderColor }]}>
-          {filteredFaqs.map((faq) => {
-            const isExpanded = expandedFaq === faq.id;
-            return (
-              <View
-                key={faq.id}
-                style={styles.faqItem}
-              >
-                <TouchableOpacity
-                  testID={`faq-toggle-${faq.id}`}
-                  style={styles.faqHeader}
-                  onPress={() => setExpandedFaq(isExpanded ? null : faq.id)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.faqQuestion, { color: textColor, flex: 1, paddingRight: 8 }]}>
-                    {faq.question}
-                  </Text>
-                  <Text style={{ color: primaryTeal, fontSize: 16, fontWeight: '800' }}>
-                    {isExpanded ? '−' : '+'}
-                  </Text>
-                </TouchableOpacity>
-
-                {isExpanded && (
-                  <View style={styles.faqBody}>
-                    <Text style={[styles.faqAnswer, { color: textMuted }]}>{faq.answer}</Text>
-                  </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
       </ScrollView>
+
+      {/* Live Support Chat Modal */}
+      <LiveSupportChatModal
+        visible={liveChatVisible}
+        ticketId="ticket-1001"
+        onClose={() => setLiveChatVisible(false)}
+      />
     </View>
   );
 }

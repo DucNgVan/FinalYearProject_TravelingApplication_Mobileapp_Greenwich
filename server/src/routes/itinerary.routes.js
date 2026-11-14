@@ -67,4 +67,21 @@ router.put(
   }
 );
 
+// Packing Checklist
+router.get('/:id/packing-list', authenticate, (req, res, next) => {
+  itineraryController.getPackingList(req, res, next);
+});
+
+router.post('/:id/packing-list', authenticate, (req, res, next) => {
+  itineraryController.addPackingItem(req, res, next);
+});
+
+router.patch('/:id/packing-list/:itemId/toggle', authenticate, (req, res, next) => {
+  itineraryController.togglePackingItem(req, res, next);
+});
+
+router.delete('/:id/packing-list/:itemId', authenticate, (req, res, next) => {
+  itineraryController.deletePackingItem(req, res, next);
+});
+
 module.exports = router;

@@ -4,6 +4,7 @@ import { render, fireEvent } from '@testing-library/react-native';
 import ProfileScreen from '../../src/screens/account/ProfileScreen';
 import { useAuthStore } from '../../src/stores/auth.store';
 import { useBookingStore } from '../../src/stores/booking.store';
+import { usePaymentStore } from '../../src/stores/payment.store';
 import { useThemeStore } from '../../src/stores/theme.store';
 
 jest.mock('../../src/stores/auth.store');
@@ -23,7 +24,39 @@ describe('Component Test: ProfileScreen (Account & Travel Stats)', () => {
       user: mockUser,
       logout: mockLogout,
     });
-    useBookingStore.setState({ bookedTickets: [] });
+    useBookingStore.setState({
+      bookedTickets: [
+        {
+          id: 'tkt-001',
+          pnr: 'VN-8X2K9P',
+          airlineCode: 'VN',
+          airlineName: 'Vietnam Airlines',
+          flightNumber: 'VN-0240',
+          origin: 'SGN',
+          originCity: 'Ho Chi Minh',
+          destination: 'HAN',
+          destinationCity: 'Ha Noi',
+          departureTime: '2026-11-14T08:00:00Z',
+          arrivalTime: '2026-11-14T10:10:00Z',
+          totalPrice: 2073060,
+          seat: '14A',
+          gate: 'G03',
+          classType: 'Economy Classic',
+        },
+      ],
+    });
+    usePaymentStore.setState({
+      cards: [
+        {
+          id: 'c-1',
+          cardNumber: '•••• •••• •••• 4821',
+          brand: 'VISA',
+          cardHolder: 'GUEST TRAVELER',
+          expiryDate: '12/28',
+          cardType: 'Visa · Credit',
+        },
+      ],
+    });
   });
 
   test('RED-FE-ACC-01: renders user avatar, name, email and level XP badge', () => {

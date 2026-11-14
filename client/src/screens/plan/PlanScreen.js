@@ -156,13 +156,19 @@ export default function PlanScreen() {
   } = useExpenseStore();
 
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState(currentTrip || null);
+  const [selectedTrip, setSelectedTrip] = useState(currentTrip || (trips && trips.length > 0 ? trips[0] : null));
 
   useEffect(() => {
-    if (currentTrip && !selectedTrip) {
-      setSelectedTrip(currentTrip);
+    if (currentTrip) {
+      const currentId = currentTrip.id || currentTrip._id;
+      const selectedId = selectedTrip?.id || selectedTrip?._id;
+      if (currentId !== selectedId) {
+        setSelectedTrip(currentTrip);
+      }
+    } else if (!selectedTrip && trips && trips.length > 0) {
+      setSelectedTrip(trips[0]);
     }
-  }, [currentTrip]);
+  }, [currentTrip, trips]);
 
   const rawTrip = selectedTrip;
   const trip = rawTrip?.itinerary || rawTrip;
@@ -579,19 +585,19 @@ export default function PlanScreen() {
       }
     }
 
-    // Always guarantee that the newly created trip exists in Zustand store's trips array!
+    // Always guarantee that the newly created trip exists in Zustand store's trips array and remains active!
     useItineraryStore.setState((state) => {
       const currentTrips = state.trips || [];
       const exists = currentTrips.some((t) => (t.id || t._id) === (created.id || created._id));
       return {
         trips: exists ? currentTrips : [created, ...currentTrips],
-        currentTrip: null,
+        currentTrip: created,
       };
     });
 
-    setSelectedTrip(null);
+    setSelectedTrip(created);
     if (typeof setCurrentTrip === 'function') {
-      setCurrentTrip(null);
+      setCurrentTrip(created);
     }
     setIsCreating(false);
     setActiveSubTab('itinerary');
@@ -1109,7 +1115,8 @@ export default function PlanScreen() {
 
         {/* Sub-Tab Switcher: Map Discovery vs Itinerary & Squad vs Expenses & Splitting (Unified Capsule Segmented Control) */}
         <View
-          testID="plan-subtabs-segmented"
+          testID="plan-subtab-capsule"
+          accessibilityLabel="plan-subtabs-segmented"
           style={[
             styles.subTabBar,
             { backgroundColor: isDark ? '#1C1D21' : '#EAECEF' },

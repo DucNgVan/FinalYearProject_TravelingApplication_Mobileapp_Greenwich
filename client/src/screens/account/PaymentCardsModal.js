@@ -16,6 +16,7 @@ import {
   PlusIcon,
   CloseIcon,
   CheckIcon,
+  CardIcon,
 } from '../../components/common/NomadixIcons';
 
 const PaymentCardsModal = ({ visible, onClose }) => {
@@ -125,9 +126,31 @@ const PaymentCardsModal = ({ visible, onClose }) => {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {!isAddingCard ? (
-          <>
-            {/* Clean Credit Card Preview (No faux stacked back card) */}
-            <View style={styles.cardStackWrapper}>
+          cards.length === 0 ? (
+            <View testID="cards-empty-state" style={styles.emptyContainer}>
+              <View style={[styles.emptyIconCircle, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9' }]}>
+                <CardIcon size={34} color={isDark ? '#64748B' : '#94A3B8'} />
+              </View>
+              <Text style={[styles.emptyTitle, { color: textColor }]}>Chưa có thẻ thanh toán</Text>
+              <Text style={[styles.emptySub, { color: textMuted }]}>
+                Bạn chưa lưu thẻ thanh toán nào. Thêm thẻ tín dụng hoặc ghi nợ để đặt vé máy bay và khách sạn nhanh chóng hơn.
+              </Text>
+              <TouchableOpacity
+                testID="btn-empty-add-card"
+                style={[styles.addCardBtn, { marginTop: 24, width: '100%' }]}
+                onPress={() => setIsAddingCard(true)}
+                activeOpacity={0.8}
+              >
+                <PlusIcon size={18} color={REDESIGN_THEME.tealDark || '#0B6B67'} />
+                <Text style={[styles.addCardBtnText, { color: REDESIGN_THEME.tealDark || '#0B6B67' }]}>
+                  Add new card
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              {/* Clean Credit Card Preview (No faux stacked back card) */}
+              <View style={styles.cardStackWrapper}>
               {/* Front Card (Navy-Teal Gradient) */}
               <View style={styles.frontCard}>
                 <View style={styles.cardTopRow}>
@@ -213,7 +236,8 @@ const PaymentCardsModal = ({ visible, onClose }) => {
                 <Text style={styles.removeCardBtnText}>Remove this card</Text>
               </TouchableOpacity>
             )}
-          </>
+            </>
+          )
         ) : (
           /* Add Card Form */
           <View style={styles.formContainer}>
@@ -554,5 +578,31 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 56,
+    paddingHorizontal: 24,
+  },
+  emptyIconCircle: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptySub: {
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: 'center',
+    maxWidth: 290,
   },
 });

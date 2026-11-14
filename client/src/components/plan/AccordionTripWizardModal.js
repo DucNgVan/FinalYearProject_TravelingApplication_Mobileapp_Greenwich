@@ -300,7 +300,7 @@ export default function AccordionTripWizardModal({
   // Inner Wizard Content
   const wizardContent = (
     <View style={styles.contentWrap}>
-      {/* Header Bar */}
+      {/* Header Bar matching User Image 2-6 */}
       <View style={styles.header}>
         <TouchableOpacity
           testID="header-back-btn"
@@ -317,17 +317,42 @@ export default function AccordionTripWizardModal({
           <Text style={styles.headerIconText}>‹</Text>
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Create Trip</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={styles.headerTitle}>Create Trip</Text>
+          <Text style={[styles.headerSubtitle, { color: themeColors.textMuted }]}>
+            Step {currentStep} of 5 • {currentStep === 1 ? 'Where' : currentStep === 2 ? 'When' : currentStep === 3 ? 'Squad' : currentStep === 4 ? 'Spots' : 'Invite'}
+          </Text>
+        </View>
 
-        <TouchableOpacity
-          testID="header-close-btn"
-          style={styles.headerIconBtn}
-          onPress={onClose}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.headerIconText}>✕</Text>
-        </TouchableOpacity>
+        <View style={styles.progressPercentPill}>
+          <Text style={styles.progressPercentText}>{Math.min(100, currentStep * 20)}%</Text>
+        </View>
       </View>
+
+      {/* 5-Segment Progress Bar matching User Images */}
+      <View testID="wizard-step-progress-bar" style={styles.stepProgressBarWrap}>
+        {[1, 2, 3, 4, 5].map((st) => (
+          <View
+            key={st}
+            style={[
+              styles.stepProgressSegment,
+              { backgroundColor: st <= currentStep ? (isDark ? '#FFFFFF' : '#0F172A') : (isDark ? '#334155' : '#E2E8F0') },
+            ]}
+          />
+        ))}
+      </View>
+
+      {/* Summary Pill Bar on Steps 2 to 5 */}
+      {currentStep > 1 ? (
+        <View style={styles.wizardSummaryPillBar}>
+          <Text style={styles.wizardSummaryPillText} numberOfLines={1}>
+            📍 {selectedCity?.name} • {daysCount}d (Balanced) • {travelersCount} pax • {selectedSpots.size} spots
+          </Text>
+          <TouchableOpacity onPress={() => setCurrentStep(1)} style={styles.wizardSummaryEditBtn}>
+            <Text style={styles.wizardSummaryEditText}>EDIT ✎</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       {/* Scrollable Accordion Cards Container */}
       <ScrollView
@@ -418,6 +443,7 @@ export default function AccordionTripWizardModal({
                   <TouchableOpacity
                     key={city.id}
                     testID={`trending-destination-${city.id}`}
+                    accessibilityLabel={`wizard-dest-card-${city.name}`}
                     style={[
                       styles.trendingCard,
                       selectedCity?.id === city.id && styles.trendingCardActive,
@@ -432,12 +458,25 @@ export default function AccordionTripWizardModal({
                         </Text>
                       </View>
                       <View>
-                        <Text style={styles.trendingName}>{city.name}</Text>
+                        <Text testID={`wizard-dest-card-${city.name}`} style={styles.trendingName}>{city.name}</Text>
                         <Text style={styles.trendingCountry}>{city.country}</Text>
                       </View>
                     </View>
-                    <View style={styles.spotsCountBadge}>
-                      <Text style={styles.spotsCountText}>{city.spotsCount} spots</Text>
+                    <View
+                      testID={`dest-spots-badge-${city.name}`}
+                      style={[
+                        styles.spotsCountBadge,
+                        selectedCity?.id === city.id && { backgroundColor: isDark ? '#FFFFFF' : '#0F172A' },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.spotsCountText,
+                          selectedCity?.id === city.id && { color: isDark ? '#0F172A' : '#FFFFFF' },
+                        ]}
+                      >
+                        {city.spotsCount} spots
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 ))}
@@ -1456,6 +1495,62 @@ function getStyles(themeColors, isDark) {
       fontWeight: '800',
       color: textCol,
       letterSpacing: -0.3,
+    },
+    headerSubtitle: {
+      fontSize: 11,
+      fontWeight: '600',
+      marginTop: 2,
+    },
+    progressPercentPill: {
+      backgroundColor: 'rgba(16, 185, 129, 0.15)',
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 12,
+    },
+    progressPercentText: {
+      fontSize: 12,
+      fontWeight: '800',
+      color: '#10B981',
+    },
+    stepProgressBarWrap: {
+      flexDirection: 'row',
+      gap: 6,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+    },
+    stepProgressSegment: {
+      flex: 1,
+      height: 4,
+      borderRadius: 2,
+    },
+    wizardSummaryPillBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: bgCard,
+      borderWidth: 1,
+      borderColor: borderCol,
+      borderRadius: 16,
+      marginHorizontal: 16,
+      marginVertical: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+    },
+    wizardSummaryPillText: {
+      flex: 1,
+      fontSize: 12,
+      fontWeight: '700',
+      color: textCol,
+      marginRight: 8,
+    },
+    wizardSummaryEditBtn: {
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+    },
+    wizardSummaryEditText: {
+      fontSize: 11,
+      fontWeight: '800',
+      color: '#64748B',
     },
     scrollContent: {
       flex: 1,

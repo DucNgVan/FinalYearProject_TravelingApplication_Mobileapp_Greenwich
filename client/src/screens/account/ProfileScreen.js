@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../../stores/auth.store';
 import { useBookingStore } from '../../stores/booking.store';
 import { useThemeStore } from '../../stores/theme.store';
+import { useItineraryStore } from '../../stores/itinerary.store';
 import BoardingPassModal from '../../components/booking/BoardingPassModal';
 import TicketSupportModal from '../../components/booking/TicketSupportModal';
 import PaymentCardsModal from './PaymentCardsModal';
@@ -34,8 +35,19 @@ export default function ProfileScreen({ onLogout } = {}) {
   const { user, logout } = useAuthStore();
   const { mode, colors: themeColors, toggleTheme } = useThemeStore();
   const isDark = mode === 'dark';
-  const bookedTickets = useBookingStore((state) => state.bookedTickets) || [];
-  const bookedHotels = useBookingStore((state) => state.bookedHotels) || [];
+  const storeTickets = useBookingStore((state) => state.bookedTickets);
+  const bookedTickets = Array.isArray(storeTickets)
+    ? storeTickets
+    : Array.isArray(storeTickets?.bookedTickets)
+    ? storeTickets.bookedTickets
+    : [];
+  const storeHotels = useBookingStore((state) => state.bookedHotels);
+  const bookedHotels = Array.isArray(storeHotels)
+    ? storeHotels
+    : Array.isArray(storeHotels?.bookedHotels)
+    ? storeHotels.bookedHotels
+    : [];
+  const trips = useItineraryStore((state) => state.trips) || [];
 
   const [activeSubScreen, setActiveSubScreen] = useState(null);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -53,33 +65,23 @@ export default function ProfileScreen({ onLogout } = {}) {
   const email = user?.email || 'guest@nomadix.app';
   const initial = (fullName.charAt(0) || 'G').toUpperCase();
 
-  const defaultTicket = {
-    id: 'tkt-seed-001',
-    pnr: 'VN-8X2K9P',
-    ticketNumber: '738-2491048291',
-    airlineCode: 'VN',
-    airlineName: 'Vietnam Airlines',
-    flightNumber: 'VN-0240',
-    origin: 'SGN',
-    destination: 'HAN',
-    departureTime: '2026-10-15T07:00:00Z',
-    arrivalTime: '2026-10-15T09:10:00Z',
-    durationMinutes: 130,
-    stops: 0,
-    aircraft: 'Airbus A350-900',
-    cabinClass: 'Economy',
-    totalPrice: 2073060,
-    passenger: { fullName, email },
-    status: 'CONFIRMED',
-  };
+  const level = user?.level ?? 5;
+  const xp = user?.xp ?? 1450;
+  const tripsCount = user?.tripsCount ?? (trips ? trips.length : 0);
+  const checkinsCount = user?.checkinsCount ?? 0;
+  const badgesCount = user?.badgesCount ?? 0;
+  const xpProgressPercent = xp > 0 ? `${Math.min(100, Math.round((xp % 1000) / 10))}%` : '0%';
 
-  const ticketsToDisplay = bookedTickets.length > 0 ? bookedTickets : [defaultTicket];
+  const ticketsToDisplay = bookedTickets;
 
   const bg = isDark ? '#121316' : '#F8FAFC';
   const cardBg = isDark ? '#1C1D21' : '#FFFFFF';
   const textColor = isDark ? '#FFFFFF' : (REDESIGN_THEME.dark || '#0E1B2C');
   const textMuted = isDark ? '#94A3B8' : (REDESIGN_THEME.textMuted || '#5B6776');
   const borderColor = isDark ? '#2A2D35' : (REDESIGN_THEME.border || '#E3E6E0');
+  const menuBadgeBg = isDark ? '#1E293B' : '#F1F5F9';
+  const menuBadgeBorder = isDark ? '#334155' : '#E2E8F0';
+  const menuIconColor = isDark ? '#FFFFFF' : '#0F172A';
 
   const closeSubScreen = () => {
     setActiveSubScreen(null);
@@ -135,7 +137,7 @@ export default function ProfileScreen({ onLogout } = {}) {
               testID="profile-avatar-container"
               style={[
                 styles.avatarCircle,
-                { backgroundColor: isDark ? '#2A2D35' : '#E3F2F0' },
+                { backgroundColor: isDark ? '#1E293B' : '#0F172A' },
               ]}
             >
               {user?.avatarUrl ? (
@@ -150,7 +152,7 @@ export default function ProfileScreen({ onLogout } = {}) {
                   testID="profile-avatar-initial"
                   style={[
                     styles.avatarText,
-                    { color: isDark ? '#FFFFFF' : '#0B6B67' },
+                    { color: '#FFFFFF' },
                   ]}
                 >
                   {initial}
@@ -164,13 +166,17 @@ export default function ProfileScreen({ onLogout } = {}) {
             <View
               style={[
                 styles.roleBadgePill,
-                { backgroundColor: isDark ? 'rgba(11, 122, 117, 0.25)' : '#E3F2F0' },
+                {
+                  backgroundColor: isDark ? '#1E293B' : '#F1F5F9',
+                  borderColor: isDark ? '#334155' : '#E2E8F0',
+                  borderWidth: 1,
+                },
               ]}
             >
               <Text
                 style={[
                   styles.roleBadgeText,
-                  { color: isDark ? '#34D399' : '#0B7A75' },
+                  { color: isDark ? '#F1F5F9' : '#0F172A' },
                 ]}
               >
                 {user?.role || 'Explorer'}
@@ -187,10 +193,10 @@ export default function ProfileScreen({ onLogout } = {}) {
               testID="profile-level-badge-text"
               style={[
                 styles.levelText,
-                { color: isDark ? '#34D399' : '#2E7D5B' },
+                { color: isDark ? '#94A3B8' : '#334155' },
               ]}
             >
-              <Text>Explorer Level 5</Text> • <Text>1,450 XP</Text>
+              <Text>Explorer Level {level}</Text> • <Text>{xp.toLocaleString()} XP</Text>
             </Text>
           </View>
           <View
@@ -203,7 +209,7 @@ export default function ProfileScreen({ onLogout } = {}) {
               testID="profile-hero-progress-fill"
               style={[
                 styles.progressBarFill,
-                { backgroundColor: isDark ? '#34D399' : '#2E7D5B', width: '68%' },
+                { backgroundColor: isDark ? '#FFFFFF' : '#0F172A', width: xpProgressPercent },
               ]}
             />
           </View>
@@ -221,7 +227,7 @@ export default function ProfileScreen({ onLogout } = {}) {
                 },
               ]}
             >
-              <Text style={[styles.statCount, { color: textColor }]}>4</Text>
+              <Text style={[styles.statCount, { color: textColor }]}>{tripsCount}</Text>
               <Text style={[styles.statSubLabel, { color: textMuted }]}>Trips</Text>
             </View>
             <View
@@ -235,7 +241,7 @@ export default function ProfileScreen({ onLogout } = {}) {
                 },
               ]}
             >
-              <Text style={[styles.statCount, { color: isDark ? '#34D399' : '#2E7D5B' }]}>12</Text>
+              <Text style={[styles.statCount, { color: textColor }]}>{checkinsCount}</Text>
               <Text style={[styles.statSubLabel, { color: textMuted }]}>Check-ins</Text>
             </View>
             <View
@@ -249,7 +255,7 @@ export default function ProfileScreen({ onLogout } = {}) {
                 },
               ]}
             >
-              <Text style={[styles.statCount, { color: isDark ? '#60A5FA' : '#2563EB' }]}>6</Text>
+              <Text style={[styles.statCount, { color: textColor }]}>{badgesCount}</Text>
               <Text style={[styles.statSubLabel, { color: textMuted }]}>Badges</Text>
             </View>
           </View>
@@ -265,15 +271,15 @@ export default function ProfileScreen({ onLogout } = {}) {
             onPress={() => setIsMyTicketsVisible(true)}
             activeOpacity={0.7}
           >
-            <View testID="badge-icon-tickets" style={[styles.menuIconBadge, { backgroundColor: '#E3F2F0' }]}>
-              <TicketIcon size={20} color="#0B6B67" />
+            <View testID="badge-icon-tickets" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+              <TicketIcon size={20} color={menuIconColor} />
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>My Tickets</Text>
               <Text style={[styles.menuSubtitle, { color: textMuted }]}>SGN → HAN · Sat, 14 Nov</Text>
             </View>
-            <View style={styles.activeTag}>
-              <Text style={styles.activeTagText}>1 active</Text>
+            <View style={[styles.activeTag, { backgroundColor: isDark ? '#1E293B' : '#0F172A' }]}>
+              <Text style={[styles.activeTagText, { color: '#FFFFFF' }]}>1 active</Text>
             </View>
             <ChevronRightIcon size={18} color={textMuted} />
           </TouchableOpacity>
@@ -285,8 +291,8 @@ export default function ProfileScreen({ onLogout } = {}) {
             onPress={() => setIsMyBookingsVisible(true)}
             activeOpacity={0.7}
           >
-            <View testID="badge-icon-bookings" style={[styles.menuIconBadge, { backgroundColor: '#FDECE7' }]}>
-              <BedIcon size={20} color="#A8341D" />
+            <View testID="badge-icon-bookings" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+              <BedIcon size={20} color={menuIconColor} />
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>My Bookings</Text>
@@ -307,8 +313,8 @@ export default function ProfileScreen({ onLogout } = {}) {
             activeOpacity={0.7}
           >
             <View testID="profile-payment-cards-row" style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-              <View testID="badge-icon-payment" style={[styles.menuIconBadge, { backgroundColor: '#E8EAF8' }]}>
-                <CardIcon size={20} color="#3B3F9E" />
+              <View testID="badge-icon-payment" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+                <CardIcon size={20} color={menuIconColor} />
               </View>
               <View style={styles.menuTextGroup}>
                 <Text style={[styles.menuTitle, { color: textColor }]}>Payment Methods</Text>
@@ -326,8 +332,8 @@ export default function ProfileScreen({ onLogout } = {}) {
             onPress={() => setIsAccountSettingsVisible(true)}
             activeOpacity={0.7}
           >
-            <View testID="badge-icon-account" style={[styles.menuIconBadge, { backgroundColor: '#E3F2F0' }]}>
-              <ProfileIcon size={20} color="#0B7A75" />
+            <View testID="badge-icon-account" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+              <ProfileIcon size={20} color={menuIconColor} />
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>Account Settings</Text>
@@ -347,8 +353,8 @@ export default function ProfileScreen({ onLogout } = {}) {
             onPress={() => setIsAppSettingsVisible(true)}
             activeOpacity={0.7}
           >
-            <View testID="badge-icon-settings" style={[styles.menuIconBadge, { backgroundColor: '#EAE8F8' }]}>
-              <SettingsIcon size={20} color="#5C4B99" />
+            <View testID="badge-icon-settings" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+              <SettingsIcon size={20} color={menuIconColor} />
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>Preferences & Settings</Text>
@@ -366,8 +372,8 @@ export default function ProfileScreen({ onLogout } = {}) {
           >
             <View testID="profile-ticket-support-row" style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
               <View testID="profile-menu-support" style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <View testID="badge-icon-help" style={[styles.menuIconBadge, { backgroundColor: '#FBF1D6' }]}>
-                  <HelpCircleIcon size={20} color="#7A4A06" />
+                <View testID="badge-icon-help" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+                  <HelpCircleIcon size={20} color={menuIconColor} />
                 </View>
                 <View style={styles.menuTextGroup}>
                   <Text style={[styles.menuTitle, { color: textColor }]}>
@@ -387,8 +393,8 @@ export default function ProfileScreen({ onLogout } = {}) {
             onPress={() => setIsLegalPrivacyVisible(true)}
             activeOpacity={0.7}
           >
-            <View testID="badge-icon-legal" style={[styles.menuIconBadge, { backgroundColor: '#E2F5EA' }]}>
-              <ShieldLockIcon size={20} color="#166534" />
+            <View testID="badge-icon-legal" style={[styles.menuIconBadge, { backgroundColor: menuBadgeBg, borderColor: menuBadgeBorder, borderWidth: 1 }]}>
+              <ShieldLockIcon size={20} color={menuIconColor} />
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>Legal & Privacy</Text>
@@ -409,12 +415,12 @@ export default function ProfileScreen({ onLogout } = {}) {
               testID="theme-pill-light"
               style={[
                 styles.themePillBtn,
-                mode === 'light' && [styles.themePillBtnActive, { backgroundColor: '#FFFFFF' }],
+                mode === 'light' && [styles.themePillBtnActive, { backgroundColor: '#111827' }],
               ]}
               onPress={() => mode !== 'light' && toggleTheme()}
               activeOpacity={0.8}
             >
-              <Text style={[styles.themePillBtnText, { color: mode === 'light' ? '#0E1B2C' : textMuted }]}>
+              <Text style={[styles.themePillBtnText, { color: mode === 'light' ? '#FFFFFF' : textMuted }]}>
                 Light Mode
               </Text>
             </TouchableOpacity>
@@ -423,12 +429,12 @@ export default function ProfileScreen({ onLogout } = {}) {
               testID="theme-toggle-row"
               style={[
                 styles.themePillBtn,
-                mode === 'dark' && [styles.themePillBtnActive, { backgroundColor: '#0E1B2C' }],
+                mode === 'dark' && [styles.themePillBtnActive, { backgroundColor: '#FFFFFF' }],
               ]}
               onPress={() => mode !== 'dark' && toggleTheme()}
               activeOpacity={0.8}
             >
-              <Text style={[styles.themePillBtnText, { color: mode === 'dark' ? '#FFFFFF' : textMuted }]}>
+              <Text style={[styles.themePillBtnText, { color: mode === 'dark' ? '#111827' : textMuted }]}>
                 Dark Mode
               </Text>
             </TouchableOpacity>
@@ -486,7 +492,7 @@ export default function ProfileScreen({ onLogout } = {}) {
           onClose={closeSubScreen}
           onOpenTicketSupport={() => {
             closeSubScreen();
-            setSupportTicket(selectedTicket || bookedTickets[0] || defaultTicket);
+            setSupportTicket(selectedTicket || bookedTickets[0] || null);
             setIsSupportVisible(true);
           }}
         />

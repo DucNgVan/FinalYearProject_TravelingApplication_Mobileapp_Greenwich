@@ -130,6 +130,54 @@ class ItineraryController {
       next(err);
     }
   }
+
+  async getPackingList(req, res, next) {
+    try {
+      const items = await itineraryService.getPackingList(req.params.id);
+      return res.status(200).json({
+        success: true,
+        data: items,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async addPackingItem(req, res, next) {
+    try {
+      const item = await itineraryService.addPackingItem(req.params.id, req.body);
+      return res.status(201).json({
+        success: true,
+        data: item,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async togglePackingItem(req, res, next) {
+    try {
+      const item = await itineraryService.togglePackingItem(req.params.id, req.params.itemId);
+      return res.status(200).json({
+        success: true,
+        data: item,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async deletePackingItem(req, res, next) {
+    try {
+      const result = await itineraryService.deletePackingItem(req.params.id, req.params.itemId);
+      return res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new ItineraryController();

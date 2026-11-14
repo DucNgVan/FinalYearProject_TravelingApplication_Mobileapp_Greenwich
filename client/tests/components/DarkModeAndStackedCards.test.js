@@ -64,6 +64,10 @@ describe('TDD RED Phase: Dark Mode Contrast, Back Button Fix, and Physical Stack
   });
 
   test('RED-STACK-04: MyTicketsModal and MyBookingsModal render clean card structures (without faux stacked back cards)', () => {
+    useBookingStore.setState({
+      bookedTickets: [{ id: 'tkt-01', pnr: 'VN-123', flightNumber: 'VN-01', origin: 'HAN', destination: 'SGN', totalPrice: 1000000 }],
+      bookedHotels: [{ id: 'stay-01', hotelName: 'Vinpearl Resort', city: 'Da Nang', checkIn: '14 Nov', checkOut: '17 Nov', nights: 3, totalPrice: 3000000, status: 'Confirmed' }],
+    });
     const { getByTestId: getTicketId, queryByTestId: queryTicketId } = render(
       <MyTicketsModal visible={true} onClose={() => {}} />
     );

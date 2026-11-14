@@ -23,7 +23,7 @@ export const useBookingStore = create((set, get) => ({
     sortBy: 'price:asc',
   },
 
-  bookFlightSandbox: (flight, passengerDetails = {}, seat = null, ancillaries = [], customTotal = null) => {
+  bookFlightSandbox: (flight, passengerDetails = {}, seat = null, ancillaries = [], customTotal = null, fareTier = 'Classic') => {
     const carrier = flight.airlineCode || 'VN';
     const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
     const pnr = `${carrier}-${randomChars}`;
@@ -54,6 +54,7 @@ export const useBookingStore = create((set, get) => ({
       stops: flight.stops,
       aircraft: flight.aircraft || (flight.flightNumber?.includes('VN-0240') ? 'Airbus A350-900' : 'Airbus A321'),
       cabinClass: flight.cabinClass || 'ECONOMY',
+      fareTier: fareTier || 'Classic',
       totalPrice: calculatedTotal,
       currency: flight.price?.currency || 'VND',
       seat: seat || { code: '12A', type: 'Standard' },
@@ -62,6 +63,9 @@ export const useBookingStore = create((set, get) => ({
         fullName: passengerDetails.fullName || 'John Doe',
         documentId: passengerDetails.documentId || 'C01928491',
         email: passengerDetails.email || 'traveler@example.com',
+        phone: passengerDetails.phone || '+84 901 234 567',
+        title: passengerDetails.title || 'Mr',
+        dob: passengerDetails.dob || '15/10/2002',
       },
       status: 'CONFIRMED',
       bookedAt: new Date().toISOString(),

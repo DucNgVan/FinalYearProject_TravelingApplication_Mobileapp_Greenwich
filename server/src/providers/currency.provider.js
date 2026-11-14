@@ -32,12 +32,14 @@ class CurrencyRateApiProvider {
       }
 
       const url = `${this.baseUrl}?base=${cleanBase}`;
+      const signal = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(2500) : undefined;
       const response = await this.fetchClient(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'User-Agent': 'Nomadix-Travel-App/1.0',
         },
+        signal,
       });
 
       if (!response || !response.ok) {

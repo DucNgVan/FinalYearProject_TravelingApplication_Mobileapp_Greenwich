@@ -62,7 +62,7 @@ class UserRepository {
     return memoryUsers.get(normalizedEmail) || null;
   }
 
-  async create({ email, passwordHash, fullName, phoneNumber = null, isEmailVerified = false, avatarUrl = null }) {
+  async create({ email, passwordHash, fullName, phoneNumber = null, dateOfBirth = null, isEmailVerified = false, avatarUrl = null }) {
     const normalizedEmail = email.toLowerCase().trim();
     const id = crypto.randomUUID();
     const newUser = {
@@ -71,6 +71,7 @@ class UserRepository {
       password_hash: passwordHash,
       full_name: fullName,
       phone_number: phoneNumber,
+      date_of_birth: dateOfBirth,
       avatar_url: avatarUrl,
       is_email_verified: isEmailVerified,
       role: 'traveler',
@@ -89,7 +90,7 @@ class UserRepository {
            RETURNING id, email, full_name, phone_number, avatar_url, is_email_verified, role_id, xp, level, status, created_at`,
           [id, normalizedEmail, passwordHash, fullName, phoneNumber, isEmailVerified, avatarUrl]
         );
-        return { ...res.rows[0], role: 'traveler' };
+        return { ...res.rows[0], role: 'traveler', date_of_birth: dateOfBirth };
       } catch (err) {
         // Fallback to memory store
       }

@@ -28,7 +28,12 @@ export default function MyTicketsModal({ visible, onClose }) {
   const { user } = useAuthStore();
   const { mode } = useThemeStore();
   const isDark = mode === 'dark';
-  const bookedTickets = useBookingStore((state) => state.bookedTickets) || [];
+  const storeTickets = useBookingStore((state) => state.bookedTickets);
+  const bookedTickets = Array.isArray(storeTickets)
+    ? storeTickets
+    : Array.isArray(storeTickets?.bookedTickets)
+    ? storeTickets.bookedTickets
+    : [];
 
   const [activeTab, setActiveTab] = useState('upcoming');
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -37,27 +42,8 @@ export default function MyTicketsModal({ visible, onClose }) {
 
   if (!visible) return null;
 
-  const defaultTicket = {
-    id: 'tkt-seed-001',
-    pnr: 'VN-8X2K9P',
-    ticketNumber: '738-2491048291',
-    airlineCode: 'VN',
-    airlineName: 'Vietnam Airlines',
-    flightNumber: 'VN-0240',
-    origin: 'SGN',
-    originCity: 'Ho Chi Minh',
-    destination: 'HAN',
-    destinationCity: 'Ha Noi',
-    date: 'Sat, 14 Nov',
-    departs: '07:00',
-    duration: '2h 05m',
-    aircraft: 'Airbus A350-900',
-    totalPrice: 2073060,
-    status: 'CONFIRMED',
-    passenger: { fullName: user?.fullName || 'Guest Traveler', email: user?.email || 'guest@nomadix.app' },
-  };
-
-  const currentTicket = bookedTickets.length > 0 ? bookedTickets[0] : defaultTicket;
+  const hasTickets = bookedTickets.length > 0;
+  const currentTicket = hasTickets ? bookedTickets[0] : null;
 
   const bg = isDark ? '#121316' : '#F8FAFC';
   const cardBg = isDark ? '#1C1D21' : '#FFFFFF';
@@ -70,7 +56,7 @@ export default function MyTicketsModal({ visible, onClose }) {
   };
 
   const handleShare = () => {
-    Alert.alert('Share Ticket', 'Booking reference VN-8X2K9P ready to share with squad.');
+    Alert.alert('Share Ticket', 'Booking reference ready to share with squad.');
   };
 
   return (
@@ -133,143 +119,158 @@ export default function MyTicketsModal({ visible, onClose }) {
           </TouchableOpacity>
         </View>
 
-        {/* Clean Physical Flight Ticket Card (No faux stacked decorative card) */}
-        <View testID="ticket-stack-wrapper" style={styles.ticketStackWrapper}>
-          {/* Front Card: Hero Navy-Teal physical flight ticket */}
-          <View testID="ticket-stack-front-card" style={styles.ticketStackFrontCard}>
-            <View style={styles.rowBetween}>
-              <View style={styles.airlineBadgeRow}>
-                <View style={styles.carrierBadge}>
-                  <Text style={styles.carrierBadgeText}>{currentTicket.airlineCode || 'VN'}</Text>
+        {/* Ticket Content or Authentic Empty State */}
+        {hasTickets && currentTicket ? (
+          <>
+            {/* Clean Physical Flight Ticket Card (No faux stacked decorative card) */}
+            <View testID="ticket-stack-wrapper" style={styles.ticketStackWrapper}>
+              {/* Front Card: Hero Navy-Teal physical flight ticket */}
+              <View testID="ticket-stack-front-card" style={styles.ticketStackFrontCard}>
+                <View style={styles.rowBetween}>
+                  <View style={styles.airlineBadgeRow}>
+                    <View style={styles.carrierBadge}>
+                      <Text style={styles.carrierBadgeText}>{currentTicket.airlineCode || 'VN'}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Text style={styles.carrierNameText}>
+                        {currentTicket.airlineName || 'Vietnam Airlines'} ·{' '}
+                      </Text>
+                      <Text style={styles.carrierNameText}>
+                        {currentTicket.flightNumber || 'VN-0240'}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.confirmedPill}>
+                    <Text style={styles.confirmedPillText}>Confirmed</Text>
+                  </View>
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Text style={styles.carrierNameText}>
-                    {currentTicket.airlineName || 'Vietnam Airlines'} ·{' '}
-                  </Text>
-                  <Text style={styles.carrierNameText}>
-                    {currentTicket.flightNumber || 'VN-0240'}
-                  </Text>
+
+                <View style={[styles.rowBetween, { marginVertical: 14 }]}>
+                  <View>
+                    <Text style={styles.airportCode}>{currentTicket.origin || 'SGN'}</Text>
+                    <Text style={styles.cityName}>{currentTicket.originCity || 'Ho Chi Minh'}</Text>
+                  </View>
+
+                  <View style={styles.flightCenter}>
+                    <FlightIcon size={24} color="#FFFFFF" />
+                    <Text style={styles.durationText}>{currentTicket.duration || '2h 05m'}</Text>
+                  </View>
+
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={styles.airportCode}>{currentTicket.destination || 'HAN'}</Text>
+                    <Text style={styles.cityName}>{currentTicket.destinationCity || 'Ha Noi'}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.rowBetween}>
+                  <Text style={styles.ticketFrontSub}>{currentTicket.date || 'Sat, 14 Nov'} • {currentTicket.departs || '07:00'}</Text>
+                  <Text style={styles.ticketFrontSub}>PNR: {currentTicket.pnr || 'VN-8X2K9P'}</Text>
                 </View>
               </View>
-              <View style={styles.confirmedPill}>
-                <Text style={styles.confirmedPillText}>Confirmed</Text>
+            </View>
+
+            {/* Details & Authentic SVG Barcode Box */}
+            <View style={[styles.detailsBox, { backgroundColor: cardBg, borderColor }]}>
+              <View style={styles.grid2x2}>
+                <View style={styles.gridItem}>
+                  <Text style={[styles.kvLabel, { color: textMuted }]}>Date</Text>
+                  <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.date || 'Sat, 14 Nov'}</Text>
+                </View>
+                <View style={styles.gridItem}>
+                  <Text style={[styles.kvLabel, { color: textMuted }]}>Departs</Text>
+                  <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.departs || '07:00'}</Text>
+                </View>
+                <View style={[styles.gridItem, { marginTop: 12 }]}>
+                  <Text style={[styles.kvLabel, { color: textMuted }]}>Aircraft</Text>
+                  <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.aircraft || 'Airbus A350-900'}</Text>
+                </View>
+                <View style={[styles.gridItem, { marginTop: 12 }]}>
+                  <Text style={[styles.kvLabel, { color: textMuted }]}>PNR code</Text>
+                  <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.pnr || 'VN-8X2K9P'}</Text>
+                </View>
+              </View>
+
+              {/* High-Fidelity SVG Barcode Component */}
+              <View style={styles.barcodeContainer}>
+                <BarcodeStripes
+                  code={currentTicket.pnr || 'VN-8X2K9P'}
+                  color={textColor}
+                  bgColor={isDark ? '#162235' : '#FAFAFA'}
+                />
+              </View>
+
+              <View style={[styles.rowBetween, { marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderColor }]}>
+                <Text style={[styles.totalPaidLabel, { color: textMuted }]}>Total paid</Text>
+                <Text style={[styles.totalPaidValue, { color: textColor }]}>
+                  {Number(currentTicket.totalPrice || 2073060).toLocaleString('en-US')} VND
+                </Text>
               </View>
             </View>
 
-            <View style={[styles.rowBetween, { marginVertical: 14 }]}>
-              <View>
-                <Text style={styles.airportCode}>{currentTicket.origin || 'SGN'}</Text>
-                <Text style={styles.cityName}>{currentTicket.originCity || 'Ho Chi Minh'}</Text>
+            {/* Action Buttons Row */}
+            <View style={styles.actionsRow}>
+              <TouchableOpacity
+                testID="btn-view-boarding-pass"
+                style={styles.primaryActionBtn}
+                onPress={() => {
+                  setSelectedTicket(currentTicket);
+                  setIsBoardingPassOpen(true);
+                }}
+                activeOpacity={0.8}
+              >
+                <TicketIcon size={20} color="#FFFFFF" />
+                <Text style={styles.primaryActionText}>Boarding pass</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                testID="btn-download-ticket"
+                style={[styles.iconActionBtn, { borderColor, backgroundColor: cardBg }]}
+                onPress={handleDownload}
+                activeOpacity={0.7}
+              >
+                <DownloadIcon size={20} color={textColor} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                testID="btn-share-ticket"
+                style={[styles.iconActionBtn, { borderColor, backgroundColor: cardBg }]}
+                onPress={handleShare}
+                activeOpacity={0.7}
+              >
+                <ShareIcon size={20} color={textColor} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Change or refund ticket Support Link */}
+            <TouchableOpacity
+              testID="btn-ticket-support-link"
+              style={[styles.supportCard, { backgroundColor: cardBg, borderColor }]}
+              onPress={() => setIsSupportOpen(true)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.supportLeft}>
+                <View style={styles.supportIconBadge}>
+                  <SupportIcon size={18} color="#7A4A06" />
+                </View>
+                <View>
+                  <Text style={[styles.supportTitle, { color: textColor }]}>Change or refund ticket</Text>
+                  <Text style={[styles.supportSub, { color: textMuted }]}>Ticket Support & Refunds</Text>
+                </View>
               </View>
-
-              <View style={styles.flightCenter}>
-                <FlightIcon size={24} color="#FFFFFF" />
-                <Text style={styles.durationText}>{currentTicket.duration || '2h 05m'}</Text>
-              </View>
-
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={styles.airportCode}>{currentTicket.destination || 'HAN'}</Text>
-                <Text style={styles.cityName}>{currentTicket.destinationCity || 'Ha Noi'}</Text>
-              </View>
+              <ChevronRightIcon size={18} color={textMuted} />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <View testID="tickets-empty-state" style={styles.emptyContainer}>
+            <View style={[styles.emptyIconCircle, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9' }]}>
+              <TicketIcon size={34} color={isDark ? '#64748B' : '#94A3B8'} />
             </View>
-
-            <View style={styles.rowBetween}>
-              <Text style={styles.ticketFrontSub}>{currentTicket.date || 'Sat, 14 Nov'} • {currentTicket.departs || '07:00'}</Text>
-              <Text style={styles.ticketFrontSub}>PNR: {currentTicket.pnr || 'VN-8X2K9P'}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Details & Authentic SVG Barcode Box */}
-        <View style={[styles.detailsBox, { backgroundColor: cardBg, borderColor }]}>
-          <View style={styles.grid2x2}>
-            <View style={styles.gridItem}>
-              <Text style={[styles.kvLabel, { color: textMuted }]}>Date</Text>
-              <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.date || 'Sat, 14 Nov'}</Text>
-            </View>
-            <View style={styles.gridItem}>
-              <Text style={[styles.kvLabel, { color: textMuted }]}>Departs</Text>
-              <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.departs || '07:00'}</Text>
-            </View>
-            <View style={[styles.gridItem, { marginTop: 12 }]}>
-              <Text style={[styles.kvLabel, { color: textMuted }]}>Aircraft</Text>
-              <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.aircraft || 'Airbus A350-900'}</Text>
-            </View>
-            <View style={[styles.gridItem, { marginTop: 12 }]}>
-              <Text style={[styles.kvLabel, { color: textMuted }]}>PNR code</Text>
-              <Text style={[styles.kvValue, { color: textColor }]}>{currentTicket.pnr || 'VN-8X2K9P'}</Text>
-            </View>
-          </View>
-
-          {/* High-Fidelity SVG Barcode Component */}
-          <View style={styles.barcodeContainer}>
-            <BarcodeStripes
-              code={currentTicket.pnr || 'VN-8X2K9P'}
-              color={textColor}
-              bgColor={isDark ? '#162235' : '#FAFAFA'}
-            />
-          </View>
-
-          <View style={[styles.rowBetween, { marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderColor }]}>
-            <Text style={[styles.totalPaidLabel, { color: textMuted }]}>Total paid</Text>
-            <Text style={[styles.totalPaidValue, { color: textColor }]}>
-              {Number(currentTicket.totalPrice || 2073060).toLocaleString('en-US')} VND
+            <Text style={[styles.emptyTitle, { color: textColor }]}>Chưa có vé máy bay nào</Text>
+            <Text style={[styles.emptySub, { color: textMuted }]}>
+              Bạn chưa có vé máy bay nào đã đặt. Khi bạn đặt chuyến bay, vé và thẻ lên máy bay sẽ hiển thị tại đây.
             </Text>
           </View>
-        </View>
-
-        {/* Action Buttons Row */}
-        <View style={styles.actionsRow}>
-          <TouchableOpacity
-            testID="btn-view-boarding-pass"
-            style={styles.primaryActionBtn}
-            onPress={() => {
-              setSelectedTicket(currentTicket);
-              setIsBoardingPassOpen(true);
-            }}
-            activeOpacity={0.8}
-          >
-            <TicketIcon size={20} color="#FFFFFF" />
-            <Text style={styles.primaryActionText}>Boarding pass</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            testID="btn-download-ticket"
-            style={[styles.iconActionBtn, { borderColor, backgroundColor: cardBg }]}
-            onPress={handleDownload}
-            activeOpacity={0.7}
-          >
-            <DownloadIcon size={20} color={textColor} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            testID="btn-share-ticket"
-            style={[styles.iconActionBtn, { borderColor, backgroundColor: cardBg }]}
-            onPress={handleShare}
-            activeOpacity={0.7}
-          >
-            <ShareIcon size={20} color={textColor} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Change or refund ticket Support Link */}
-        <TouchableOpacity
-          testID="btn-ticket-support-link"
-          style={[styles.supportCard, { backgroundColor: cardBg, borderColor }]}
-          onPress={() => setIsSupportOpen(true)}
-          activeOpacity={0.7}
-        >
-          <View style={styles.supportLeft}>
-            <View style={styles.supportIconBadge}>
-              <SupportIcon size={18} color="#7A4A06" />
-            </View>
-            <View>
-              <Text style={[styles.supportTitle, { color: textColor }]}>Change or refund ticket</Text>
-              <Text style={[styles.supportSub, { color: textMuted }]}>Ticket Support & Refunds</Text>
-            </View>
-          </View>
-          <ChevronRightIcon size={18} color={textMuted} />
-        </TouchableOpacity>
+        )}
       </ScrollView>
 
       {/* Boarding Pass Modal */}
@@ -519,5 +520,31 @@ const styles = StyleSheet.create({
   supportSub: {
     fontSize: 11,
     marginTop: 2,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 56,
+    paddingHorizontal: 24,
+  },
+  emptyIconCircle: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptySub: {
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: 'center',
+    maxWidth: 290,
   },
 });

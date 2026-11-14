@@ -15,6 +15,7 @@ import FlightCard from '../../components/booking/FlightCard';
 import FlightDetailModal from '../../components/booking/FlightDetailModal';
 import FlightFilterModal from '../../components/booking/FlightFilterModal';
 import SandboxBookingModal from '../../components/booking/SandboxBookingModal';
+import { FlightTicketSkeletonList } from '../../components/booking/FlightTicketSkeleton';
 import CalendarPickerModal from '../../components/common/CalendarPickerModal';
 import LucideIcon from '../../components/common/LucideIcon';
 import { useBookingStore } from '../../stores/booking.store';
@@ -808,9 +809,8 @@ export default function FlightSearchScreen({ navigation }) {
 
         {/* Results List */}
         {isLoadingFlights ? (
-          <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={styles.loadingText}>Searching for the best flight offers...</Text>
+          <View testID="flight-search-loading-skeletons" style={styles.skeletonContainer}>
+            <FlightTicketSkeletonList screenBgColor={isDark ? '#121316' : '#F8FAFC'} />
           </View>
         ) : (
           <FlatList
@@ -1593,5 +1593,10 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: '600',
     marginTop: 2,
+  },
+  skeletonContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 24,
   },
 });

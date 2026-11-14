@@ -123,8 +123,8 @@ describe('Component Test: Nomadix Zero Whitespace UI Harmonization', () => {
     expect(getByText(/SGN ⇄ HAN/i)).toBeTruthy();
 
     // Ticket card details
-    expect(getByText('FROM')).toBeTruthy();
-    expect(getByText('TO')).toBeTruthy();
+    expect(getAllByText('FROM').length).toBeGreaterThanOrEqual(1);
+    expect(getAllByText('TO').length).toBeGreaterThanOrEqual(1);
     expect(getByText('⇄')).toBeTruthy();
 
     // Available flights section header immediately rendered

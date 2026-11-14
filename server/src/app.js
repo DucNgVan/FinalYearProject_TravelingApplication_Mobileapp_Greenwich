@@ -12,6 +12,9 @@ const itineraryRoutes = require('./routes/itinerary.routes');
 const expenseRoutes = require('./routes/expense.routes');
 const placesRoutes = require('./routes/places.routes');
 const currencyRoutes = require('./routes/currency.routes');
+const weatherRoutes = require('./routes/weather.routes');
+const gamificationRoutes = require('./routes/gamification.routes');
+const supportRoutes = require('./routes/support.routes');
 
 const app = express();
 
@@ -71,6 +74,9 @@ app.use('/api/v1/itineraries', itineraryRoutes);
 app.use('/api/v1/trips', expenseRoutes);
 app.use('/api/v1/places', placesRoutes);
 app.use('/api/v1/currency', currencyRoutes);
+app.use('/api/v1/weather', weatherRoutes);
+app.use('/api/v1/gamification', gamificationRoutes);
+app.use('/api/v1/support', supportRoutes);
 
 // Test-only crash route for 500 error handler verification
 if (process.env.NODE_ENV === 'test') {

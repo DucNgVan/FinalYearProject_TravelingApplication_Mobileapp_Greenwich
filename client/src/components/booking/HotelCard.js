@@ -16,7 +16,20 @@ export default function HotelCard({ hotel, onSelect, testID }) {
 
   if (!hotel) return null;
 
-  const imageUri = hotel.thumbnailUrl || DEFAULT_HOTEL_IMG;
+  const imageUri = hotel.thumbnailUrl || (hotel.images && hotel.images[0]) || DEFAULT_HOTEL_IMG;
+  const priceNight = typeof hotel.price?.amount === 'number'
+    ? hotel.price.amount
+    : (typeof hotel.pricePerNight === 'number' ? hotel.pricePerNight : 0);
+  const nightsCount = typeof hotel.stayNights === 'number'
+    ? hotel.stayNights
+    : (typeof hotel.nights === 'number' ? hotel.nights : 1);
+  const totalPrice = typeof hotel.totalPrice === 'number'
+    ? hotel.totalPrice
+    : (priceNight * nightsCount);
+  const hotelType = hotel.type || 'LUXURY RESORT';
+  const ratingScore = hotel.rating || hotel.reviewScore || 9.4;
+  const starCount = hotel.starRating || 5;
+  const amenitiesList = hotel.amenities || ['Riverfront Pool', 'Anantara Spa', 'Breakfast Incl.'];
 
   return (
     <TouchableOpacity
@@ -31,6 +44,16 @@ export default function HotelCard({ hotel, onSelect, testID }) {
         },
       ]}
     >
+      {/* Top Header Strip matching User Image 1 */}
+      <View testID="hotel-top-header-strip" style={styles.topHeaderStrip}>
+        <Text style={styles.topHeaderType}>
+          {hotelType} • {starCount} Stars ★
+        </Text>
+        <View style={styles.topHeaderScoreBadge}>
+          <Text style={styles.topHeaderScoreText}>{Number(ratingScore).toFixed(1)} Excellent</Text>
+        </View>
+      </View>
+
       {/* Hotel Photo Hero */}
       <View style={styles.imageContainer}>
         <Image
@@ -39,63 +62,63 @@ export default function HotelCard({ hotel, onSelect, testID }) {
           style={styles.hotelImage}
           resizeMode="cover"
         />
-        <View style={styles.ratingBadgeOverlay}>
-          <Text style={styles.overlayRatingText}>★ {hotel.starRating || 5}</Text>
+        <View style={styles.tagBadgeOverlay}>
+          <Text style={styles.tagBadgeText}>Beachfront</Text>
         </View>
-        {hotel.reviewScore ? (
-          <View style={styles.scoreBadgeOverlay}>
-            <Text style={styles.scoreTextOverlay}>
-              {Number(hotel.reviewScore).toFixed(1)} Excellent
-            </Text>
-          </View>
-        ) : null}
+        <View style={styles.heartBtnOverlay}>
+          <Text style={{ fontSize: 14 }}>🤍</Text>
+        </View>
       </View>
 
       <View style={styles.body}>
         <View style={styles.headerRow}>
           <View style={styles.titleContainer}>
             <Text style={[styles.hotelName, { color: themeColors.text }]}>{hotel.name}</Text>
-            <Text style={[styles.addressText, { color: themeColors.textMuted }]} numberOfLines={1}>{hotel.address}</Text>
-          </View>
-          <View style={styles.ratingBadge}>
-            <Text style={styles.ratingText}>{hotel.starRating} Stars ★</Text>
-          </View>
-        </View>
-
-        <View style={styles.infoRow}>
-          {hotel.reviewScore ? (
-            <View style={styles.scoreBadge}>
-              <Text style={styles.scoreText}>{Number(hotel.reviewScore).toFixed(1)} Excellent</Text>
-            </View>
-          ) : null}
-          {hotel.nights ? (
-            <Text style={[styles.nightsText, { color: themeColors.textMuted }]}>
-              {hotel.nights} {hotel.nights > 1 ? 'nights' : 'night'}
+            <Text style={[styles.addressText, { color: themeColors.textMuted }]} numberOfLines={1}>
+              📍 {hotel.address}
             </Text>
-          ) : null}
+          </View>
         </View>
 
-        <View style={[styles.footerRow, { borderTopColor: themeColors.border }]}>
+        {/* Amenity Pills matching Image 1 */}
+        <View style={styles.amenitiesRow}>
+          {amenitiesList.slice(0, 3).map((amenity, idx) => (
+            <View key={idx} style={[styles.amenityPill, { backgroundColor: mode === 'dark' ? '#1E293B' : '#F1F5F9' }]}>
+              <Text style={[styles.amenityText, { color: mode === 'dark' ? '#E2E8F0' : '#475569' }]}>
+                {amenity}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Dotted Perforation Line with Side Notches */}
+        <View style={styles.perforationWrap}>
+          <View style={[styles.perforationNotch, styles.notchLeft, { backgroundColor: mode === 'dark' ? '#121316' : '#F8FAFC' }]} />
+          <View style={[styles.dottedLine, { borderColor: mode === 'dark' ? '#334155' : '#E2E8F0' }]} />
+          <View style={[styles.perforationNotch, styles.notchRight, { backgroundColor: mode === 'dark' ? '#121316' : '#F8FAFC' }]} />
+        </View>
+
+        <View style={styles.footerRow}>
           <View>
             <Text style={[styles.pricePerNightText, { color: themeColors.textMuted }]}>
-              {formatCurrency(hotel.pricePerNight)} / night
+              {formatCurrency(priceNight)} / night
             </Text>
-          </View>
-          <View style={styles.totalBlock}>
-            <Text style={[styles.totalLabel, { color: themeColors.textMuted }]}>Total stay:</Text>
             <Text style={styles.totalPriceText}>
-              {formatCurrency(hotel.totalPrice || hotel.pricePerNight)}
+              {formatCurrency(totalPrice)} <Text style={{ fontSize: 13, fontWeight: '500', color: themeColors.textMuted }}>total</Text>
             </Text>
           </View>
-        </View>
 
-        <TouchableOpacity
-          style={[styles.bookBtn, { backgroundColor: themeColors.primary }]}
-          onPress={() => onSelect && onSelect(hotel)}
-          activeOpacity={0.85}
-        >
-          <Text style={[styles.bookBtnText, { color: mode === 'dark' ? '#111827' : '#FFFFFF' }]}>Book now</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            testID="hotel-book-stay-btn"
+            style={[styles.bookBtn, { backgroundColor: mode === 'dark' ? '#FFFFFF' : '#0F172A' }]}
+            onPress={() => onSelect && onSelect(hotel)}
+            activeOpacity={0.85}
+          >
+            <Text style={[styles.bookBtnText, { color: mode === 'dark' ? '#0F172A' : '#FFFFFF' }]}>
+              Book Stay
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -114,6 +137,102 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 3,
     overflow: 'hidden',
+  },
+  topHeaderStrip: {
+    backgroundColor: '#0E1B2C',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  topHeaderType: {
+    color: '#FACC15',
+    fontWeight: '800',
+    fontSize: 12,
+    letterSpacing: 0.8,
+  },
+  topHeaderScoreBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.4)',
+  },
+  topHeaderScoreText: {
+    color: '#10B981',
+    fontWeight: '700',
+    fontSize: 11,
+  },
+  tagBadgeOverlay: {
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    backgroundColor: '#0F172A',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  tagBadgeText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 11,
+  },
+  heartBtnOverlay: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    backgroundColor: '#FFFFFF',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  amenitiesRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  amenityPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  amenityText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  perforationWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 4,
+    marginHorizontal: -16,
+    position: 'relative',
+  },
+  perforationNotch: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    zIndex: 2,
+  },
+  notchLeft: {
+    marginLeft: -7,
+  },
+  notchRight: {
+    marginRight: -7,
+  },
+  dottedLine: {
+    flex: 1,
+    borderBottomWidth: 1.5,
+    borderStyle: 'dashed',
+    marginHorizontal: 4,
   },
   imageContainer: {
     width: '100%',
@@ -210,11 +329,9 @@ const styles = StyleSheet.create({
   footerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
+    alignItems: 'center',
+    marginTop: 4,
+    paddingTop: 4,
   },
   pricePerNightText: {
     ...typography.body,
@@ -233,15 +350,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   bookBtn: {
-    marginTop: 12,
-    borderRadius: 18,
+    borderRadius: 14,
+    paddingHorizontal: 24,
     paddingVertical: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: 120,
   },
   bookBtnText: {
     color: '#FFFFFF',
     fontWeight: '800',
-    fontSize: 14,
+    fontSize: 15,
+    letterSpacing: 0.3,
   },
 });

@@ -4,8 +4,31 @@ const userRepository = require('../repositories/user.repository');
 const { calculateHaversineDistance, estimateTransitTime } = require('../utils/geo.util');
 
 class ItineraryService {
-  async createItinerary(userId, data) {
-    const { title, destinationCity, startDate, endDate, visibility = 'PRIVATE', budget } = data;
+  async createItinerary(userIdOrData, dataPayload) {
+    let userId = userIdOrData;
+    let data = dataPayload;
+    if (typeof userIdOrData === 'object' && !dataPayload) {
+      data = userIdOrData;
+      userId = data.userId || 'anonymous-user';
+    }
+    const {
+      title,
+      destinationCity,
+      destination,
+      startDate,
+      endDate,
+      visibility = 'PRIVATE',
+      budget,
+      country,
+      coverImage,
+      daysCount,
+      travelMode,
+      travelersCount,
+      budgetPerPerson,
+      status = 'Ready',
+      days: incomingDays,
+    } = data;
+    const dest = destinationCity || destination || 'Da Nang';
 
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -17,17 +40,21 @@ class ItineraryService {
       throw err;
     }
 
-    const totalDays = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1);
+    const totalDays = daysCount || Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1);
 
-    const days = [];
-    for (let i = 1; i <= totalDays; i++) {
-      const dayDate = new Date(start);
-      dayDate.setDate(start.getDate() + (i - 1));
-      days.push({
-        dayNumber: i,
-        date: dayDate.toISOString().split('T')[0],
-        items: [],
-      });
+    let days = [];
+    if (Array.isArray(incomingDays) && incomingDays.length > 0) {
+      days = incomingDays;
+    } else {
+      for (let i = 1; i <= totalDays; i++) {
+        const dayDate = new Date(start);
+        dayDate.setDate(start.getDate() + (i - 1));
+        days.push({
+          dayNumber: i,
+          date: dayDate.toISOString().split('T')[0],
+          items: [],
+        });
+      }
     }
 
     const collaborators = [
@@ -39,14 +66,25 @@ class ItineraryService {
       },
     ];
 
+    const normalizedBudget =
+      typeof budget === 'number'
+        ? { total: budget, currency: 'VND' }
+        : (budget || { total: 0, currency: 'VND' });
+
     const newTrip = await itineraryRepository.create({
       title,
-      destinationCity,
+      destinationCity: dest,
       startDate,
       endDate,
       totalDays,
       visibility,
-      budget: budget || { total: 0, currency: 'VND' },
+      budget: normalizedBudget,
+      country: country || 'Việt Nam',
+      coverImage: coverImage || null,
+      travelMode: travelMode || 'solo',
+      travelersCount: travelersCount || 1,
+      budgetPerPerson: budgetPerPerson || 0,
+      status,
       collaborators,
       days,
     });
@@ -287,6 +325,85 @@ class ItineraryService {
 
     await itineraryRepository.delete(itineraryId);
     return true;
+  }
+
+  async getPackingList(tripId) {
+    const trip = await itineraryRepository.findById(tripId);
+    if (!trip) {
+      const err = new Error('Itinerary not found');
+      err.code = 'NOT_FOUND';
+      err.statusCode = 404;
+      throw err;
+    }
+    return trip.packingList || [];
+  }
+
+  async addPackingItem(tripId, itemData) {
+    const trip = await itineraryRepository.findById(tripId);
+    if (!trip) {
+      const err = new Error('Itinerary not found');
+      err.code = 'NOT_FOUND';
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const newItem = {
+      id: itemData.id || `pck-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`,
+      title: itemData.title,
+      category: itemData.category || 'General',
+      assignee: itemData.assignee || 'All Squad',
+      checked: !!itemData.checked,
+      createdAt: new Date().toISOString(),
+    };
+
+    const currentList = Array.isArray(trip.packingList) ? [...trip.packingList] : [];
+    currentList.push(newItem);
+
+    await itineraryRepository.update(tripId, { packingList: currentList });
+    return newItem;
+  }
+
+  async togglePackingItem(tripId, itemId) {
+    const trip = await itineraryRepository.findById(tripId);
+    if (!trip) {
+      const err = new Error('Itinerary not found');
+      err.code = 'NOT_FOUND';
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const currentList = Array.isArray(trip.packingList) ? [...trip.packingList] : [];
+    const itemIndex = currentList.findIndex((i) => i.id === itemId);
+    if (itemIndex === -1) {
+      const err = new Error('Packing item not found');
+      err.code = 'NOT_FOUND';
+      err.statusCode = 404;
+      throw err;
+    }
+
+    currentList[itemIndex] = {
+      ...currentList[itemIndex],
+      checked: !currentList[itemIndex].checked,
+    };
+
+    await itineraryRepository.update(tripId, { packingList: currentList });
+    return currentList[itemIndex];
+  }
+
+  async deletePackingItem(tripId, itemId) {
+    const trip = await itineraryRepository.findById(tripId);
+    if (!trip) {
+      const err = new Error('Itinerary not found');
+      err.code = 'NOT_FOUND';
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const currentList = Array.isArray(trip.packingList) ? [...trip.packingList] : [];
+    const filteredList = currentList.filter((i) => i.id !== itemId);
+
+    await itineraryRepository.update(tripId, { packingList: filteredList });
+    return { success: true, deletedId: itemId };
   }
 }
 

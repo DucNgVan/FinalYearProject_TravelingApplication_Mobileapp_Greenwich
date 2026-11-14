@@ -21,8 +21,46 @@ describe('TDD Suite: Segmented Bars, Booking Tabs & Sub-screens Harmonization', 
       logout: jest.fn(),
     });
     useBookingStore.mockReturnValue({
-      bookedTickets: [],
-      bookedHotels: [],
+      bookedTickets: [
+        {
+          id: 'tkt-001',
+          pnr: 'VN-8X2K9P',
+          ticketNumber: '738-2491048291',
+          flightNumber: 'VN-0240',
+          origin: 'SGN',
+          destination: 'HAN',
+          status: 'CONFIRMED',
+        },
+      ],
+      bookedHotels: [
+        {
+          id: 'stay-001',
+          hotelName: 'Vinpearl Resort & Spa',
+          status: 'Confirmed',
+          city: 'Da Nang',
+          checkIn: '14 Nov',
+          checkOut: '17 Nov',
+          nights: 3,
+        },
+        {
+          id: 'stay-002',
+          hotelName: 'InterContinental Danang',
+          status: 'Cancelled',
+          city: 'Da Nang',
+          checkIn: '01 Nov',
+          checkOut: '04 Nov',
+          nights: 3,
+        },
+        {
+          id: 'stay-003',
+          hotelName: 'Novotel Danang',
+          status: 'Completed',
+          city: 'Da Nang',
+          checkIn: '10 Oct',
+          checkOut: '12 Oct',
+          nights: 2,
+        },
+      ],
     });
     useThemeStore.getState().setThemeMode('light');
   });

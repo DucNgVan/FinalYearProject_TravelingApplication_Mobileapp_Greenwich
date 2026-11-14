@@ -5,6 +5,8 @@ import MyTicketsModal from '../../src/screens/account/MyTicketsModal';
 import MyBookingsModal from '../../src/screens/account/MyBookingsModal';
 import { useAuthStore } from '../../src/stores/auth.store';
 import { useThemeStore } from '../../src/stores/theme.store';
+import { useBookingStore } from '../../src/stores/booking.store';
+import { usePaymentStore } from '../../src/stores/payment.store';
 
 describe('TDD RED Phase: Stacked Cards for Tickets & Bookings, Barcode Fidelity & Bottom Dock Persistence', () => {
   beforeEach(() => {
@@ -13,6 +15,52 @@ describe('TDD RED Phase: Stacked Cards for Tickets & Bookings, Barcode Fidelity 
       user: { fullName: 'Guest Traveler', email: 'guest@nomadix.app' },
       isAuthenticated: true,
       isGuest: false,
+    });
+    useBookingStore.setState({
+      bookedTickets: [
+        {
+          id: 'tkt-001',
+          pnr: 'VN-8X2K9P',
+          ticketNumber: '738-2491048291',
+          airlineCode: 'VN',
+          airlineName: 'Vietnam Airlines',
+          flightNumber: 'VN-0240',
+          origin: 'SGN',
+          originCity: 'Ho Chi Minh',
+          destination: 'HAN',
+          destinationCity: 'Ha Noi',
+          status: 'CONFIRMED',
+          totalPrice: 2073060,
+        },
+      ],
+      bookedHotels: [
+        {
+          id: 'stay-001',
+          hotelName: 'Vinpearl Resort & Spa',
+          city: 'Da Nang Bay · Oceanfront',
+          checkIn: '14 Nov',
+          checkOut: '17 Nov',
+          nights: 3,
+          totalPrice: 5550000,
+          status: 'Confirmed',
+        },
+      ],
+    });
+    usePaymentStore.setState({
+      cards: [
+        {
+          id: 'card-default-4821',
+          cardNumber: '•••• •••• •••• 4821',
+          rawNumber: '4821',
+          cardHolder: 'GUEST TRAVELER',
+          expiryDate: '08/28',
+          cardType: 'Visa Signature · Debit',
+          brand: 'VISA',
+          isDefault: true,
+          usedFor: 'Primary card for all bookings',
+        },
+      ],
+      selectedCardId: 'card-default-4821',
     });
   });
 

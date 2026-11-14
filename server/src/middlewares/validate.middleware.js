@@ -174,6 +174,15 @@ const createItinerarySchema = Joi.object({
   }),
   destinationCity: Joi.string().optional(),
   destination: Joi.string().optional(),
+  country: Joi.string().optional(),
+  coverImage: Joi.string().optional(),
+  daysCount: Joi.number().optional(),
+  budgetPerPerson: Joi.number().optional(),
+  travelMode: Joi.string().optional(),
+  travelersCount: Joi.number().optional(),
+  status: Joi.string().optional(),
+  days: Joi.array().optional(),
+  collaborators: Joi.array().optional(),
   startDate: Joi.string().isoDate().required().messages({
     'any.required': 'startDate is required',
   }),
@@ -181,11 +190,14 @@ const createItinerarySchema = Joi.object({
     'any.required': 'endDate is required',
   }),
   visibility: Joi.string().valid('PRIVATE', 'PUBLIC').default('PRIVATE'),
-  budget: Joi.object({
-    total: Joi.number().min(0).default(0),
-    currency: Joi.string().default('VND'),
-  }).optional(),
-}).custom((obj, helpers) => {
+  budget: Joi.alternatives().try(
+    Joi.number().min(0),
+    Joi.object({
+      total: Joi.number().min(0).default(0),
+      currency: Joi.string().default('VND'),
+    })
+  ).optional(),
+}).unknown(true).custom((obj, helpers) => {
   if (!obj.destinationCity && !obj.destination) {
     return helpers.message('Destination city is required');
   }

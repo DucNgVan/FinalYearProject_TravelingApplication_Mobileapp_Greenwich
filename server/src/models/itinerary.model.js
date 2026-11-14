@@ -28,30 +28,38 @@ const locationSchema = new mongoose.Schema(
 const itineraryItemSchema = new mongoose.Schema(
   {
     id: { type: String, required: true },
-    orderIndex: { type: Number, required: true },
+    orderIndex: { type: Number, default: 0 },
     activityType: {
       type: String,
-      enum: ['FLIGHT', 'HOTEL', 'ATTRACTION', 'RESTAURANT', 'CUSTOM'],
       default: 'ATTRACTION',
     },
-    title: { type: String, required: true },
+    title: { type: String },
+    name: { type: String },
+    category: { type: String },
+    time: { type: String },
+    duration: { type: String },
     startTime: { type: String },
     endTime: { type: String },
-    location: { type: locationSchema, required: true },
+    location: {
+      type: locationSchema,
+      default: () => ({ name: 'Default', address: 'Default', coordinates: { lat: 0, lng: 0 } }),
+    },
     cost: { type: Number, default: 0 },
     notes: { type: String },
     transitToNext: { type: transitSchema },
   },
-  { _id: false }
+  { _id: false, strict: false }
 );
 
 const itineraryDaySchema = new mongoose.Schema(
   {
-    dayNumber: { type: Number, required: true },
-    date: { type: String, required: true },
+    dayNumber: { type: Number, default: 1 },
+    dayIndex: { type: Number, default: 1 },
+    date: { type: String },
+    distanceKm: { type: Number, default: 0 },
     items: [itineraryItemSchema],
   },
-  { _id: false }
+  { _id: false, strict: false }
 );
 
 const collaboratorSchema = new mongoose.Schema(
@@ -72,6 +80,18 @@ const collaboratorSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const packingItemSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true },
+    title: { type: String, required: true },
+    category: { type: String, default: 'General' },
+    assignee: { type: String, default: 'All Squad' },
+    checked: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
 const itinerarySchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
@@ -88,8 +108,15 @@ const itinerarySchema = new mongoose.Schema(
       total: { type: Number, default: 0 },
       currency: { type: String, default: 'VND' },
     },
+    country: { type: String, default: 'Việt Nam' },
+    coverImage: { type: String },
+    travelMode: { type: String, enum: ['solo', 'group'], default: 'solo' },
+    travelersCount: { type: Number, default: 1 },
+    budgetPerPerson: { type: Number, default: 0 },
+    status: { type: String, default: 'Ready' },
     collaborators: [collaboratorSchema],
     days: [itineraryDaySchema],
+    packingList: [packingItemSchema],
   },
   { timestamps: true }
 );

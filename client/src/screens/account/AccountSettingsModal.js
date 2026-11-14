@@ -30,9 +30,9 @@ export default function AccountSettingsModal({ visible, onClose }) {
 
   useEffect(() => {
     if (user) {
-      setFullName(user.fullName || '');
-      setDateOfBirth(user.dateOfBirth || '');
-      setPhone(user.phone || user.phoneNumber || '');
+      setFullName(user.fullName || user.full_name || '');
+      setDateOfBirth(user.dateOfBirth || user.date_of_birth || '');
+      setPhone(user.phone || user.phoneNumber || user.phone_number || '');
       setEmail(user.email || '');
     }
   }, [user, visible]);

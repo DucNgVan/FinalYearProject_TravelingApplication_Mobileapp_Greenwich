@@ -36,8 +36,17 @@ export const useAuthStore = create((set, get) => ({
         setAuthToken(accessToken);
       }
 
+      const rawUser = data.user || null;
+      const phoneVal = rawUser ? (rawUser.phoneNumber || rawUser.phone) : null;
+      const dobVal = rawUser ? (rawUser.dateOfBirth || rawUser.date_of_birth) : null;
+      const mergedUser = rawUser ? {
+        ...rawUser,
+        ...(phoneVal ? { phone: phoneVal, phoneNumber: phoneVal } : {}),
+        ...(dobVal ? { dateOfBirth: dobVal } : {}),
+      } : null;
+
       set({
-        user: data.user,
+        user: mergedUser,
         accessToken,
         refreshToken,
         isAuthenticated: true,
@@ -117,8 +126,17 @@ export const useAuthStore = create((set, get) => ({
         setAuthToken(accessToken);
       }
 
+      const rawUser = data.user || null;
+      const phoneVal = rawUser ? (rawUser.phoneNumber || rawUser.phone || phoneNumber) : phoneNumber;
+      const dobVal = rawUser ? (rawUser.dateOfBirth || rawUser.date_of_birth || dateOfBirth) : dateOfBirth;
+      const mergedUser = rawUser ? {
+        ...rawUser,
+        ...(phoneVal ? { phone: phoneVal, phoneNumber: phoneVal } : {}),
+        ...(dobVal ? { dateOfBirth: dobVal } : {}),
+      } : null;
+
       set({
-        user: data.user,
+        user: mergedUser,
         accessToken,
         refreshToken,
         isAuthenticated: true,

@@ -12,8 +12,44 @@ describe('TDD RED Phase: MyTicketsModal, MyBookingsModal and Profile Screen Inte
       user: { fullName: 'Guest Traveler', email: 'guest@nomadix.app' },
     });
     useBookingStore.setState({
-      bookedTickets: [],
-      bookedHotels: [],
+      bookedTickets: [
+        {
+          id: 'tkt-001',
+          pnr: 'VN-8X2K9P',
+          ticketNumber: '738-2491048291',
+          airlineCode: 'VN',
+          airlineName: 'Vietnam Airlines',
+          flightNumber: 'VN-0240',
+          origin: 'SGN',
+          originCity: 'Ho Chi Minh',
+          destination: 'HAN',
+          destinationCity: 'Ha Noi',
+          status: 'CONFIRMED',
+          totalPrice: 2073060,
+        },
+      ],
+      bookedHotels: [
+        {
+          id: 'stay-001',
+          hotelName: 'Vinpearl Resort & Spa',
+          city: 'Da Nang Bay · Oceanfront',
+          checkIn: '14 Nov',
+          checkOut: '17 Nov',
+          nights: 3,
+          totalPrice: 5550000,
+          status: 'Confirmed',
+        },
+        {
+          id: 'stay-002',
+          hotelName: 'Anantara Resort & Spa',
+          city: 'Hoi An Ancient River',
+          checkIn: '17 Nov',
+          checkOut: '19 Nov',
+          nights: 2,
+          totalPrice: 4800000,
+          status: 'Confirmed',
+        },
+      ],
     });
   });
 

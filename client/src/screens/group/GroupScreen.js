@@ -15,13 +15,13 @@ import { useExpenseStore } from '../../stores/expense.store';
 export default function GroupScreen() {
   const { colors: themeColors, mode } = useThemeStore();
   const { user } = useAuthStore();
-  const { currentTrip } = useItineraryStore();
+  const { currentTrip, addPackingItem, togglePackingItem } = useItineraryStore();
   const { expenses } = useExpenseStore();
 
   const isDark = mode === 'dark';
 
   // Packing list state
-  const [packingItems, setPackingItems] = useState([
+  const [localPackingItems, setLocalPackingItems] = useState([
     { id: '1', title: 'ID Cards & Passports', category: 'Documents', assignee: 'All Squad', checked: true },
     { id: '2', title: 'Sunscreen SPF 50+', category: 'Personal', assignee: 'Alex', checked: true },
     { id: '3', title: 'Powerbank 20,000mAh', category: 'Electronics', assignee: 'Duc', checked: false },
@@ -29,26 +29,34 @@ export default function GroupScreen() {
     { id: '5', title: 'Selfie Stick & Tripod', category: 'Electronics', assignee: 'Duc', checked: true },
   ]);
 
+  const packingItems = Array.isArray(currentTrip?.packingList) && currentTrip.packingList.length > 0
+    ? currentTrip.packingList
+    : localPackingItems;
+
   const [newItemTitle, setNewItemTitle] = useState('');
 
-  const handleTogglePacking = (index) => {
-    setPackingItems((prev) =>
-      prev.map((item, idx) => (idx === index ? { ...item, checked: !item.checked } : item))
+  const handleTogglePacking = (item, index) => {
+    if (currentTrip?.id && togglePackingItem) {
+      togglePackingItem(currentTrip.id, item.id);
+    }
+    setLocalPackingItems((prev) =>
+      prev.map((it, idx) => (it.id === item.id || idx === index ? { ...it, checked: !it.checked } : it))
     );
   };
 
   const handleAddPackingItem = () => {
     if (!newItemTitle.trim()) return;
-    setPackingItems((prev) => [
-      ...prev,
-      {
-        id: String(Date.now()),
-        title: newItemTitle.trim(),
-        category: 'Shared Gear',
-        assignee: user?.fullName || 'Me',
-        checked: false,
-      },
-    ]);
+    const newItem = {
+      id: String(Date.now()),
+      title: newItemTitle.trim(),
+      category: 'Shared Gear',
+      assignee: user?.fullName || 'Me',
+      checked: false,
+    };
+    if (currentTrip?.id && addPackingItem) {
+      addPackingItem(currentTrip.id, newItem);
+    }
+    setLocalPackingItems((prev) => [...prev, newItem]);
     setNewItemTitle('');
   };
 
@@ -247,12 +255,22 @@ export default function GroupScreen() {
               key={item.id}
               testID={`packing-item-${index}`}
               style={styles.packingItemRow}
-              onPress={() => handleTogglePacking(index)}
+              onPress={() => handleTogglePacking(item, index)}
               activeOpacity={0.7}
             >
-              <View style={[styles.checkbox, item.checked && { backgroundColor: themeColors.pineGreen || '#2E7D5B', borderColor: themeColors.pineGreen || '#2E7D5B' }]}>
+              <TouchableOpacity
+                testID={`packing-item-toggle-${item.id}`}
+                onPress={() => handleTogglePacking(item, index)}
+                style={[
+                  styles.checkbox,
+                  item.checked && {
+                    backgroundColor: themeColors.pineGreen || '#2E7D5B',
+                    borderColor: themeColors.pineGreen || '#2E7D5B',
+                  },
+                ]}
+              >
                 {item.checked && <Text style={styles.checkmark}>✓</Text>}
-              </View>
+              </TouchableOpacity>
 
               <View style={styles.itemTitleGroup}>
                 <Text

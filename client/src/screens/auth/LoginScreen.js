@@ -4,6 +4,7 @@ import { colors } from '../../theme/colors';
 import { typography } from '../../theme/typography';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
+import NomadixLoadingModal from '../../components/common/NomadixLoadingModal';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore } from '../../stores/theme.store';
 
@@ -181,6 +182,13 @@ export default function LoginScreen({ navigation }) {
           </View>
         </ScrollView>
       </View>
+
+      {/* Nomadix Premium Centered Modal Loader on Authentication */}
+      <NomadixLoadingModal
+        visible={isLoading}
+        title="Authenticating Nomadix Traveler..."
+        subtitle="Nomadix Departure Terminal • Fasten Seatbelt"
+      />
     </ImageBackground>
   );
 }
