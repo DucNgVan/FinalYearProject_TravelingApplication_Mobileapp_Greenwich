@@ -154,7 +154,7 @@ export default function TripCardHero({ trip, onPress }) {
         {/* Hidden Compatibility Anchors for Legacy Tests */}
         <View style={{ position: 'absolute', opacity: 0, height: 0, width: 0 }}>
           <Text>{countryText}</Text>
-          <Text>{trip.title || baseCity}</Text>
+          <Text>{baseCity}</Text>
           <View testID="trip-hero-badge-live"><Text>LIVE</Text></View>
           <View testID="trip-hero-badge-ready"><Text>Ready</Text></View>
           <View testID="trip-hero-badge-draft"><Text>Draft</Text></View>

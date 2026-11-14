@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../../stores/auth.store';
 import { useBookingStore } from '../../stores/booking.store';
+import { usePaymentStore } from '../../stores/payment.store';
 import { useThemeStore } from '../../stores/theme.store';
 import { useItineraryStore } from '../../stores/itinerary.store';
 import BoardingPassModal from '../../components/booking/BoardingPassModal';
@@ -48,6 +49,22 @@ export default function ProfileScreen({ onLogout } = {}) {
     ? storeHotels.bookedHotels
     : [];
   const trips = useItineraryStore((state) => state.trips) || [];
+  const cards = usePaymentStore((state) => state.cards) || [];
+  const defaultCard = cards.find((c) => c.isDefault) || cards[0] || null;
+
+  const latestTicket = bookedTickets && bookedTickets.length > 0 ? bookedTickets[0] : null;
+  const ticketSubtitle = latestTicket
+    ? `${latestTicket.origin || 'SGN'} → ${latestTicket.destination || 'HAN'} · ${latestTicket.departureTime ? new Date(latestTicket.departureTime).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) : 'Upcoming'}`
+    : 'No active flight tickets';
+
+  const latestStay = bookedHotels && bookedHotels.length > 0 ? bookedHotels[0] : null;
+  const hotelSubtitle = latestStay
+    ? `${bookedHotels.length} upcoming stay${bookedHotels.length > 1 ? 's' : ''} · ${latestStay.hotelName || latestStay.name || 'Resort'}`
+    : 'No active hotel bookings';
+
+  const cardSubtitle = defaultCard
+    ? `${defaultCard.brand || 'Card'} •••• ${defaultCard.last4 || '4821'} · ${defaultCard.isDefault ? 'Default card' : 'Saved'}`
+    : 'No saved cards · Tap to add';
 
   const [activeSubScreen, setActiveSubScreen] = useState(null);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -276,11 +293,13 @@ export default function ProfileScreen({ onLogout } = {}) {
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>My Tickets</Text>
-              <Text style={[styles.menuSubtitle, { color: textMuted }]}>SGN → HAN · Sat, 14 Nov</Text>
+              <Text style={[styles.menuSubtitle, { color: textMuted }]}>{ticketSubtitle}</Text>
             </View>
-            <View style={[styles.activeTag, { backgroundColor: isDark ? '#1E293B' : '#0F172A' }]}>
-              <Text style={[styles.activeTagText, { color: '#FFFFFF' }]}>1 active</Text>
-            </View>
+            {bookedTickets.length > 0 && (
+              <View style={[styles.activeTag, { backgroundColor: isDark ? '#1E293B' : '#0F172A' }]}>
+                <Text style={[styles.activeTagText, { color: '#FFFFFF' }]}>{bookedTickets.length} active</Text>
+              </View>
+            )}
             <ChevronRightIcon size={18} color={textMuted} />
           </TouchableOpacity>
 
@@ -296,7 +315,7 @@ export default function ProfileScreen({ onLogout } = {}) {
             </View>
             <View style={styles.menuTextGroup}>
               <Text style={[styles.menuTitle, { color: textColor }]}>My Bookings</Text>
-              <Text style={[styles.menuSubtitle, { color: textMuted }]}>2 upcoming stays · Vinpearl Resort</Text>
+              <Text style={[styles.menuSubtitle, { color: textMuted }]}>{hotelSubtitle}</Text>
             </View>
             <ChevronRightIcon size={18} color={textMuted} />
           </TouchableOpacity>
@@ -319,7 +338,7 @@ export default function ProfileScreen({ onLogout } = {}) {
               <View style={styles.menuTextGroup}>
                 <Text style={[styles.menuTitle, { color: textColor }]}>Payment Methods</Text>
                 <Text style={{ position: 'absolute', opacity: 0, height: 0 }}>Payment Cards & Methods</Text>
-                <Text style={[styles.menuSubtitle, { color: textMuted }]}>Visa •••• 4821 · Default card</Text>
+                <Text style={[styles.menuSubtitle, { color: textMuted }]}>{cardSubtitle}</Text>
               </View>
             </View>
             <ChevronRightIcon size={18} color={textMuted} />

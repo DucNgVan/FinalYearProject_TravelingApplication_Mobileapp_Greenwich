@@ -19,9 +19,9 @@ import { CardIcon, ChevronLeftIcon } from '../common/NomadixIcons';
 import SeatMapSelector from './SeatMapSelector';
 
 const ANCILLARY_OPTIONS = [
-  { id: 'baggage-20kg', name: '+20kg Ký gửi', desc: 'Duffel checked bag', price: 250000, icon: '🧳' },
-  { id: 'meal-chicken', name: 'Suất ăn nóng', desc: 'Cơm gà dầu hào', price: 95000, icon: '🍱' },
-  { id: 'priority-checkin', name: 'Ưu tiên', desc: 'Priority check-in', price: 120000, icon: '⚡' },
+  { id: 'baggage-20kg', name: '+20kg Checked Bag', desc: 'Duffel checked bag', price: 250000, icon: '🧳' },
+  { id: 'meal-chicken', name: 'Hot Meal', desc: 'Chicken rice & drinks', price: 95000, icon: '🍱' },
+  { id: 'priority-checkin', name: 'Priority Access', desc: 'Priority check-in', price: 120000, icon: '⚡' },
 ];
 
 const FARE_TIERS = {
@@ -603,7 +603,7 @@ const SandboxBookingModal = ({
                   onPress={handleAddPassenger}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.addPassengerBtnText}>+ Add another passenger / Thêm người đi cùng</Text>
+                  <Text style={styles.addPassengerBtnText}>+ Add another passenger</Text>
                 </TouchableOpacity>
 
                 {/* Contact Details Card */}
@@ -841,7 +841,7 @@ const SandboxBookingModal = ({
                 {/* Add-on Services (Ancillaries) for backwards compatibility */}
                 <View style={styles.ancillaryCard}>
                   <View style={styles.ancillaryHeader}>
-                    <Text style={styles.ancillaryTitle}>Add-on Services / Dịch vụ mua thêm</Text>
+                    <Text style={styles.ancillaryTitle}>Add-on Services</Text>
                     <Text style={styles.ancillarySub}>Optional add-ons for your flight</Text>
                   </View>
 

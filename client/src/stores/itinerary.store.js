@@ -25,7 +25,7 @@ export const useItineraryStore = create((set, get) => ({
         }
         return {
           trips: combined,
-          currentTrip: state.currentTrip || combined[0] || null,
+          currentTrip: state.currentTrip || null,
           isLoading: false,
         };
       });

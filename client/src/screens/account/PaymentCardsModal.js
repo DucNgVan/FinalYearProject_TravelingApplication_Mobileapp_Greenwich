@@ -131,9 +131,9 @@ const PaymentCardsModal = ({ visible, onClose }) => {
               <View style={[styles.emptyIconCircle, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9' }]}>
                 <CardIcon size={34} color={isDark ? '#64748B' : '#94A3B8'} />
               </View>
-              <Text style={[styles.emptyTitle, { color: textColor }]}>Chưa có thẻ thanh toán</Text>
+              <Text style={[styles.emptyTitle, { color: textColor }]}>No Saved Cards</Text>
               <Text style={[styles.emptySub, { color: textMuted }]}>
-                Bạn chưa lưu thẻ thanh toán nào. Thêm thẻ tín dụng hoặc ghi nợ để đặt vé máy bay và khách sạn nhanh chóng hơn.
+                You haven't saved any payment cards yet. Add a credit or debit card for faster flight and hotel bookings.
               </Text>
               <TouchableOpacity
                 testID="btn-empty-add-card"

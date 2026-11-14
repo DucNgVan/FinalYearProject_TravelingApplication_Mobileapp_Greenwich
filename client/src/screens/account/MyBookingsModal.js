@@ -189,9 +189,9 @@ export default function MyBookingsModal({ visible, onClose }) {
             <View style={[styles.emptyIconCircle, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9' }]}>
               <BedIcon size={34} color={isDark ? '#64748B' : '#94A3B8'} />
             </View>
-            <Text style={[styles.emptyTitle, { color: textColor }]}>Chưa có đặt phòng nào</Text>
+            <Text style={[styles.emptyTitle, { color: textColor }]}>No Hotel Bookings</Text>
             <Text style={[styles.emptySub, { color: textMuted }]}>
-              Bạn chưa có đặt phòng khách sạn nào. Khi bạn đặt phòng, chi tiết và voucher lưu trú sẽ hiển thị tại đây.
+              You have no hotel reservations yet. When you book a stay, your reservation details and vouchers will appear here.
             </Text>
           </View>
         ) : (

@@ -156,7 +156,7 @@ export default function PlanScreen() {
   } = useExpenseStore();
 
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState(currentTrip || (trips && trips.length > 0 ? trips[0] : null));
+  const [selectedTrip, setSelectedTrip] = useState(currentTrip || null);
 
   useEffect(() => {
     if (currentTrip) {
@@ -165,12 +165,10 @@ export default function PlanScreen() {
       if (currentId !== selectedId) {
         setSelectedTrip(currentTrip);
       }
-    } else if (!selectedTrip && trips && trips.length > 0) {
-      setSelectedTrip(trips[0]);
     }
-  }, [currentTrip, trips]);
+  }, [currentTrip]);
 
-  const rawTrip = selectedTrip;
+  const rawTrip = selectedTrip || currentTrip;
   const trip = rawTrip?.itinerary || rawTrip;
 
   const tripDays = trip?.days || [];
@@ -585,19 +583,19 @@ export default function PlanScreen() {
       }
     }
 
-    // Always guarantee that the newly created trip exists in Zustand store's trips array and remains active!
+    // Always guarantee that the newly created trip exists in Zustand store's trips array!
     useItineraryStore.setState((state) => {
       const currentTrips = state.trips || [];
       const exists = currentTrips.some((t) => (t.id || t._id) === (created.id || created._id));
       return {
         trips: exists ? currentTrips : [created, ...currentTrips],
-        currentTrip: created,
+        currentTrip: null,
       };
     });
 
-    setSelectedTrip(created);
+    setSelectedTrip(null);
     if (typeof setCurrentTrip === 'function') {
-      setCurrentTrip(created);
+      setCurrentTrip(null);
     }
     setIsCreating(false);
     setActiveSubTab('itinerary');
@@ -936,7 +934,7 @@ export default function PlanScreen() {
       <View style={[styles.safeArea, { backgroundColor: themeColors.background }]}>
         <View testID="plan-screen-container" style={[styles.container, { backgroundColor: themeColors.background }]}>
           {/* Standard Header matching Image 4 & Image 2 */}
-          <View style={[styles.header, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+          <View testID="plan-header-main" style={[styles.header, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <View style={{ flex: 1 }}>
               <Text style={[styles.eyebrow, { color: themeColors.textMuted }]}>ITINERARY & SQUAD</Text>
               <Text style={styles.title}>Travel Plan</Text>
@@ -1013,6 +1011,9 @@ export default function PlanScreen() {
                       trip={itemTrip}
                       onPress={(selected) => {
                         setSelectedTrip(selected);
+                        if (typeof setCurrentTrip === 'function') {
+                          setCurrentTrip(selected);
+                        }
                         if (typeof fetchTripDetails === 'function' && selected?.id) {
                           try {
                             const p = fetchTripDetails(selected.id);
@@ -1052,11 +1053,27 @@ export default function PlanScreen() {
   return (
     <View style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Standard Header matching Image 4 & Image 2 */}
+        {/* Detail Header with Back Button */}
         <View testID="plan-header-main" style={[styles.header, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.eyebrow, { color: themeColors.textMuted }]}>ITINERARY & SQUAD</Text>
-            <Text style={styles.title}>Travel Plan</Text>
+          <TouchableOpacity
+            testID="trip-detail-back-btn"
+            style={[styles.backToHubBtn, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9', borderColor: isDark ? '#2A2D35' : '#E2E8F0' }]}
+            onPress={() => {
+              setSelectedTrip(null);
+              if (typeof setCurrentTrip === 'function') setCurrentTrip(null);
+            }}
+            activeOpacity={0.7}
+          >
+            <LucideIcon name="arrow-left" size={16} color={themeColors.text} />
+            <Text style={[styles.backToHubText, { color: themeColors.text }]}>All Trips</Text>
+          </TouchableOpacity>
+          <View style={{ flex: 1, marginLeft: 8 }}>
+            <Text style={[styles.eyebrow, { color: themeColors.textMuted }]}>
+              {trip.country ? `${trip.country.toUpperCase()} EXPEDITION` : 'ITINERARY & SQUAD'}
+            </Text>
+            <Text style={[styles.title, { fontSize: 20 }]} numberOfLines={1}>
+              {trip.title || trip.destinationCity || trip.destination || 'Travel Plan'}
+            </Text>
           </View>
           <TouchableOpacity
             testID="saved-trips-create-new-btn"
@@ -1090,15 +1107,6 @@ export default function PlanScreen() {
             }}
           >
             <Text>✕</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            testID="trip-detail-back-btn"
-            onPress={() => {
-              setSelectedTrip(null);
-              if (typeof setCurrentTrip === 'function') setCurrentTrip(null);
-            }}
-          >
-            <Text>← All Saved Trips</Text>
           </TouchableOpacity>
           <Text style={[styles.eyebrow, { color: themeColors.textMuted, marginBottom: 8 }]}>Squad trip</Text>
           <Text>Trip Itinerary</Text>
@@ -4120,6 +4128,20 @@ const getStyles = (colors, isDark = false) => StyleSheet.create({
   creationContainer: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  backToHubBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginRight: 4,
+  },
+  backToHubText: {
+    fontSize: 13,
+    fontWeight: '700',
+    marginLeft: 6,
   },
   savedTripsCreateNewBtn: {
     paddingHorizontal: 14,

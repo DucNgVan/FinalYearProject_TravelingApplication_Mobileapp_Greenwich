@@ -89,7 +89,7 @@ export default function FlightCard({ flight, onSelect, testID }) {
   const isVnd = flight.price?.currency === 'VND' || (typeof flight.price?.amount === 'number' && flight.price.amount >= 1000) || (typeof flight.price === 'number' && flight.price >= 1000);
 
   const baggageTransferText = !isDirect
-    ? flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Self-transfer baggage' : '🔄 Chuyển hành lý tự động')
+    ? flight.baggageTransfer || (flight.baggageTransferType === 'manual' ? '⚠️ Self-transfer baggage' : '🔄 Automatic baggage transfer')
     : null;
 
   const styles = getStyles(themeColors, isDark);

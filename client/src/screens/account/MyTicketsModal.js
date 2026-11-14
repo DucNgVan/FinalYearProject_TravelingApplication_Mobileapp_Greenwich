@@ -265,9 +265,9 @@ export default function MyTicketsModal({ visible, onClose }) {
             <View style={[styles.emptyIconCircle, { backgroundColor: isDark ? '#1C1D21' : '#F1F5F9' }]}>
               <TicketIcon size={34} color={isDark ? '#64748B' : '#94A3B8'} />
             </View>
-            <Text style={[styles.emptyTitle, { color: textColor }]}>Chưa có vé máy bay nào</Text>
+            <Text style={[styles.emptyTitle, { color: textColor }]}>No Active Flight Tickets</Text>
             <Text style={[styles.emptySub, { color: textMuted }]}>
-              Bạn chưa có vé máy bay nào đã đặt. Khi bạn đặt chuyến bay, vé và thẻ lên máy bay sẽ hiển thị tại đây.
+              You have no booked flight tickets yet. When you book a flight, your electronic tickets and boarding passes will appear here.
             </Text>
           </View>
         )}
