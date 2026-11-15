@@ -7,11 +7,16 @@
 
 ### 🗺️ BẢN ĐỒ LỘ TRÌNH 5 TẬP (THE 5-VOLUME ROADMAP)
 
+> 🌟 **KIM CHỈ NAM HỆ THỐNG:** Trước khi bắt đầu chi tiết từng tập, hãy nghiên cứu kỹ **[Cẩm Nang Toàn Diện Workflow Hệ Thống (Master End-to-End Project Workflow Blueprint)](./master-project-workflow.md)** để nắm trọn vẹn bức tranh luồng tín hiệu từ Mobile Client, Express Gateway, Polyglot Databases đến Third-Party APIs.
+
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        LỘ TRÌNH ĐÀO TẠO KỸ SƯ NOMADIX                                  │
 ├─────────────────┬───────────────────────────────────────┬──────────────────────────────┤
 │ TẬP GIÁO TRÌNH  │ TRỌNG TÂM KIẾN THỨC                   │ SẢN PHẨM ĐẦU RA              │
+├─────────────────┼───────────────────────────────────────┼──────────────────────────────┤
+│ 🗺️ WORKFLOW    │ Toàn Bộ Luồng Tín Hiệu & Quy Trình    │ • 7 Master Workflows Chi Tiết│
+│    MASTER GUIDE │ Xuyên Suốt Hệ Thống Nomadix           │ • Sơ Đồ Mermaid & Polyglot DB│
 ├─────────────────┼───────────────────────────────────────┼──────────────────────────────┤
 │ 📘 TẬP 1        │ Tư Duy Kỹ Sư, Kiến Trúc Hệ Thống      │ • Quy trình Solo XP & TDD    │
 │                 │ & Phương Pháp Luận TDD                │ • Đặc tả 42 Yêu Cầu & Gherkin│
@@ -53,6 +58,7 @@
 
 ### 📂 DANH MỤC CÁC TẬP TÀI LIỆU
 
+- [**Cẩm Nang Toàn Diện Master Workflow Dự Án (Toàn Bộ Luồng Hệ Thống)**](./master-project-workflow.md)
 - [**Tập 1: Tư Duy Kỹ Sư, Kiến Trúc Hệ Thống & Phương Pháp Luận TDD**](./vol-01-engineering-mindset-and-architecture.md)
 - [**Tập 2: Hạ Tầng Polyglot Database & Backend Modular Monolith**](./vol-02-polyglot-persistence-and-backend.md)
 - [**Tập 3: Thuật Toán Cốt Lõi, Tài Chính & Tích Hợp API Bên Thứ Ba**](./vol-03-core-algorithms-and-integrations.md)

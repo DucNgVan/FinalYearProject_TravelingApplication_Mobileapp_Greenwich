@@ -38,4 +38,34 @@ describe('TDD RED: 5-Volume Software Engineering Curriculum Integrity', () => {
       expect(content).toMatch(/```/); // Must have practical code snippets or diagrams
     }
   });
+
+  test('RED-WORKFLOW-01: docs/curriculum/master-project-workflow.md exists and has comprehensive depth (>= 5000 chars)', () => {
+    const workflowPath = path.join(curriculumDir, 'master-project-workflow.md');
+    expect(fs.existsSync(workflowPath)).toBe(true);
+    const content = fs.readFileSync(workflowPath, 'utf8');
+    expect(content.length).toBeGreaterThanOrEqual(5000);
+  });
+
+  test('RED-WORKFLOW-02: master-project-workflow.md covers all core business, engineering, and polyglot workflows with diagrams', () => {
+    const workflowPath = path.join(curriculumDir, 'master-project-workflow.md');
+    expect(fs.existsSync(workflowPath)).toBe(true);
+    const content = fs.readFileSync(workflowPath, 'utf8');
+    // Must contain sequence or flowchart diagrams
+    expect(content).toMatch(/```mermaid/);
+    // Must cover 6 core workflows
+    expect(content).toMatch(/Engineering & Development Workflow/i);
+    expect(content).toMatch(/Identity, Authentication & Session Lifecycle/i);
+    expect(content).toMatch(/Smart Booking & Cache-Aside Pipeline/i);
+    expect(content).toMatch(/Multi-City Planning & Map Route Discovery/i);
+    expect(content).toMatch(/Squad Collaboration & Real-Time Sync/i);
+    expect(content).toMatch(/Group Expense Splitting & Debt Settlement Pipeline/i);
+    expect(content).toMatch(/Polyglot Cross-Database Consistency/i);
+  });
+
+  test('RED-WORKFLOW-03: docs/curriculum/README.md links to and features the Master Workflow blueprint', () => {
+    const readmePath = path.join(curriculumDir, 'README.md');
+    expect(fs.existsSync(readmePath)).toBe(true);
+    const content = fs.readFileSync(readmePath, 'utf8');
+    expect(content).toMatch(/master-project-workflow\.md/);
+  });
 });
