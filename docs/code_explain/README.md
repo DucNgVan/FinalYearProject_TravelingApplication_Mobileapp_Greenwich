@@ -10,6 +10,7 @@
 | Chuyên đề | Tiêu đề & Trọng tâm Kỹ thuật | File liên kết | Sơ đồ đính kèm |
 | :---: | :--- | :---: | :---: |
 | **01** | **Bảo mật Middleware & Giao dịch Cơ sở Dữ liệu ACID**<br>• Trích xuất Bearer Token & Gán `req.user`<br>• Khối `try...catch...finally` với `client.release()`<br>• Chống rò rỉ kết nối Connection Leak trong PostgreSQL Pool | [01-auth-middleware-and-acid-transactions.md](./01-auth-middleware-and-acid-transactions.md) | `flowchart TD`<br>`sequenceDiagram` |
+| **02** | **Bộ đệm Redis Cache-Aside & Cơ chế Phòng vệ Circuit Breaker**<br>• Cấu trúc khóa Deterministic `nomadix:flight:...`<br>• Timeout 5000ms & Tự động kích hoạt Fallback Mock Provider<br>• Chiến lược TTL (1800s vs 3600s) & Phòng vệ Ghế ma (Phantom Inventory) | [02-redis-cache-aside-and-api-resilience.md](./02-redis-cache-aside-and-api-resilience.md) | `flowchart TD`<br>`sequenceDiagram` |
 
 ---
 

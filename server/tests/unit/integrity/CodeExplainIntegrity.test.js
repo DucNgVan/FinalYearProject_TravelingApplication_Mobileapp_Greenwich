@@ -29,4 +29,29 @@ describe('TDD RED: Code Explain Documentation Integrity', () => {
     expect(content).toMatch(/database\.js/);
     expect(content).toMatch(/client\.release\(\)/);
   });
+
+  test('RED-CODE-EXPLAIN-04: docs/code_explain/02-redis-cache-aside-and-api-resilience.md exists with comprehensive depth (>= 3000 chars)', () => {
+    const doc2File = path.join(codeExplainDir, '02-redis-cache-aside-and-api-resilience.md');
+    expect(fs.existsSync(doc2File)).toBe(true);
+    const content = fs.readFileSync(doc2File, 'utf8');
+    expect(content.length).toBeGreaterThanOrEqual(3000);
+  });
+
+  test('RED-CODE-EXPLAIN-05: Document 02 contains Mermaid diagrams and key cache-aside / resilience terms', () => {
+    const doc2File = path.join(codeExplainDir, '02-redis-cache-aside-and-api-resilience.md');
+    expect(fs.existsSync(doc2File)).toBe(true);
+    const content = fs.readFileSync(doc2File, 'utf8');
+    expect(content).toMatch(/```mermaid[\s\S]*?flowchart/);
+    expect(content).toMatch(/```mermaid[\s\S]*?sequenceDiagram/);
+    expect(content).toMatch(/nomadix:flight:/);
+    expect(content).toMatch(/duffel\.provider\.js/);
+    expect(content).toMatch(/mock\.provider\.js/);
+    expect(content).toMatch(/1800/);
+  });
+
+  test('RED-CODE-EXPLAIN-06: README.md links to Topic 02', () => {
+    expect(fs.existsSync(readmeFile)).toBe(true);
+    const readmeContent = fs.readFileSync(readmeFile, 'utf8');
+    expect(readmeContent).toMatch(/02-redis-cache-aside-and-api-resilience\.md/);
+  });
 });
