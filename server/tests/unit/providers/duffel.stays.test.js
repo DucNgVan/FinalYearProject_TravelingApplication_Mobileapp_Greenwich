@@ -95,4 +95,58 @@ describe('Unit Test: Duffel Stays API Provider (RED Phase)', () => {
       })
     ).rejects.toThrow(/Duffel Stays API returned 500/);
   });
+
+  test('RED-DUFFEL-STAYS-03: searchHotels should prioritize DUFFEL_STAYS_API_TOKEN when configured', async () => {
+    const originalStaysToken = process.env.DUFFEL_STAYS_API_TOKEN;
+    process.env.DUFFEL_STAYS_API_TOKEN = 'stay_test_custom_token_123';
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: jest.fn().mockResolvedValue({ data: { results: [] } }),
+    });
+
+    try {
+      await duffelProvider.searchHotels({
+        city: 'Da Nang',
+        checkIn: '2026-11-14',
+        checkOut: '2026-11-17',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/stays/search'),
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: 'Bearer stay_test_custom_token_123',
+          }),
+        })
+      );
+    } finally {
+      process.env.DUFFEL_STAYS_API_TOKEN = originalStaysToken;
+    }
+  });
+
+  test('RED-DUFFEL-STAYS-04: searchHotels should throw error if neither DUFFEL_STAYS_API_TOKEN nor DUFFEL_API_TOKEN is configured', async () => {
+    const originalStaysToken = process.env.DUFFEL_STAYS_API_TOKEN;
+    const originalDuffelToken = process.env.DUFFEL_API_TOKEN;
+    const originalInstanceToken = duffelProvider.apiToken;
+
+    delete process.env.DUFFEL_STAYS_API_TOKEN;
+    delete process.env.DUFFEL_API_TOKEN;
+    duffelProvider.apiToken = null;
+
+    try {
+      await expect(
+        duffelProvider.searchHotels({
+          city: 'Da Nang',
+          checkIn: '2026-11-14',
+          checkOut: '2026-11-17',
+        })
+      ).rejects.toThrow(/DUFFEL_API_TOKEN or DUFFEL_STAYS_API_TOKEN is not configured/);
+    } finally {
+      process.env.DUFFEL_STAYS_API_TOKEN = originalStaysToken;
+      process.env.DUFFEL_API_TOKEN = originalDuffelToken;
+      duffelProvider.apiToken = originalInstanceToken;
+    }
+  });
 });

@@ -28,8 +28,9 @@ class DuffelProvider {
    * Search accommodations via Duffel Stays API
    */
   async searchHotels({ city, checkIn, checkOut, guests = 2, rooms = 1 }) {
-    if (!this.apiToken) {
-      throw new Error('DUFFEL_API_TOKEN is not configured');
+    const activeToken = process.env.DUFFEL_STAYS_API_TOKEN || this.apiToken;
+    if (!activeToken) {
+      throw new Error('DUFFEL_API_TOKEN or DUFFEL_STAYS_API_TOKEN is not configured');
     }
 
     const cleanCityKey = (city || '')
@@ -47,7 +48,7 @@ class DuffelProvider {
       const response = await fetch(`${this.baseUrl}/stays/search`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.apiToken}`,
+          Authorization: `Bearer ${activeToken}`,
           'Duffel-Version': 'v2',
           'Content-Type': 'application/json',
           Accept: 'application/json',
