@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "diagram_type": "tree",
+  "meta": {
+    "title": "Nomadix Codebase & Directory Structure",
+    "subtitle": "Interactive hierarchical mapping of Client, Server, Polyglot Databases, Docs, and Memory Bank",
+    "output": "nomadix-codebase-tree.html",
+    "quality_profile": "showcase"
+  },
+  "layout": {
+    "direction": "down"
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Nomadix Workspace",
+      "sublabel": "Polyglot Travel Platform Monorepo"
+    },
+    {
+      "id": "client",
+      "parent": "root",
+      "label": "client/",
+      "sublabel": "React Native 0.86 / Expo 57 Mobile App"
+    },
+    {
+      "id": "client_api",
+      "parent": "client",
+      "label": "client/src/api/",
+      "sublabel": "Axios HTTP Client & Interceptors (client.js, auth.js, booking.js, itinerary.js, expense.js)"
+    },
+    {
+      "id": "client_components",
+      "parent": "client",
+      "label": "client/src/components/",
+      "sublabel": "Atomic Components (atoms, molecules, cards, HUDs, route polylines)"
+    },
+    {
+      "id": "client_screens",
+      "parent": "client",
+      "label": "client/src/screens/",
+      "sublabel": "14 Mobile Screens (Auth, Booking, Itinerary Planner, Expense Hub, Badges, Support)"
+    },
+    {
+      "id": "client_store",
+      "parent": "client",
+      "label": "client/src/store/",
+      "sublabel": "Zustand State Stores (useAuthStore, useBookingStore, useItineraryStore, useExpenseStore)"
+    },
+    {
+      "id": "client_theme",
+      "parent": "client",
+      "label": "client/src/theme/",
+      "sublabel": "Design Tokens (colors.js, typography.js, spacing.js - Executive Monochrome)"
+    },
+    {
+      "id": "client_preview",
+      "parent": "client",
+      "label": "client/preview/",
+      "sublabel": "Interactive HTML Mockups & Archify Visualizers"
+    },
+    {
+      "id": "server",
+      "parent": "root",
+      "label": "server/",
+      "sublabel": "Express 5 Modular Monolith & Core Domain Services"
+    },
+    {
+      "id": "server_controllers",
+      "parent": "server",
+      "label": "server/src/controllers/",
+      "sublabel": "REST Route Controllers (auth, flight, hotel, itinerary, expense, gamification, support)"
+    },
+    {
+      "id": "server_middlewares",
+      "parent": "server",
+      "label": "server/src/middlewares/",
+      "sublabel": "Security Guards (auth JWT, validate Joi DTOs, rateLimiter Redis, role RBAC)"
+    },
+    {
+      "id": "server_services",
+      "parent": "server",
+      "label": "server/src/services/",
+      "sublabel": "Domain Services (auth, booking, itinerary, expense, gamification, currency, support)"
+    },
+    {
+      "id": "server_repositories",
+      "parent": "server",
+      "label": "server/src/repositories/",
+      "sublabel": "Dual-Mode Repositories (user, itinerary, expense, gamification) with In-Memory fallback"
+    },
+    {
+      "id": "server_providers",
+      "parent": "server",
+      "label": "server/src/providers/",
+      "sublabel": "External NDC APIs (Duffel NDC, Mock carrier catalog, Cloudinary WebP, ExchangeRate, OpenTripMap)"
+    },
+    {
+      "id": "server_utils",
+      "parent": "server",
+      "label": "server/src/utils/",
+      "sublabel": "Core Algorithms (debt.util.js O(N log N), geo.util.js Haversine WGS84, password.util.js Bcrypt)"
+    },
+    {
+      "id": "server_models",
+      "parent": "server",
+      "label": "server/src/models/",
+      "sublabel": "Mongoose Schemas for MongoDB (itinerary.model.js embedded days/stops, supportTicket.model.js)"
+    },
+    {
+      "id": "server_tests",
+      "parent": "server",
+      "label": "server/tests/",
+      "sublabel": "Jest Test Suites (224+ suites, 860+ tests 100% GREEN covering unit, integration & integrity)"
+    },
+    {
+      "id": "docker",
+      "parent": "root",
+      "label": "docker/",
+      "sublabel": "Polyglot Persistence Infrastructure & Initial Seed"
+    },
+    {
+      "id": "docker_init",
+      "parent": "docker",
+      "label": "docker/init-db/01-init.sql",
+      "sublabel": "PostgreSQL 16 Schema (28 tables in 3NF, strict ACID ledgers NUMERIC(12,2))"
+    },
+    {
+      "id": "docker_compose",
+      "parent": "docker",
+      "label": "docker/docker-compose.yml",
+      "sublabel": "Container definitions for PostgreSQL 16, MongoDB Atlas 7.0, and Redis 7.0 In-Memory"
+    },
+    {
+      "id": "docs",
+      "parent": "root",
+      "label": "docs/",
+      "sublabel": "Academic & Engineering Documentation Suite"
+    },
+    {
+      "id": "docs_curriculum",
+      "parent": "docs",
+      "label": "docs/curriculum/",
+      "sublabel": "5-Volume Developer Curriculum (vol-01 to vol-05, Master project workflow)"
+    },
+    {
+      "id": "docs_code_explain",
+      "parent": "docs",
+      "label": "docs/code_explain/",
+      "sublabel": "Deep-Dive Code Explanations with Sequence & Flow Diagrams (Auth, Cache, Client State)"
+    },
+    {
+      "id": "docs_architecture",
+      "parent": "docs",
+      "label": "docs/architecture/",
+      "sublabel": "Archify Diagram Specs & Rendered Standalone HTML Artifacts"
+    },
+    {
+      "id": "docs_presentation",
+      "parent": "docs",
+      "label": "docs/master-presentation-demo-script.md",
+      "sublabel": "Master Presentation & Defense Script with Step-by-Step Live Demo Flow"
+    },
+    {
+      "id": "memory_bank",
+      "parent": "root",
+      "label": "memory-bank/",
+      "sublabel": "Extreme Programming Continuous Context & Architecture Invariants"
+    },
+    {
+      "id": "mb_patterns",
+      "parent": "memory_bank",
+      "label": "systemPatterns.md",
+      "sublabel": "5-Tier Architecture, Polyglot Responsibility Matrix, Debt Invariant Zero-Sum Standard"
+    },
+    {
+      "id": "mb_context",
+      "parent": "memory_bank",
+      "label": "activeContext.md",
+      "sublabel": "Current Sprint Status, Architectural Decisions, Test Coverage Matrix"
+    },
+    {
+      "id": "mb_progress",
+      "parent": "memory_bank",
+      "label": "progress.md",
+      "sublabel": "Completed Tasks, Test Suite Progression (863/863 GREEN), Upcoming Milestones"
+    }
+  ]
+}

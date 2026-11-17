@@ -5204,7 +5204,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read"
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
-      <svg viewBox="0 0 1203 716" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14">
+      <svg viewBox="0 0 1305 716" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14">
         <title id="archify-diagram-title">Nomadix Smart Travel Platform - Polyglot 5-Tier Architecture</title>
         <desc id="archify-diagram-description">Microservice-ready Modular Monolith with Polyglot Persistence &amp; External Travel NDC APIs</desc>
         <!-- Definitions -->
@@ -5251,74 +5251,82 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Client Presentation Tier (Cross-Platform)" x="10" y="130" width="220" height="278" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Client Presentation Tier (Cross-Platform)" x="7.441923183870969" y="130" width="225.11615363225806" height="278" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="security-group" data-composition-frame-id="1" data-composition-frame-label="Node.js / Express Core Service Mesh" x="230" y="50" width="450" height="598" rx="8" class="c-security-group" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="security-group" data-composition-frame-id="1" data-composition-frame-label="Node.js / Express Core Service Mesh" x="230" y="30" width="450" height="618" rx="8" class="c-security-group" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="External Global API Integrations" x="690" y="170" width="220" height="358" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="External Global API Integrations" x="750" y="130" width="220" height="318" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Polyglot Persistence Layer (3 Data Engines)" x="910" y="90" width="220" height="358" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Polyglot Persistence Layer (3 Data Engines)" x="982.3903096806451" y="90" width="235.21938063870965" height="358" rx="12" class="c-region" stroke-width="1"/>
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
-          <path data-graph-role="automatic-crossover-underlay" d="M 200 212 L 268 212 Q 276 212 276 220 L 276 240" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="mobile-client" data-edge-to="api-gateway" data-edge-label="HTTPS / JWT" data-edge-key="0" data-edge-id="m-to-gw" data-composition-points="200,212;276,212;276,240" data-composition-crossover="halo" data-composition-independent="true" d="M 200 212 L 268 212 Q 276 212 276 220 L 276 240" class="a-emphasis" data-animate="edge" style="--step:0" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 184 228 L 184 248 Q 184 256 192 256 L 260 256" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="mobile-client" data-edge-to="api-gateway" data-edge-label="HTTPS / JWT" data-edge-key="0" data-edge-id="m-to-gw" data-composition-points="184,228;184,256;260,256" data-composition-crossover="halo" data-composition-independent="true" d="M 184 228 L 184 248 Q 184 256 192 256 L 260 256" class="a-emphasis" data-animate="edge" style="--step:0" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
           <path data-graph-role="automatic-crossover-underlay" d="M 200 336 L 268 336 Q 276 336 276 328 L 276 308" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
           <path data-edge-from="web-client" data-edge-to="api-gateway" data-edge-label="HTTPS / REST" data-edge-key="1" data-edge-id="w-to-gw" data-composition-points="200,336;276,336;276,308" data-composition-crossover="halo" data-composition-independent="true" d="M 200 336 L 268 336 Q 276 336 276 328 L 276 308" class="a-emphasis" data-animate="edge" style="--step:1" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:2">
-          <path data-graph-role="automatic-crossover-underlay" d="M 420 256 L 436 256 Q 444 256 444 248 L 444 122 Q 444 114 452 114 L 480 114" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api-gateway" data-edge-to="auth-service" data-edge-label="validate token" data-edge-key="2" data-edge-id="gw-to-auth" data-composition-points="420,256;444,256;444,114;480,114" data-composition-crossover="halo" data-composition-independent="true" d="M 420 256 L 436 256 Q 444 256 444 248 L 444 122 Q 444 114 452 114 L 480 114" class="a-security" data-animate="edge" style="--step:2" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 276 240 L 276 120 Q 276 112 284 112 L 480 112" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api-gateway" data-edge-to="auth-service" data-edge-label="validate token" data-edge-key="2" data-edge-id="gw-to-auth" data-composition-points="276,240;276,112;480,112" data-composition-crossover="halo" data-composition-independent="true" d="M 276 240 L 276 120 Q 276 112 284 112 L 480 112" class="a-security" data-animate="edge" style="--step:2" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:3">
-          <path data-graph-role="automatic-crossover-underlay" d="M 340 240 L 340 224 Q 340 216 348 216 L 480 216" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api-gateway" data-edge-to="booking-service" data-edge-label="/flights &amp; /hotels" data-edge-key="3" data-edge-id="gw-to-book" data-composition-points="340,240;340,216;480,216" data-composition-crossover="halo" data-composition-independent="true" d="M 340 240 L 340 224 Q 340 216 348 216 L 480 216" class="a-default" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 404 240 L 404 202 Q 404 194 412 194 L 480 194" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api-gateway" data-edge-to="booking-service" data-edge-label="/flights &amp; /hotels" data-edge-key="3" data-edge-id="gw-to-book" data-composition-points="404,240;404,194;480,194" data-composition-crossover="halo" data-composition-independent="true" d="M 404 240 L 404 202 Q 404 194 412 194 L 480 194" class="a-default" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 420 278 L 488 278 Q 496 278 496 286 L 496 320" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api-gateway" data-edge-to="itinerary-service" data-edge-label="/itineraries" data-edge-key="4" data-edge-id="gw-to-itin" data-composition-points="420,278;496,278;496,320" data-composition-crossover="halo" data-composition-independent="true" d="M 420 278 L 488 278 Q 496 278 496 286 L 496 320" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 420 274 L 436 274 Q 444 274 444 266 L 444 244 Q 444 236 452 236 L 557 236 Q 565 236 565 244 L 565 260" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api-gateway" data-edge-to="itinerary-service" data-edge-label="/itineraries" data-edge-key="4" data-edge-id="gw-to-itin" data-composition-points="420,274;444,274;444,236;565,236;565,260" data-composition-crossover="halo" data-composition-independent="true" d="M 420 274 L 436 274 Q 444 274 444 266 L 444 244 Q 444 236 452 236 L 557 236 Q 565 236 565 244 L 565 260" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
-          <path data-graph-role="automatic-crossover-underlay" d="M 404 308 L 404 448 Q 404 456 412 456 L 480 456" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api-gateway" data-edge-to="expense-service" data-edge-label="/trips/:id/expenses" data-edge-key="5" data-edge-id="gw-to-exp" data-composition-points="404,308;404,456;480,456" data-composition-crossover="halo" data-composition-independent="true" d="M 404 308 L 404 448 Q 404 456 412 456 L 480 456" class="a-default" data-animate="edge" style="--step:5" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 326 308 L 326 386 Q 326 394 334 394 L 480 394" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api-gateway" data-edge-to="expense-service" data-edge-label="/trips/:id/expenses" data-edge-key="5" data-edge-id="gw-to-exp" data-composition-points="326,308;326,394;480,394" data-composition-crossover="halo" data-composition-independent="true" d="M 326 308 L 326 386 Q 326 394 334 394 L 480 394" class="a-default" data-animate="edge" style="--step:5" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:6">
-          <path data-graph-role="automatic-crossover-underlay" d="M 340 308 L 340 586 Q 340 594 348 594 L 480 594" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api-gateway" data-edge-to="places-service" data-edge-label="/places/ai-plan" data-edge-key="6" data-edge-id="gw-to-plc" data-composition-points="340,308;340,594;480,594" data-composition-crossover="halo" data-composition-independent="true" d="M 340 308 L 340 586 Q 340 594 348 594 L 480 594" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 420 292 L 442 292 Q 450 292 450 300 L 450 486 Q 450 494 458 494 L 480 494" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api-gateway" data-edge-to="gamification-service" data-edge-label="/gamification/check-in" data-edge-key="6" data-edge-id="gw-to-gam" data-composition-points="420,292;450,292;450,494;480,494" data-composition-crossover="halo" data-composition-independent="true" d="M 420 292 L 442 292 Q 450 292 450 300 L 450 486 Q 450 494 458 494 L 480 494" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:7">
-          <path data-graph-role="automatic-crossover-underlay" d="M 565 268 L 565 284 Q 565 292 573 292 L 688 292 Q 696 292 696 284 L 696 242 Q 696 234 704 234 L 720 234" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="booking-service" data-edge-to="duffel-api" data-edge-label="NDC Search API" data-edge-key="7" data-edge-id="book-to-duffel" data-composition-points="565,268;565,292;696,292;696,234;720,234" data-composition-crossover="halo" data-composition-independent="true" d="M 565 268 L 565 284 Q 565 292 573 292 L 688 292 Q 696 292 696 284 L 696 242 Q 696 234 704 234 L 720 234" class="a-default" data-animate="edge" style="--step:7" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 340 308 L 340 586 Q 340 594 348 594 L 480 594" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api-gateway" data-edge-to="places-service" data-edge-label="/places/ai-plan" data-edge-key="7" data-edge-id="gw-to-plc" data-composition-points="340,308;340,594;480,594" data-composition-crossover="halo" data-composition-independent="true" d="M 340 308 L 340 586 Q 340 594 348 594 L 480 594" class="a-default" data-animate="edge" style="--step:7" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:8">
-          <path data-graph-role="automatic-crossover-underlay" d="M 650 347 L 666 347 Q 674 347 674 339 L 674 304 Q 674 296 682 296 L 792 296 Q 800 296 800 304 L 800 320" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="itinerary-service" data-edge-to="mapbox-api" data-edge-label="Directions Driving" data-edge-key="8" data-edge-id="itin-to-mapbox" data-composition-points="650,347;674,347;674,296;800,296;800,320" data-composition-crossover="halo" data-composition-independent="true" d="M 650 347 L 666 347 Q 674 347 674 339 L 674 304 Q 674 296 682 296 L 792 296 Q 800 296 800 304 L 800 320" class="a-default" data-animate="edge" style="--step:8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 201 L 780 201" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="booking-service" data-edge-to="duffel-api" data-edge-label="NDC Search API" data-edge-key="8" data-edge-id="book-to-duffel" data-composition-points="650,201;780,201" data-composition-crossover="halo" data-composition-independent="true" d="M 650 201 L 780 201" class="a-default" data-animate="edge" style="--step:8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:9">
-          <path data-graph-role="automatic-crossover-underlay" d="M 650 482.05 L 666 482.05 Q 674 482.05 674 490.05 L 674 524 Q 674 532 682 532 L 792 532 Q 800 532 800 524 L 800 508" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="expense-service" data-edge-to="cloudinary-api" data-edge-label="Upload Bill Image" data-edge-key="9" data-edge-id="exp-to-cloud" data-composition-points="650,482.05;674,482.05;674,532;800,532;800,508" data-composition-crossover="halo" data-composition-independent="true" d="M 650 482.05 L 666 482.05 Q 674 482.05 674 490.05 L 674 524 Q 674 532 682 532 L 792 532 Q 800 532 800 524 L 800 508" class="a-default" data-animate="edge" style="--step:9" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 287 L 780 287" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="itinerary-service" data-edge-to="mapbox-api" data-edge-label="Directions Driving" data-edge-key="9" data-edge-id="itin-to-mapbox" data-composition-points="650,287;780,287" data-composition-crossover="halo" data-composition-independent="true" d="M 650 287 L 780 287" class="a-default" data-animate="edge" style="--step:9" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:10">
-          <path data-graph-role="automatic-crossover-underlay" d="M 650 114 L 1116 114 Q 1124 114 1124 122 L 1124 266 Q 1124 274 1116 274 L 1100 274" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="auth-service" data-edge-to="postgres-db" data-edge-label="users &amp; tokens" data-edge-key="10" data-edge-id="auth-to-pg" data-composition-points="650,114;1124,114;1124,274;1100,274" data-composition-crossover="halo" data-composition-independent="true" d="M 650 114 L 1116 114 Q 1124 114 1124 122 L 1124 266 Q 1124 274 1116 274 L 1100 274" class="a-default" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 402.05 L 780 402.05" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="expense-service" data-edge-to="cloudinary-api" data-edge-label="Upload Bill Image" data-edge-key="10" data-edge-id="exp-to-cloud" data-composition-points="650,402.05;780,402.05" data-composition-crossover="halo" data-composition-independent="true" d="M 650 402.05 L 780 402.05" class="a-default" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:11">
-          <path data-graph-role="automatic-crossover-underlay" d="M 634 200 L 634 180 Q 634 172 642 172 L 940 172" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="booking-service" data-edge-to="redis-cache" data-edge-label="Cache-Aside 1800s" data-edge-key="11" data-edge-id="book-to-redis" data-composition-points="634,200;634,172;940,172" data-composition-crossover="halo" data-composition-independent="true" d="M 634 200 L 634 180 Q 634 172 642 172 L 940 172" class="a-default" data-animate="edge" style="--step:11" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 94 L 1196 94 Q 1204 94 1204 102 L 1204 266 Q 1204 274 1196 274 L 1180 274" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="auth-service" data-edge-to="postgres-db" data-edge-label="users &amp; tokens" data-edge-key="11" data-edge-id="auth-to-pg" data-composition-points="650,94;1204,94;1204,274;1180,274" data-composition-crossover="halo" data-composition-independent="true" d="M 650 94 L 1196 94 Q 1204 94 1204 102 L 1204 266 Q 1204 274 1196 274 L 1180 274" class="a-default" data-animate="edge" style="--step:11" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:12">
-          <path data-graph-role="automatic-crossover-underlay" d="M 650 361 L 666 361 Q 674 361 674 369 L 674 386 Q 674 394 682 394 L 940 394" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="itinerary-service" data-edge-to="mongo-db" data-edge-label="BSON Timeline" data-edge-key="12" data-edge-id="itin-to-mongo" data-composition-points="650,361;674,361;674,394;940,394" data-composition-crossover="halo" data-composition-independent="true" d="M 650 361 L 666 361 Q 674 361 674 369 L 674 386 Q 674 394 682 394 L 940 394" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 634 160 L 634 153.5 Q 634 147 640.5 147 L 1020 147" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="booking-service" data-edge-to="redis-cache" data-edge-label="Cache-Aside 1800s" data-edge-key="12" data-edge-id="book-to-redis" data-composition-points="634,160;634,147;1020,147" data-composition-crossover="halo" data-composition-independent="true" d="M 634 160 L 634 153.5 Q 634 147 640.5 147 L 1020 147" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:13">
-          <path data-graph-role="automatic-crossover-underlay" d="M 650 467 L 709 467 Q 717 467 717 459 L 717 289 Q 717 281 725 281 L 940 281" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="expense-service" data-edge-to="postgres-db" data-edge-label="ACID BEGIN...COMMIT" data-edge-key="13" data-edge-id="exp-to-pg" data-composition-points="650,467;717,467;717,281;940,281" data-composition-crossover="halo" data-composition-independent="true" d="M 650 467 L 709 467 Q 717 467 717 459 L 717 289 Q 717 281 725 281 L 940 281" class="a-emphasis" data-animate="edge" style="--step:12" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 301 L 769 301 Q 777 301 777 309 L 777 349 Q 777 357 785 357 L 988 357 Q 996 357 996 365 L 996 386 Q 996 394 1004 394 L 1020 394" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="itinerary-service" data-edge-to="mongo-db" data-edge-label="BSON Timeline" data-edge-key="13" data-edge-id="itin-to-mongo" data-composition-points="650,301;777,301;777,357;996,357;996,394;1020,394" data-composition-crossover="halo" data-composition-independent="true" d="M 650 301 L 769 301 Q 777 301 777 309 L 777 349 Q 777 357 785 357 L 988 357 Q 996 357 996 365 L 996 386 Q 996 394 1004 394 L 1020 394" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:14">
-          <path data-graph-role="automatic-crossover-underlay" d="M 650 594 L 929 594 Q 937 594 937 586 L 937 220 Q 937 212 945 212 L 1012 212 Q 1020 212 1020 204 L 1020 188" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="places-service" data-edge-to="redis-cache" data-edge-label="Places Cache" data-edge-key="14" data-edge-id="plc-to-redis" data-composition-points="650,594;937,594;937,212;1020,212;1020,188" data-composition-crossover="halo" data-composition-independent="true" d="M 650 594 L 929 594 Q 937 594 937 586 L 937 220 Q 937 212 945 212 L 1012 212 Q 1020 212 1020 204 L 1020 188" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 565 360 L 565 340 Q 565 332 573 332 L 1092 332 Q 1100 332 1100 324 L 1100 308" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="expense-service" data-edge-to="postgres-db" data-edge-label="ACID BEGIN...COMMIT" data-edge-key="14" data-edge-id="exp-to-pg" data-composition-points="565,360;565,332;1100,332;1100,308" data-composition-crossover="halo" data-composition-independent="true" d="M 565 360 L 565 340 Q 565 332 573 332 L 1092 332 Q 1100 332 1100 324 L 1100 308" class="a-emphasis" data-animate="edge" style="--step:12" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:15">
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 494 L 1196 494 Q 1204 494 1204 486 L 1204 297.05 Q 1204 289.05 1196 289.05 L 1180 289.05" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="gamification-service" data-edge-to="postgres-db" data-edge-label="user_badges &amp; landmarks" data-edge-key="15" data-edge-id="gam-to-pg" data-composition-points="650,494;1204,494;1204,289.05;1180,289.05" data-composition-crossover="halo" data-composition-independent="true" d="M 650 494 L 1196 494 Q 1204 494 1204 486 L 1204 297.05 Q 1204 289.05 1196 289.05 L 1180 289.05" class="a-emphasis" data-animate="edge" style="--step:12" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:16">
+          <path data-graph-role="automatic-crossover-underlay" d="M 650 594 L 970 594 Q 978 594 978 586 L 978 169 Q 978 161 986 161 L 1020 161" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="places-service" data-edge-to="redis-cache" data-edge-label="Places Cache" data-edge-key="16" data-edge-id="plc-to-redis" data-composition-points="650,594;978,594;978,161;1020,161" data-composition-crossover="halo" data-composition-independent="true" d="M 650 594 L 970 594 Q 978 594 978 586 L 978 169 Q 978 161 986 161 L 1020 161" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
@@ -5367,57 +5375,69 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
         <g id="node-auth-service" data-node-id="auth-service" data-node-label="Auth &amp; RBAC Service" tabindex="0" role="button" aria-label="Focus Auth &amp; RBAC Service, Bcrypt 12 / JWT 15m / SHA-256, Node.js / Express Core Service Mesh" aria-pressed="false" data-node-kind="security" data-node-sublabel="Bcrypt 12 / JWT 15m / SHA-256" data-node-tag="Token Rotation" data-node-context="Node.js / Express Core Service Mesh">
           <title>Auth &amp; RBAC Service · Bcrypt 12 / JWT 15m / SHA-256 · Node.js / Express Core Service Mesh · Token Rotation</title>
-          <rect x="480" y="80" width="170" height="68" rx="8" class="c-mask"/>
-          <rect x="480" y="80" width="170" height="68" rx="8" class="c-security" data-animate="node" style="--step:3" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(486 86) scale(0.6875)">
+          <rect x="480" y="60" width="170" height="68" rx="8" class="c-mask"/>
+          <rect x="480" y="60" width="170" height="68" rx="8" class="c-security" data-animate="node" style="--step:3" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(486 66) scale(0.6875)">
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="565" y="112" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Auth &amp; RBAC Service</text>
-        <text data-detail="context" x="565" y="128" class="t-muted" font-size="9" text-anchor="middle">Bcrypt 12 / JWT 15m / SHA-256</text>
-        <text data-detail="fine" x="565" y="140" class="t-security" font-size="7" text-anchor="middle">Token Rotation</text>
+          <text data-node-label="" data-detail-anchor="" x="565" y="92" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Auth &amp; RBAC Service</text>
+        <text data-detail="context" x="565" y="108" class="t-muted" font-size="9" text-anchor="middle">Bcrypt 12 / JWT 15m / SHA-256</text>
+        <text data-detail="fine" x="565" y="120" class="t-security" font-size="7" text-anchor="middle">Token Rotation</text>
         </g>
 
         <g id="node-booking-service" data-node-id="booking-service" data-node-label="Booking Aggregator" tabindex="0" role="button" aria-label="Focus Booking Aggregator, Parallel NDC Flights &amp; Hotels, Node.js / Express Core Service Mesh" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Parallel NDC Flights &amp; Hotels" data-node-tag="Deduplication" data-node-context="Node.js / Express Core Service Mesh">
           <title>Booking Aggregator · Parallel NDC Flights &amp; Hotels · Node.js / Express Core Service Mesh · Deduplication</title>
-          <rect x="480" y="200" width="170" height="68" rx="8" class="c-mask"/>
-          <rect x="480" y="200" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:4" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 206) scale(0.6875)">
+          <rect x="480" y="160" width="170" height="68" rx="8" class="c-mask"/>
+          <rect x="480" y="160" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:4" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 166) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="565" y="232" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Booking Aggregator</text>
-        <text data-detail="context" x="565" y="248" class="t-muted" font-size="9" text-anchor="middle">Parallel NDC Flights &amp; Hotels</text>
-        <text data-detail="fine" x="565" y="260" class="t-backend" font-size="7" text-anchor="middle">Deduplication</text>
+          <text data-node-label="" data-detail-anchor="" x="565" y="192" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Booking Aggregator</text>
+        <text data-detail="context" x="565" y="208" class="t-muted" font-size="9" text-anchor="middle">Parallel NDC Flights &amp; Hotels</text>
+        <text data-detail="fine" x="565" y="220" class="t-backend" font-size="7" text-anchor="middle">Deduplication</text>
         </g>
 
         <g id="node-itinerary-service" data-node-id="itinerary-service" data-node-label="Itinerary &amp; Squad Service" tabindex="0" role="button" aria-label="Focus Itinerary &amp; Squad Service, Collaborator Roles &amp; Haversine, Node.js / Express Core Service Mesh" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Collaborator Roles &amp; Haversine" data-node-tag="Drag-Drop Reorder" data-node-context="Node.js / Express Core Service Mesh">
           <title>Itinerary &amp; Squad Service · Collaborator Roles &amp; Haversine · Node.js / Express Core Service Mesh · Drag-Drop Reorder</title>
-          <rect x="480" y="320" width="170" height="68" rx="8" class="c-mask"/>
-          <rect x="480" y="320" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:5" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 326) scale(0.6875)">
+          <rect x="480" y="260" width="170" height="68" rx="8" class="c-mask"/>
+          <rect x="480" y="260" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:5" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 266) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="565" y="352" class="t-primary" font-size="10.8" font-weight="600" text-anchor="middle">Itinerary &amp; Squad Service</text>
-        <text data-detail="context" x="565" y="368" class="t-muted" font-size="9" text-anchor="middle">Collaborator Roles &amp; Haversine</text>
-        <text data-detail="fine" x="565" y="380" class="t-backend" font-size="7" text-anchor="middle">Drag-Drop Reorder</text>
+          <text data-node-label="" data-detail-anchor="" x="565" y="292" class="t-primary" font-size="10.8" font-weight="600" text-anchor="middle">Itinerary &amp; Squad Service</text>
+        <text data-detail="context" x="565" y="308" class="t-muted" font-size="9" text-anchor="middle">Collaborator Roles &amp; Haversine</text>
+        <text data-detail="fine" x="565" y="320" class="t-backend" font-size="7" text-anchor="middle">Drag-Drop Reorder</text>
         </g>
 
         <g id="node-expense-service" data-node-id="expense-service" data-node-label="Group Expense Hub" tabindex="0" role="button" aria-label="Focus Group Expense Hub, Greedy Debt Minimizer O(N log N), Node.js / Express Core Service Mesh" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Greedy Debt Minimizer O(N log N)" data-node-tag="Zero-Sum Balance" data-node-context="Node.js / Express Core Service Mesh">
           <title>Group Expense Hub · Greedy Debt Minimizer O(N log N) · Node.js / Express Core Service Mesh · Zero-Sum Balance</title>
-          <rect x="480" y="440" width="170" height="68" rx="8" class="c-mask"/>
-          <rect x="480" y="440" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:6" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 446) scale(0.6875)">
+          <rect x="480" y="360" width="170" height="68" rx="8" class="c-mask"/>
+          <rect x="480" y="360" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:6" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 366) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="565" y="472" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Group Expense Hub</text>
-        <text data-detail="context" x="565" y="488" class="t-muted" font-size="8.4" text-anchor="middle">Greedy Debt Minimizer O(N log N)</text>
-        <text data-detail="fine" x="565" y="500" class="t-backend" font-size="7" text-anchor="middle">Zero-Sum Balance</text>
+          <text data-node-label="" data-detail-anchor="" x="565" y="392" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Group Expense Hub</text>
+        <text data-detail="context" x="565" y="408" class="t-muted" font-size="8.4" text-anchor="middle">Greedy Debt Minimizer O(N log N)</text>
+        <text data-detail="fine" x="565" y="420" class="t-backend" font-size="7" text-anchor="middle">Zero-Sum Balance</text>
+        </g>
+
+        <g id="node-gamification-service" data-node-id="gamification-service" data-node-label="Gamification &amp; Badges" tabindex="0" role="button" aria-label="Focus Gamification &amp; Badges, GPS Proximity Check-in &amp; Rewards, Node.js / Express Core Service Mesh" aria-pressed="false" data-node-kind="backend" data-node-sublabel="GPS Proximity Check-in &amp; Rewards" data-node-tag="Cultural Quests" data-node-context="Node.js / Express Core Service Mesh">
+          <title>Gamification &amp; Badges · GPS Proximity Check-in &amp; Rewards · Node.js / Express Core Service Mesh · Cultural Quests</title>
+          <rect x="480" y="460" width="170" height="68" rx="8" class="c-mask"/>
+          <rect x="480" y="460" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:7" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 466) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="565" y="492" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Gamification &amp; Badges</text>
+        <text data-detail="context" x="565" y="508" class="t-muted" font-size="8.4" text-anchor="middle">GPS Proximity Check-in &amp; Rewards</text>
+        <text data-detail="fine" x="565" y="520" class="t-backend" font-size="7" text-anchor="middle">Cultural Quests</text>
         </g>
 
         <g id="node-places-service" data-node-id="places-service" data-node-label="Places &amp; AI Clustering" tabindex="0" role="button" aria-label="Focus Places &amp; AI Clustering, HAC Clustering &amp; Cache-Aside, Node.js / Express Core Service Mesh" aria-pressed="false" data-node-kind="backend" data-node-sublabel="HAC Clustering &amp; Cache-Aside" data-node-tag="Multi-Day Plan" data-node-context="Node.js / Express Core Service Mesh">
           <title>Places &amp; AI Clustering · HAC Clustering &amp; Cache-Aside · Node.js / Express Core Service Mesh · Multi-Day Plan</title>
           <rect x="480" y="560" width="170" height="68" rx="8" class="c-mask"/>
-          <rect x="480" y="560" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:7" stroke-width="1.5"/>
+          <rect x="480" y="560" width="170" height="68" rx="8" class="c-backend" data-animate="node" style="--step:8" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(486 566) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
@@ -5428,162 +5448,170 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
         <g id="node-duffel-api" data-node-id="duffel-api" data-node-label="Duffel NDC Platform" tabindex="0" role="button" aria-label="Focus Duffel NDC Platform, Live Flights &amp; Stays Sandbox, External Global API Integrations" aria-pressed="false" data-node-kind="external" data-node-sublabel="Live Flights &amp; Stays Sandbox" data-node-tag="Air &amp; Hotel NDC" data-node-context="External Global API Integrations">
           <title>Duffel NDC Platform · Live Flights &amp; Stays Sandbox · External Global API Integrations · Air &amp; Hotel NDC</title>
-          <rect x="720" y="200" width="160" height="68" rx="8" class="c-mask"/>
-          <rect x="720" y="200" width="160" height="68" rx="8" class="c-external" data-animate="node" style="--step:8" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(726 206) scale(0.6875)">
+          <rect x="780" y="160" width="160" height="68" rx="8" class="c-mask"/>
+          <rect x="780" y="160" width="160" height="68" rx="8" class="c-external" data-animate="node" style="--step:9" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(786 166) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="800" y="232" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Duffel NDC Platform</text>
-        <text data-detail="context" x="800" y="248" class="t-muted" font-size="9" text-anchor="middle">Live Flights &amp; Stays Sandbox</text>
-        <text data-detail="fine" x="800" y="260" class="t-external" font-size="7" text-anchor="middle">Air &amp; Hotel NDC</text>
+          <text data-node-label="" data-detail-anchor="" x="860" y="192" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Duffel NDC Platform</text>
+        <text data-detail="context" x="860" y="208" class="t-muted" font-size="9" text-anchor="middle">Live Flights &amp; Stays Sandbox</text>
+        <text data-detail="fine" x="860" y="220" class="t-external" font-size="7" text-anchor="middle">Air &amp; Hotel NDC</text>
         </g>
 
         <g id="node-mapbox-api" data-node-id="mapbox-api" data-node-label="Mapbox API Engine" tabindex="0" role="button" aria-label="Focus Mapbox API Engine, Geocoding v5 &amp; Directions v5, External Global API Integrations" aria-pressed="false" data-node-kind="external" data-node-sublabel="Geocoding v5 &amp; Directions v5" data-node-tag="GPS &amp; Routes" data-node-context="External Global API Integrations">
           <title>Mapbox API Engine · Geocoding v5 &amp; Directions v5 · External Global API Integrations · GPS &amp; Routes</title>
-          <rect x="720" y="320" width="160" height="68" rx="8" class="c-mask"/>
-          <rect x="720" y="320" width="160" height="68" rx="8" class="c-external" data-animate="node" style="--step:9" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(726 326) scale(0.6875)">
+          <rect x="780" y="260" width="160" height="68" rx="8" class="c-mask"/>
+          <rect x="780" y="260" width="160" height="68" rx="8" class="c-external" data-animate="node" style="--step:10" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(786 266) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="800" y="352" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Mapbox API Engine</text>
-        <text data-detail="context" x="800" y="368" class="t-muted" font-size="9" text-anchor="middle">Geocoding v5 &amp; Directions v5</text>
-        <text data-detail="fine" x="800" y="380" class="t-external" font-size="7" text-anchor="middle">GPS &amp; Routes</text>
+          <text data-node-label="" data-detail-anchor="" x="860" y="292" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Mapbox API Engine</text>
+        <text data-detail="context" x="860" y="308" class="t-muted" font-size="9" text-anchor="middle">Geocoding v5 &amp; Directions v5</text>
+        <text data-detail="fine" x="860" y="320" class="t-external" font-size="7" text-anchor="middle">GPS &amp; Routes</text>
         </g>
 
         <g id="node-cloudinary-api" data-node-id="cloudinary-api" data-node-label="Cloudinary CDN" tabindex="0" role="button" aria-label="Focus Cloudinary CDN, Receipt OCR &amp; WebP Storage, External Global API Integrations" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Receipt OCR &amp; WebP Storage" data-node-tag="Asset Pipeline" data-node-context="External Global API Integrations">
           <title>Cloudinary CDN · Receipt OCR &amp; WebP Storage · External Global API Integrations · Asset Pipeline</title>
-          <rect x="720" y="440" width="160" height="68" rx="8" class="c-mask"/>
-          <rect x="720" y="440" width="160" height="68" rx="8" class="c-cloud" data-animate="node" style="--step:10" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(726 446) scale(0.6875)">
+          <rect x="780" y="360" width="160" height="68" rx="8" class="c-mask"/>
+          <rect x="780" y="360" width="160" height="68" rx="8" class="c-cloud" data-animate="node" style="--step:11" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(786 366) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="800" y="472" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Cloudinary CDN</text>
-        <text data-detail="context" x="800" y="488" class="t-muted" font-size="9" text-anchor="middle">Receipt OCR &amp; WebP Storage</text>
-        <text data-detail="fine" x="800" y="500" class="t-cloud" font-size="7" text-anchor="middle">Asset Pipeline</text>
+          <text data-node-label="" data-detail-anchor="" x="860" y="392" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Cloudinary CDN</text>
+        <text data-detail="context" x="860" y="408" class="t-muted" font-size="9" text-anchor="middle">Receipt OCR &amp; WebP Storage</text>
+        <text data-detail="fine" x="860" y="420" class="t-cloud" font-size="7" text-anchor="middle">Asset Pipeline</text>
         </g>
 
         <g id="node-postgres-db" data-node-id="postgres-db" data-node-label="PostgreSQL 16" tabindex="0" role="button" aria-label="Focus PostgreSQL 16, ACID Ledger &amp; 28 3NF Tables, Polyglot Persistence Layer (3 Data Engines)" aria-pressed="false" data-node-kind="database" data-node-sublabel="ACID Ledger &amp; 28 3NF Tables" data-node-tag="NUMERIC(12,2)" data-node-context="Polyglot Persistence Layer (3 Data Engines)">
           <title>PostgreSQL 16 · ACID Ledger &amp; 28 3NF Tables · Polyglot Persistence Layer (3 Data Engines) · NUMERIC(12,2)</title>
-          <rect x="940" y="240" width="160" height="68" rx="8" class="c-mask"/>
-          <rect x="940" y="240" width="160" height="68" rx="8" class="c-database" data-animate="node" style="--step:11" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(946 246) scale(0.6875)">
+          <rect x="1020" y="240" width="160" height="68" rx="8" class="c-mask"/>
+          <rect x="1020" y="240" width="160" height="68" rx="8" class="c-database" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1026 246) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1020" y="272" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL 16</text>
-        <text data-detail="context" x="1020" y="288" class="t-muted" font-size="9" text-anchor="middle">ACID Ledger &amp; 28 3NF Tables</text>
-        <text data-detail="fine" x="1020" y="300" class="t-database" font-size="7" text-anchor="middle">NUMERIC(12,2)</text>
+          <text data-node-label="" data-detail-anchor="" x="1100" y="272" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL 16</text>
+        <text data-detail="context" x="1100" y="288" class="t-muted" font-size="9" text-anchor="middle">ACID Ledger &amp; 28 3NF Tables</text>
+        <text data-detail="fine" x="1100" y="300" class="t-database" font-size="7" text-anchor="middle">NUMERIC(12,2)</text>
         </g>
 
         <g id="node-mongo-db" data-node-id="mongo-db" data-node-label="MongoDB Atlas 7.0" tabindex="0" role="button" aria-label="Focus MongoDB Atlas 7.0, Embedded Dynamic Timelines, Polyglot Persistence Layer (3 Data Engines)" aria-pressed="false" data-node-kind="database" data-node-sublabel="Embedded Dynamic Timelines" data-node-tag="Sub-15ms Reads" data-node-context="Polyglot Persistence Layer (3 Data Engines)">
           <title>MongoDB Atlas 7.0 · Embedded Dynamic Timelines · Polyglot Persistence Layer (3 Data Engines) · Sub-15ms Reads</title>
-          <rect x="940" y="360" width="160" height="68" rx="8" class="c-mask"/>
-          <rect x="940" y="360" width="160" height="68" rx="8" class="c-database" data-animate="node" style="--step:12" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(946 366) scale(0.6875)">
+          <rect x="1020" y="360" width="160" height="68" rx="8" class="c-mask"/>
+          <rect x="1020" y="360" width="160" height="68" rx="8" class="c-database" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1026 366) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1020" y="392" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">MongoDB Atlas 7.0</text>
-        <text data-detail="context" x="1020" y="408" class="t-muted" font-size="9" text-anchor="middle">Embedded Dynamic Timelines</text>
-        <text data-detail="fine" x="1020" y="420" class="t-database" font-size="7" text-anchor="middle">Sub-15ms Reads</text>
+          <text data-node-label="" data-detail-anchor="" x="1100" y="392" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">MongoDB Atlas 7.0</text>
+        <text data-detail="context" x="1100" y="408" class="t-muted" font-size="9" text-anchor="middle">Embedded Dynamic Timelines</text>
+        <text data-detail="fine" x="1100" y="420" class="t-database" font-size="7" text-anchor="middle">Sub-15ms Reads</text>
         </g>
 
         <g id="node-redis-cache" data-node-id="redis-cache" data-node-label="Redis 7.0 In-Memory" tabindex="0" role="button" aria-label="Focus Redis 7.0 In-Memory, Cache-Aside &amp; Rate Limiting, Polyglot Persistence Layer (3 Data Engines)" aria-pressed="false" data-node-kind="database" data-node-sublabel="Cache-Aside &amp; Rate Limiting" data-node-tag="RAM &lt;50ms TTL" data-node-context="Polyglot Persistence Layer (3 Data Engines)">
           <title>Redis 7.0 In-Memory · Cache-Aside &amp; Rate Limiting · Polyglot Persistence Layer (3 Data Engines) · RAM &lt;50ms TTL</title>
-          <rect x="940" y="120" width="160" height="68" rx="8" class="c-mask"/>
-          <rect x="940" y="120" width="160" height="68" rx="8" class="c-database" data-animate="node" style="--step:12" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(946 126) scale(0.6875)">
+          <rect x="1020" y="120" width="160" height="68" rx="8" class="c-mask"/>
+          <rect x="1020" y="120" width="160" height="68" rx="8" class="c-database" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1026 126) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="1020" y="152" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Redis 7.0 In-Memory</text>
-        <text data-detail="context" x="1020" y="168" class="t-muted" font-size="9" text-anchor="middle">Cache-Aside &amp; Rate Limiting</text>
-        <text data-detail="fine" x="1020" y="180" class="t-database" font-size="7" text-anchor="middle">RAM &lt;50ms TTL</text>
+          <text data-node-label="" data-detail-anchor="" x="1100" y="152" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Redis 7.0 In-Memory</text>
+        <text data-detail="context" x="1100" y="168" class="t-muted" font-size="9" text-anchor="middle">Cache-Aside &amp; Rate Limiting</text>
+        <text data-detail="fine" x="1100" y="180" class="t-database" font-size="7" text-anchor="middle">RAM &lt;50ms TTL</text>
         </g>
 
         <!-- Connection labels -->
         <g data-detail="context" data-edge-from="mobile-client" data-edge-to="api-gateway" data-edge-label="HTTPS / JWT" data-edge-key="0" data-edge-id="m-to-gw">
-          <rect x="244.6" y="206" width="62.8" height="14" rx="3" class="c-mask"/>
-          <text x="276" y="216" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS / JWT</text>
+          <rect x="190.6" y="236" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="222" y="246" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS / JWT</text>
         </g>
         <g data-detail="context" data-edge-from="web-client" data-edge-to="api-gateway" data-edge-label="HTTPS / REST" data-edge-key="1" data-edge-id="w-to-gw">
           <rect x="204.2" y="316" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="238" y="326" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS / REST</text>
         </g>
         <g data-detail="context" data-edge-from="api-gateway" data-edge-to="auth-service" data-edge-label="validate token" data-edge-key="2" data-edge-id="gw-to-auth">
-          <rect x="405.4" y="165" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="444" y="175" class="t-edge-security" font-size="8" text-anchor="middle">validate token</text>
+          <rect x="339.4" y="92" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="378" y="102" class="t-edge-security" font-size="8" text-anchor="middle">validate token</text>
         </g>
         <g data-detail="context" data-edge-from="api-gateway" data-edge-to="booking-service" data-edge-label="/flights &amp; /hotels" data-edge-key="3" data-edge-id="gw-to-book">
-          <rect x="326.8" y="196" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
-          <text x="375" y="206" class="t-edge-default" font-size="8" text-anchor="middle">/flights &amp; /hotels</text>
+          <rect x="301.6" y="210" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
+          <text x="349.8" y="220" class="t-edge-default" font-size="8" text-anchor="middle">/flights &amp; /hotels</text>
         </g>
         <g data-detail="context" data-edge-from="api-gateway" data-edge-to="itinerary-service" data-edge-label="/itineraries" data-edge-key="4" data-edge-id="gw-to-itin">
-          <rect x="462.2" y="279" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="496" y="289" class="t-edge-default" font-size="8" text-anchor="middle">/itineraries</text>
+          <rect x="450" y="238.5" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="483.8" y="248.5" class="t-edge-default" font-size="8" text-anchor="middle">/itineraries</text>
         </g>
         <g data-detail="context" data-edge-from="api-gateway" data-edge-to="expense-service" data-edge-label="/trips/:id/expenses" data-edge-key="5" data-edge-id="gw-to-exp">
-          <rect x="410" y="412" width="101.2" height="14" rx="3" class="c-mask"/>
-          <text x="460.6" y="422" class="t-edge-default" font-size="8" text-anchor="middle">/trips/:id/expenses</text>
+          <rect x="218.79999999999998" y="344" width="101.2" height="14" rx="3" class="c-mask"/>
+          <text x="269.4" y="354" class="t-edge-default" font-size="8" text-anchor="middle">/trips/:id/expenses</text>
         </g>
-        <g data-detail="context" data-edge-from="api-gateway" data-edge-to="places-service" data-edge-label="/places/ai-plan" data-edge-key="6" data-edge-id="gw-to-plc">
+        <g data-detail="context" data-edge-from="api-gateway" data-edge-to="gamification-service" data-edge-label="/gamification/check-in" data-edge-key="6" data-edge-id="gw-to-gam">
+          <rect x="455.99999999999994" y="436.5" width="115.6" height="14" rx="3" class="c-mask"/>
+          <text x="513.8" y="446.5" class="t-edge-default" font-size="8" text-anchor="middle">/gamification/check-in</text>
+        </g>
+        <g data-detail="context" data-edge-from="api-gateway" data-edge-to="places-service" data-edge-label="/places/ai-plan" data-edge-key="7" data-edge-id="gw-to-plc">
           <rect x="369" y="574" width="82" height="14" rx="3" class="c-mask"/>
           <text x="410" y="584" class="t-edge-default" font-size="8" text-anchor="middle">/places/ai-plan</text>
         </g>
-        <g data-detail="context" data-edge-from="booking-service" data-edge-to="duffel-api" data-edge-label="NDC Search API" data-edge-key="7" data-edge-id="book-to-duffel">
-          <rect x="591.9" y="272" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="630.5" y="282" class="t-edge-default" font-size="8" text-anchor="middle">NDC Search API</text>
+        <g data-detail="context" data-edge-from="booking-service" data-edge-to="duffel-api" data-edge-label="NDC Search API" data-edge-key="8" data-edge-id="book-to-duffel">
+          <rect x="676.4" y="181" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="715" y="191" class="t-edge-default" font-size="8" text-anchor="middle">NDC Search API</text>
         </g>
-        <g data-detail="context" data-edge-from="itinerary-service" data-edge-to="mapbox-api" data-edge-label="Directions Driving" data-edge-key="8" data-edge-id="itin-to-mapbox">
-          <rect x="571.5999999999999" y="301.75" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
-          <text x="619.8" y="311.75" class="t-edge-default" font-size="8" text-anchor="middle">Directions Driving</text>
+        <g data-detail="context" data-edge-from="itinerary-service" data-edge-to="mapbox-api" data-edge-label="Directions Driving" data-edge-key="9" data-edge-id="itin-to-mapbox">
+          <rect x="666.8" y="267" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
+          <text x="715" y="277" class="t-edge-default" font-size="8" text-anchor="middle">Directions Driving</text>
         </g>
-        <g data-detail="context" data-edge-from="expense-service" data-edge-to="cloudinary-api" data-edge-label="Upload Bill Image" data-edge-key="9" data-edge-id="exp-to-cloud">
-          <rect x="576.4000000000001" y="512.5125" width="91.6" height="14" rx="3" class="c-mask"/>
-          <text x="622.2" y="522.5125" class="t-edge-default" font-size="8" text-anchor="middle">Upload Bill Image</text>
+        <g data-detail="context" data-edge-from="expense-service" data-edge-to="cloudinary-api" data-edge-label="Upload Bill Image" data-edge-key="10" data-edge-id="exp-to-cloud">
+          <rect x="669.2" y="382.05" width="91.6" height="14" rx="3" class="c-mask"/>
+          <text x="715" y="392.05" class="t-edge-default" font-size="8" text-anchor="middle">Upload Bill Image</text>
         </g>
-        <g data-detail="context" data-edge-from="auth-service" data-edge-to="postgres-db" data-edge-label="users &amp; tokens" data-edge-key="10" data-edge-id="auth-to-pg">
-          <rect x="848.4" y="124" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="887" y="134" class="t-edge-default" font-size="8" text-anchor="middle">users &amp; tokens</text>
+        <g data-detail="context" data-edge-from="auth-service" data-edge-to="postgres-db" data-edge-label="users &amp; tokens" data-edge-key="11" data-edge-id="auth-to-pg">
+          <rect x="888.4" y="74" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="927" y="84" class="t-edge-default" font-size="8" text-anchor="middle">users &amp; tokens</text>
         </g>
-        <g data-detail="context" data-edge-from="booking-service" data-edge-to="redis-cache" data-edge-label="Cache-Aside 1800s" data-edge-key="11" data-edge-id="book-to-redis">
-          <rect x="741.2" y="152" width="91.6" height="14" rx="3" class="c-mask"/>
-          <text x="787" y="162" class="t-edge-default" font-size="8" text-anchor="middle">Cache-Aside 1800s</text>
+        <g data-detail="context" data-edge-from="booking-service" data-edge-to="redis-cache" data-edge-label="Cache-Aside 1800s" data-edge-key="12" data-edge-id="book-to-redis">
+          <rect x="781.2" y="119" width="91.6" height="14" rx="3" class="c-mask"/>
+          <text x="827" y="129" class="t-edge-default" font-size="8" text-anchor="middle">Cache-Aside 1800s</text>
         </g>
-        <g data-detail="context" data-edge-from="itinerary-service" data-edge-to="mongo-db" data-edge-label="BSON Timeline" data-edge-key="12" data-edge-id="itin-to-mongo">
-          <rect x="770.8" y="404" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="807" y="414" class="t-edge-default" font-size="8" text-anchor="middle">BSON Timeline</text>
+        <g data-detail="context" data-edge-from="itinerary-service" data-edge-to="mongo-db" data-edge-label="BSON Timeline" data-edge-key="13" data-edge-id="itin-to-mongo">
+          <rect x="677.3" y="311" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="713.5" y="321" class="t-edge-default" font-size="8" text-anchor="middle">BSON Timeline</text>
         </g>
-        <g data-detail="context" data-edge-from="expense-service" data-edge-to="postgres-db" data-edge-label="ACID BEGIN...COMMIT" data-edge-key="13" data-edge-id="exp-to-pg">
-          <rect x="609.8" y="413.5" width="101.2" height="14" rx="3" class="c-mask"/>
-          <text x="660.4" y="423.5" class="t-edge-emphasis" font-size="8" text-anchor="middle">ACID BEGIN...COMMIT</text>
+        <g data-detail="context" data-edge-from="expense-service" data-edge-to="postgres-db" data-edge-label="ACID BEGIN...COMMIT" data-edge-key="14" data-edge-id="exp-to-pg">
+          <rect x="648.15" y="342" width="101.2" height="14" rx="3" class="c-mask"/>
+          <text x="698.75" y="352" class="t-edge-emphasis" font-size="8" text-anchor="middle">ACID BEGIN...COMMIT</text>
         </g>
-        <g data-detail="context" data-edge-from="places-service" data-edge-to="redis-cache" data-edge-label="Places Cache" data-edge-key="14" data-edge-id="plc-to-redis">
-          <rect x="759.7" y="574" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="793.5" y="584" class="t-edge-default" font-size="8" text-anchor="middle">Places Cache</text>
+        <g data-detail="context" data-edge-from="gamification-service" data-edge-to="postgres-db" data-edge-label="user_badges &amp; landmarks" data-edge-key="15" data-edge-id="gam-to-pg">
+          <rect x="728.3" y="474" width="120.39999999999999" height="14" rx="3" class="c-mask"/>
+          <text x="788.5" y="484" class="t-edge-emphasis" font-size="8" text-anchor="middle">user_badges &amp; landmarks</text>
+        </g>
+        <g data-detail="context" data-edge-from="places-service" data-edge-to="redis-cache" data-edge-label="Places Cache" data-edge-key="16" data-edge-id="plc-to-redis">
+          <rect x="780.2" y="574" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="814" y="584" class="t-edge-default" font-size="8" text-anchor="middle">Places Cache</text>
         </g>
 
         <!-- Boundary labels (foreground masks keep routes out of titles) -->
         <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Client Presentation Tier (Cross-Platform)">
-          <rect data-graph-role="structural-frame-label-mask" x="14" y="140" width="212" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="18" y="152.21138211382114" class="t-cloud" font-size="8.21138211382114" font-weight="600">Client Presentation Tier (Cross-Platform)</text>
+          <rect data-graph-role="structural-frame-label-mask" x="11.44192318387097" y="140" width="217.11615363225806" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="15.44192318387097" y="152.4193558387097" class="t-cloud" font-size="8.419355838709677" font-weight="600">Client Presentation Tier (Cross-Platform)</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="security-group" data-composition-frame-label="Node.js / Express Core Service Mesh">
-          <rect data-graph-role="structural-frame-label-mask" x="234" y="60" width="199" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="238" y="73" class="t-security" font-size="9" font-weight="600">Node.js / Express Core Service Mesh</text>
+          <rect data-graph-role="structural-frame-label-mask" x="234" y="40" width="199" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="238" y="53" class="t-security" font-size="9" font-weight="600">Node.js / Express Core Service Mesh</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="2" data-composition-frame-kind="region" data-composition-frame-label="External Global API Integrations">
-          <rect data-graph-role="structural-frame-label-mask" x="694" y="180" width="182.79999999999998" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="698" y="193" class="t-cloud" font-size="9" font-weight="600">External Global API Integrations</text>
+          <rect data-graph-role="structural-frame-label-mask" x="754" y="140" width="182.79999999999998" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="758" y="153" class="t-cloud" font-size="9" font-weight="600">External Global API Integrations</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="3" data-composition-frame-kind="region" data-composition-frame-label="Polyglot Persistence Layer (3 Data Engines)">
-          <rect data-graph-role="structural-frame-label-mask" x="914" y="100" width="211.99999999999997" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="918" y="111.82945736434108" class="t-cloud" font-size="7.829457364341085" font-weight="600">Polyglot Persistence Layer (3 Data Engines)</text>
+          <rect data-graph-role="structural-frame-label-mask" x="986.3903096806451" y="100" width="227.21938063870965" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="990.3903096806451" y="112.41935583870968" class="t-cloud" font-size="8.419355838709677" font-weight="600">Polyglot Persistence Layer (3 Data Engines)</text>
         </g>
 
         <!-- Legend -->
@@ -5811,7 +5839,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <ul>
           <li>Duffel NDC live flight provider with fallback domestic catalogs</li>
           <li>Greedy Debt Simplification reducing group bills to &lt;= N-1 payments</li>
-          <li>Hierarchical Agglomerative Clustering (HAC) for AI day clustering</li>
+          <li>Cultural Gamification engine with GPS check-in proximity validation</li>
         </ul>
       </div>
 
