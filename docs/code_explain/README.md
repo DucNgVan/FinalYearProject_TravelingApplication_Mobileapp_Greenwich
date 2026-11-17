@@ -11,6 +11,7 @@
 | :---: | :--- | :---: | :---: |
 | **01** | **Bảo mật Middleware & Giao dịch Cơ sở Dữ liệu ACID**<br>• Trích xuất Bearer Token & Gán `req.user`<br>• Khối `try...catch...finally` với `client.release()`<br>• Chống rò rỉ kết nối Connection Leak trong PostgreSQL Pool | [01-auth-middleware-and-acid-transactions.md](./01-auth-middleware-and-acid-transactions.md) | `flowchart TD`<br>`sequenceDiagram` |
 | **02** | **Bộ đệm Redis Cache-Aside & Cơ chế Phòng vệ Circuit Breaker**<br>• Cấu trúc khóa Deterministic `nomadix:flight:...`<br>• Timeout 5000ms & Tự động kích hoạt Fallback Mock Provider<br>• Chiến lược TTL (1800s vs 3600s) & Phòng vệ Ghế ma (Phantom Inventory) | [02-redis-cache-aside-and-api-resilience.md](./02-redis-cache-aside-and-api-resilience.md) | `flowchart TD`<br>`sequenceDiagram` |
+| **03** | **Quản trị State với Zustand & Phân giải Mạng Động trong React Native**<br>• Kỹ thuật Atomic Selector chống Re-render & `useShallow`<br>• Zero-Provider Architecture vs Context Re-render Hell<br>• Tự động trích xuất Base URL từ Metro scriptURL & Android `10.0.2.2` | [03-react-native-zustand-and-dynamic-networking.md](./03-react-native-zustand-and-dynamic-networking.md) | `flowchart TD` (x2) |
 
 ---
 

@@ -54,4 +54,29 @@ describe('TDD RED: Code Explain Documentation Integrity', () => {
     const readmeContent = fs.readFileSync(readmeFile, 'utf8');
     expect(readmeContent).toMatch(/02-redis-cache-aside-and-api-resilience\.md/);
   });
+
+  test('RED-CODE-EXPLAIN-07: docs/code_explain/03-react-native-zustand-and-dynamic-networking.md exists with comprehensive depth (>= 3000 chars)', () => {
+    const doc3File = path.join(codeExplainDir, '03-react-native-zustand-and-dynamic-networking.md');
+    expect(fs.existsSync(doc3File)).toBe(true);
+    const content = fs.readFileSync(doc3File, 'utf8');
+    expect(content.length).toBeGreaterThanOrEqual(3000);
+  });
+
+  test('RED-CODE-EXPLAIN-08: Document 03 contains Mermaid diagrams and key Zustand & networking terms', () => {
+    const doc3File = path.join(codeExplainDir, '03-react-native-zustand-and-dynamic-networking.md');
+    expect(fs.existsSync(doc3File)).toBe(true);
+    const content = fs.readFileSync(doc3File, 'utf8');
+    expect(content).toMatch(/```mermaid[\s\S]*?flowchart/);
+    expect(content).toMatch(/useAuthStore/);
+    expect(content).toMatch(/resolveApiBaseUrl/);
+    expect(content).toMatch(/10\.0\.2\.2/);
+    expect(content).toMatch(/scriptURL/);
+    expect(content).toMatch(/useShallow/);
+  });
+
+  test('RED-CODE-EXPLAIN-09: README.md links to Topic 03', () => {
+    expect(fs.existsSync(readmeFile)).toBe(true);
+    const readmeContent = fs.readFileSync(readmeFile, 'utf8');
+    expect(readmeContent).toMatch(/03-react-native-zustand-and-dynamic-networking\.md/);
+  });
 });
